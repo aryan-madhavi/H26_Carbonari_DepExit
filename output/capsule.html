@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DepExit • Dependency Exit Capsules Report</title>
+  <style>
+    /* System Font Stack - 100% Offline with zero external dependencies */
+    :root {
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      
+      /* Theme Palettes */
+      --color-bg: #0f172a;
+      --color-card-bg: #1e293b;
+      --color-text-main: #f8fafc;
+      --color-text-muted: #94a3b8;
+      
+      /* OBSERVED Evidence (Blue / Grey Theme) */
+      --obs-bg: #0f2744;
+      --obs-card: #143254;
+      --obs-border: #38bdf8;
+      --obs-text: #e0f2fe;
+      --obs-badge-bg: #0284c7;
+      --obs-badge-text: #ffffff;
+      
+      /* AI-GENERATED / UNVERIFIED (Orange / Yellow Theme) */
+      --ai-bg: #451a03;
+      --ai-card: #572205;
+      --ai-border: #f59e0b;
+      --ai-text: #fef3c7;
+      --ai-badge-bg: #d97706;
+      --ai-badge-text: #ffffff;
+      
+      /* VERIFIED BY EXECUTION (Green Theme) */
+      --ver-bg: #064e3b;
+      --ver-card: #065f46;
+      --ver-border: #10b981;
+      --ver-text: #d1fae5;
+      --ver-badge-bg: #059669;
+      --ver-badge-text: #ffffff;
+      
+      /* OPEN CONCERNS (Highlighted Callout Box) */
+      --concern-bg: #450a0a;
+      --concern-border: #ef4444;
+      --concern-text: #fecaca;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--color-bg);
+      color: var(--color-text-main);
+      line-height: 1.6;
+      padding: 32px 16px 80px 16px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Page Header */
+    .report-header {
+      margin-bottom: 36px;
+      padding-bottom: 24px;
+      border-bottom: 2px solid #334155;
+    }
+    .report-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #38bdf8;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .report-subtitle {
+      color: var(--color-text-muted);
+      font-size: 1rem;
+      margin-top: 6px;
+    }
+
+    /* Scored Separation Legend */
+    .legend-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 20px 0;
+      padding: 14px 18px;
+      background: #1e293b;
+      border-radius: 8px;
+      border: 1px solid #334155;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .legend-pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Dependency Card */
+    .capsule-card {
+      background: var(--color-card-bg);
+      border-radius: 12px;
+      border: 1px solid #334155;
+      margin-bottom: 40px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+    .card-topbar {
+      padding: 22px 28px;
+      background: #172554;
+      border-bottom: 1px solid #1e3a8a;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .card-dep-name {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #60a5fa;
+    }
+    .card-dep-meta {
+      font-size: 0.9rem;
+      color: #bfdbfe;
+      margin-top: 4px;
+    }
+    .card-badges {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    /* Status Pills */
+    .badge-observed {
+      background: var(--obs-badge-bg);
+      color: var(--obs-badge-text);
+      border: 1px solid var(--obs-border);
+    }
+    .badge-ai {
+      background: var(--ai-badge-bg);
+      color: var(--ai-badge-text);
+      border: 1px solid var(--ai-border);
+    }
+    .badge-verified {
+      background: var(--ver-badge-bg);
+      color: var(--ver-badge-text);
+      border: 1px solid var(--ver-border);
+    }
+    .badge-unverified {
+      background: #78350f;
+      color: #fde68a;
+      border: 1px solid #f59e0b;
+    }
+    .badge-danger {
+      background: #dc2626;
+      color: #fff;
+    }
+    .badge-warning {
+      background: #d97706;
+      color: #fff;
+    }
+    .badge-success {
+      background: #059669;
+      color: #fff;
+    }
+    .badge-neutral {
+      background: #475569;
+      color: #fff;
+    }
+
+    .card-body {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Section Containers */
+    .section-block {
+      border-radius: 8px;
+      padding: 20px 22px;
+      border-left: 6px solid #64748b;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-evidence-tag {
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* Section a & b: OBSERVED (Blue/Grey Theme) */
+    .section-observed {
+      background: var(--obs-bg);
+      border-left-color: var(--obs-border);
+      border: 1px solid #1e3a8a;
+      border-left-width: 6px;
+    }
+    .section-observed .section-title { color: #7dd3fc; }
+
+    /* Section c: AI-GENERATED / UNVERIFIED (Orange/Yellow Theme) */
+    .section-ai-unverified {
+      background: var(--ai-bg);
+      border-left-color: var(--ai-border);
+      border: 1px solid #78350f;
+      border-left-width: 6px;
+    }
+    .section-ai-unverified .section-title { color: #fde68a; }
+
+    /* Section d: VERIFIED BY EXECUTION (Green Theme) */
+    .section-verified-execution {
+      background: var(--ver-bg);
+      border-left-color: var(--ver-border);
+      border: 1px solid #065f46;
+      border-left-width: 6px;
+    }
+    .section-verified-execution .section-title { color: #6ee7b7; }
+
+    /* Section f: OPEN CONCERNS (Highlighted Box, Always Shown) */
+    .section-open-concerns {
+      background: var(--concern-bg);
+      border: 2px solid var(--concern-border);
+      border-left-width: 8px;
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+    }
+    .section-open-concerns .section-title { color: #fca5a5; font-size: 1.2rem; }
+
+    /* Tables & Grids */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+    th, td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    th {
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+      color: var(--color-text-muted);
+    }
+
+    /* Code & Diffs */
+    pre, code {
+      font-family: var(--font-mono);
+    }
+    .code-block {
+      background: #020617;
+      padding: 14px 16px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      border: 1px solid #1e293b;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+    .diff-line-add { color: #4ade80; background: rgba(74, 222, 128, 0.1); display: block; padding: 1px 4px; }
+    .diff-line-del { color: #f87171; background: rgba(248, 113, 113, 0.1); display: block; padding: 1px 4px; }
+    .diff-line-info { color: #38bdf8; display: block; padding: 1px 4px; }
+
+    /* Scoreboard */
+    .scoreboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+      margin-bottom: 16px;
+    }
+    .score-card {
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 6px;
+      padding: 14px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .score-card-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+    .score-stats {
+      display: flex;
+      gap: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+    .stat-pass { color: #4ade80; }
+    .stat-fail { color: #f87171; }
+    .stat-err { color: #f472b6; }
+    .stat-notrun { color: #94a3b8; }
+
+    /* Lists */
+    ul.item-list, ol.item-list {
+      padding-left: 20px;
+      margin-top: 8px;
+    }
+    ul.item-list li, ol.item-list li {
+      margin-bottom: 6px;
+      font-size: 0.92rem;
+    }
+
+    /* Warning callout banner */
+    .banner-warning {
+      background: rgba(217, 119, 6, 0.2);
+      border: 1px solid #d97706;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      font-size: 0.85rem;
+      color: #fef3c7;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Footer */
+    .report-footer {
+      margin-top: 48px;
+      padding: 24px;
+      background: #1e293b;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--color-text-muted);
+    }
+    .footer-links a {
+      color: #38bdf8;
+      text-decoration: underline;
+    }
+    .footer-links a:hover {
+      color: #7dd3fc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="report-header">
+      <h1 class="report-title">🚀 DepExit Dependency Exit Capsules</h1>
+      <p class="report-subtitle">
+        Automated architectural migration plans grounded in real code usage and verified by test execution.
+      </p>
+      
+      <!-- Visual Separation Legend (Scored Criterion) -->
+      <div class="legend-bar">
+        <span class="legend-item">
+          <span class="legend-pill badge-observed">OBSERVED EVIDENCE</span>
+          Source-grounded facts & AST tracking (Blue/Grey)
+        </span>
+        <span class="legend-item">
+          <span class="legend-pill badge-ai">AI-GENERATED (UNVERIFIED)</span>
+          Gemma 4 model proposals requiring human review (Orange/Yellow)
+        </span>
+        <span class="legend-item">
+          <span class="legend-pill badge-verified">VERIFIED BY EXECUTION</span>
+          Concrete test execution outcomes (Green)
+        </span>
+      </div>
+    </header>
+
+    <!-- Cards per Dependency -->
+    
+
+    <!-- Footer -->
+    <footer class="report-footer">
+      <div style="font-weight: 700; color: #f8fafc; margin-bottom: 6px;">
+        Model Attribution & Inference Metadata
+      </div>
+      <div>
+        Model: <strong>gemma-4-31b-it</strong> &nbsp;|&nbsp; 
+        Version: <strong>4</strong> &nbsp;|&nbsp; 
+        Access Method: <strong>hosted_api</strong>
+      </div>
+      <div class="footer-links" style="margin-top: 6px;">
+        Applicable License & Terms of Use: 
+        <a href="https://ai.google.dev/gemma/terms" target="_blank" rel="noopener noreferrer">
+          https://ai.google.dev/gemma/terms
+        </a>
+      </div>
+      <div style="margin-top: 12px; font-size: 0.75rem; color: #64748b;">
+        Generated by DepExit • 2026-10-15T09:00:08.202835+00:00
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

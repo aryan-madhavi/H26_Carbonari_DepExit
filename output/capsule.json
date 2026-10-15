@@ -1,0 +1,14 @@
+{
+  "generated_at": "2026-10-15T09:00:08.202835+00:00",
+  "model_info": {
+    "model_id": "gemma-4-31b-it",
+    "model_name": "gemma-4-31b-it",
+    "version": "4",
+    "access_method": "hosted_api",
+    "terms_url": "https://ai.google.dev/gemma/terms",
+    "evidence": "observed"
+  },
+  "evidence": "capsule_report",
+  "total_capsules": 0,
+  "capsules": []
+}
