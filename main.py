@@ -16,6 +16,18 @@ from typing import Optional, Union
 
 from dotenv import load_dotenv
 
+# Configure stdout/stderr for UTF-8 on platforms where default encoding is restricted (e.g., Windows cp1252)
+if sys.stdout and hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+if sys.stderr and hasattr(sys.stderr, "reconfigure"):
+    try:
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 # Ensure repository root is on sys.path
 _repo_root = str(Path(__file__).resolve().parent)
 if _repo_root not in sys.path:
