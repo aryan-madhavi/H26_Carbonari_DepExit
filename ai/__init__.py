@@ -2,9 +2,28 @@
 
 try:
     from ai.capsule_builder import build_exit_capsule
-    from ai.gemma_client import GemmaClient
+    from ai.gemma_client import (
+        MODEL_INFO,
+        GemmaAPIError,
+        GemmaClient,
+        explain_gaps,
+        get_recommendation,
+    )
 except ImportError:
     from depexit.ai.capsule_builder import build_exit_capsule
-    from depexit.ai.gemma_client import GemmaClient
+    from depexit.ai.gemma_client import (
+        MODEL_INFO,
+        GemmaAPIError,
+        GemmaClient,
+        explain_gaps,
+        get_recommendation,
+    )
 
-__all__ = ["GemmaClient", "build_exit_capsule"]
+__all__ = [
+    "GemmaClient",
+    "GemmaAPIError",
+    "build_exit_capsule",
+    "MODEL_INFO",
+    "get_recommendation",
+    "explain_gaps",
+]
