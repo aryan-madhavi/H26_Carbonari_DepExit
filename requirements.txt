@@ -1,0 +1,4 @@
+pip-audit
+requests
+python-dotenv
+jinja2
