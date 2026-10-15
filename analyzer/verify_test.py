@@ -58,6 +58,8 @@ KNOWN_IMPORT_MODULES: dict[str, str] = {
     "typing-extensions": "typing_extensions",
     "protobuf": "google.protobuf",
     "pydantic-core": "pydantic_core",
+    "pycrypto": "Crypto",
+    "pycryptodome": "Crypto",
 }
 
 
@@ -363,6 +365,8 @@ def verify_replacement(
     replacement_name: str,
     migration_steps: Optional[list[str]] = None,
     is_priority: Optional[bool] = None,
+    code_patch: Optional[str] = None,
+    suggested_tests: Optional[list[str]] = None,
 ) -> list[VerificationResult]:
     """Verify candidate replacement package against repository test suite or minimal smoke test.
 
@@ -378,6 +382,8 @@ def verify_replacement(
         replacement_name: Proposed replacement library name.
         migration_steps: Optional list of migration guidelines/steps.
         is_priority: Force priority smoke testing if no test suite exists. If None, checks top 1-2.
+        code_patch: Optional AI-generated code patch string.
+        suggested_tests: Optional list of AI-suggested test descriptions.
 
     Returns:
         List of VerificationResult objects detailing before, installation, and after results.
@@ -413,9 +419,14 @@ def verify_replacement(
     # Format migration steps description for context in raw outputs
     migration_summary = ""
     if migration_steps:
-        migration_summary = "\nMigration Steps:\n" + "\n".join(f"  - {s}" for s in migration_steps)
+        migration_summary += "\nMigration Steps:\n" + "\n".join(f"  - {s}" for s in migration_steps)
+    if code_patch:
+        migration_summary += f"\nCode Patch Preview:\n{code_patch[:300]}"
+    if suggested_tests:
+        migration_summary += "\nSuggestedTests:\n" + "\n".join(f"  - {t}" for t in suggested_tests)
 
     has_test_suite, framework, test_cmd = detect_test_suite(repo)
+
 
     # -------------------------------------------------------------------------
     # Scenario A: Existing Test Suite Discovered (pytest / unittest)

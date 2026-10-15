@@ -11,7 +11,9 @@ import json
 import os
 import re
 import sys
+from dataclasses import asdict, is_dataclass
 from datetime import datetime, timezone
+from enum import Enum
 from pathlib import Path
 from typing import Any, Optional, Sequence, Union
 
@@ -1148,7 +1150,8 @@ HTML_REPORT_TEMPLATE = """<!DOCTYPE html>
 def render_report(
     capsules: Union[ExitCapsule, Sequence[ExitCapsule]],
     output_dir: Union[str, Path] = "output",
-    format: str = "html",
+    output_path: Optional[Union[str, Path]] = None,
+    format: str = "all",
     **kwargs: Any,
 ) -> str:
     """Render ExitCapsules into structured JSON and an offline, self-contained HTML report.
@@ -1162,12 +1165,16 @@ def render_report(
     Args:
         capsules: ExitCapsule instance or list of ExitCapsule instances.
         output_dir: Target output directory or file destination.
-        format: Output report format (default: 'html').
+        output_path: Optional alias for output_dir.
+        format: Output report format (default: 'all').
         **kwargs: Additional options.
 
     Returns:
-        Rendered HTML document string.
+        Rendered content string or path description.
     """
+    if output_path is not None:
+        output_dir = output_path
+
     if isinstance(capsules, ExitCapsule):
         capsule_list = [capsules]
     else:
