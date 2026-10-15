@@ -399,6 +399,968 @@
 
     <!-- Cards per Dependency -->
     
+    <article class="capsule-card" id="card-requests">
+      <!-- Card Topbar -->
+      <div class="card-topbar">
+        <div>
+          <div class="card-dep-name">requests</div>
+          <div class="card-dep-meta">
+            Declared Version: <strong>2.28.0</strong> | Source: <code>requirements.txt</code>
+          </div>
+        </div>
+        <div class="card-badges">
+          
+          <span class="legend-pill badge-ai">REPLACEMENT: httpx</span>
+          
+          
+          
+          <span class="legend-pill badge-unverified">⚠ UNVERIFIED (REGRESSIONS OR NOT RUN)</span>
+          
+        </div>
+      </div>
+
+      <div class="card-body">
+        <!-- ============================================================= -->
+        <!-- a. Dependency details and risk indicators (OBSERVED, blue/grey) -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🛡️ a. Dependency Details & Risk Indicators</span>
+            </h2>
+            <span class="section-evidence-tag badge-observed">EVIDENCE: OBSERVED</span>
+          </div>
+
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Risk Type</th>
+                <th>Severity</th>
+                <th>Reason / Advisory</th>
+                <th>Evidence</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2023-74 (CVE-2023-32681, GHSA-j8r2-6x86-q33q) [fixed in: 2.31.0] - ### Impact  Since Requests v2.3.0, Requests has been vulnerable to potentially leaking `Proxy-Authorization` headers to destination servers, specifica...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2026-1873 (CVE-2024-35195, GHSA-9wx4-h78v-vm56) [fixed in: 2.32.0] - When using a `requests.Session`, if the first request to a given origin is made with `verify=False`, TLS certificate verification may remain disabled ...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2026-1872 (CVE-2024-47081, GHSA-9hjg-9r4m-mvj7) [fixed in: 2.32.4] - ### Impact  Due to a URL parsing issue, Requests releases prior to 2.32.4 may leak .netrc credentials to third parties for specific maliciously-crafte...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2026-2275 (CVE-2026-25645, GHSA-gc5v-m9x4-r6x2) [fixed in: 2.33.0] - ### Impact The `requests.utils.extract_zipped_paths()` utility function uses a predictable filename when extracting files from zip archives into the s...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- b. Usage locations (OBSERVED, blue/grey)                       -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>📍 b. Code Usage Locations (AST Mapped)</span>
+            </h2>
+            <span class="section-evidence-tag badge-observed">EVIDENCE: OBSERVED</span>
+          </div>
+
+          
+          <p style="font-size: 0.9rem; margin-bottom: 8px;">
+            Identified <strong>4</strong> concrete AST usage location(s) in the target codebase:
+          </p>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 client.py:2 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">IMPORT</span>
+            </div>
+            <pre class="code-block"><code>import requests</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 client.py:9 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">CALL</span>
+            </div>
+            <pre class="code-block"><code>response = requests.get(url, timeout=timeout)</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 client.py:10 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">CALL</span>
+            </div>
+            <pre class="code-block"><code>return response.json()</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 client.py:17 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">ATTRIBUTE</span>
+            </div>
+            <pre class="code-block"><code>return response.status</code></pre>
+          </div>
+          
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- c. Proposed replacement, migration steps, suggested tests,    -->
+        <!--    and patch (AI-GENERATED, UNVERIFIED, orange/yellow)        -->
+        <!-- ============================================================= -->
+        <section class="section-block section-ai-unverified">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🤖 c. Proposed Replacement & Migration Plan</span>
+            </h2>
+            <span class="section-evidence-tag badge-ai">EVIDENCE: AI-GENERATED (UNVERIFIED)</span>
+          </div>
+
+          <div class="banner-warning">
+            ⚠️ <strong>UNVERIFIED AI PROPOSAL:</strong> The replacement below was synthesized by Gemma 4. 
+            Do not merge without human code review and successful execution of the test suite.
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 14px; align-items: center;">
+            <div>
+              Proposed Replacement: <strong style="font-size: 1.15rem; color: #fde68a;">httpx</strong>
+            </div>
+            <div>
+              Usage Complexity: 
+              <span class="legend-pill badge-warning">BASIC</span>
+            </div>
+            <div>
+              Verification State: 
+              
+              <span class="legend-pill badge-unverified">UNVERIFIED</span>
+              
+            </div>
+          </div>
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">AI Reasoning:</strong>
+            <p style="font-size: 0.92rem; margin-top: 4px;">The codebase uses standard synchronous HTTP GET calls with timeouts. 'httpx' serves as an immediate drop-in replacement that eliminates the flagged CVE vulnerability while retaining identical function signatures for standard calls.</p>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Evaluated Candidates:</strong>
+            <ul class="item-list">
+              
+              <li>
+                <strong>httpx</strong>: Provides a modern, fully featured HTTP client with an API almost identical to requests, while actively maintained and supporting both sync and async HTTP.
+                
+                <span style="color: #fca5a5;">(API Gaps: Requires explicit Client or httpx.get with slight differences in event hook signatures and streaming responses.)</span>
+                
+              </li>
+              
+              <li>
+                <strong>urllib3</strong>: Lower-level HTTP library already included in most standard stacks with minimal overhead.
+                
+                <span style="color: #fca5a5;">(API Gaps: Does not provide high-level requests-style Session or simple json kwargs directly on request functions.)</span>
+                
+              </li>
+              
+            </ul>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Step-by-Step Migration Instructions:</strong>
+            <ol class="item-list">
+              
+              <li>Add 'httpx' to requirements.txt and remove 'requests'</li>
+              
+              <li>Replace 'import requests' with 'import httpx'</li>
+              
+              <li>Update top-level calls 'requests.get(...)' to 'httpx.get(...)'</li>
+              
+              <li>Run verification test suite to ensure timeouts and headers match expected behavior</li>
+              
+            </ol>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Proposed Unified Diff Code Patch:</strong>
+            <pre class="code-block"><code>--- a/client.py
++++ b/client.py
+@@ -1,4 +1,4 @@
+-import requests
++import httpx
+ 
+ def fetch_data():
+-    resp = requests.get(url, timeout=5)
++    resp = httpx.get(url, timeout=5.0)
+     return resp.json()
+</code></pre>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">AI-Suggested Dual-Passing Pytest Functions:</strong>
+            
+            <pre class="code-block"><code>def test_api_client_fetch_status():
+    import httpx
+    client = httpx.Client()
+    response = client.get('https://httpbin.org/get', timeout=5.0)
+    assert response.status_code == 200</code></pre>
+            
+            <pre class="code-block"><code>def test_api_client_timeout():
+    import httpx
+    import pytest
+    with pytest.raises(Exception):
+        httpx.get('https://httpbin.org/delay/10', timeout=0.001)</code></pre>
+            
+          </div>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- d. Executed test results, baseline vs replacement             -->
+        <!--    (VERIFIED BY EXECUTION, green)                             -->
+        <!-- ============================================================= -->
+        <section class="section-block section-verified-execution">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🧪 d. Executed Test Results (Baseline vs Replacement)</span>
+            </h2>
+            <span class="section-evidence-tag badge-verified">EVIDENCE: VERIFIED BY EXECUTION</span>
+          </div>
+
+          <!-- Scoreboard comparing Before Swap vs After Swap -->
+          <div class="scoreboard-grid">
+            <div class="score-card">
+              <div class="score-card-title">Before Swap (Baseline: requests)</div>
+              <div class="score-stats">
+                <span class="stat-pass">3 Pass</span>
+                <span class="stat-fail">0 Fail</span>
+                <span class="stat-err">0 Error</span>
+                <span class="stat-notrun">0 Unrun</span>
+              </div>
+            </div>
+            <div class="score-card">
+              <div class="score-card-title">After Swap (Replacement: httpx)</div>
+              <div class="score-stats">
+                <span class="stat-pass">0 Pass</span>
+                <span class="stat-fail">0 Fail</span>
+                <span class="stat-err">0 Error</span>
+                <span class="stat-notrun">0 Unrun</span>
+              </div>
+            </div>
+          </div>
+
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Target</th>
+                <th>Test Identifier</th>
+                <th>Status</th>
+                <th>Verified?</th>
+                <th>Output Summary</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><code>requests</code></td>
+                <td><strong>baseline_unittest</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  Command: C:\Users\simar\AppData\Local\Programs\Python\Python312\python.exe -m unittest discover -s tests
+Exit Code: 0
+--
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>requests</code></td>
+                <td><strong>install_httpx</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  Command: C:\Users\simar\AppData\Local\Temp\depexit_verify_m7o0skth\venv\Scripts\python.exe -m pip install --no-input htt
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>requests</code></td>
+                <td><strong>swapped_unittest</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  Command: C:\Users\simar\AppData\Local\Temp\depexit_verify_m7o0skth\venv\Scripts\python.exe -m unittest discover -s tests
+                </td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- e. Compatibility gaps (observed) and Gemma's explanation      -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed" style="border-left-color: #38bdf8;">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🔍 e. Compatibility Gaps & AI Interpretations</span>
+            </h2>
+            <div style="display: flex; gap: 8px;">
+              <span class="section-evidence-tag badge-observed">GAPS: OBSERVED</span>
+              <span class="section-evidence-tag badge-ai">EXPLANATION: AI-GENERATED</span>
+            </div>
+          </div>
+
+          <!-- Observed Gaps -->
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #7dd3fc;">Observed Execution Discrepancies & Regressions:</strong>
+            
+            <ul class="item-list">
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'baseline_unittest' was executed in baseline (requests) [PASS], but was not executed in replacement (httpx) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'install_httpx' was executed in baseline (requests) [PASS], but was not executed in replacement (httpx) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'swapped_unittest' was executed in baseline (requests) [PASS], but was not executed in replacement (httpx) run.
+              </li>
+              
+            </ul>
+            
+          </div>
+
+          <!-- AI Gap Explanations -->
+          <div>
+            <strong style="color: #fde68a;">Gemma 4 Failure Explanations & Suggested Fixes (AI Interpretation):</strong>
+            
+            <p style="font-size: 0.9rem; margin-top: 4px; color: var(--color-text-muted);">
+              No failing test interpretations required.
+            </p>
+            
+          </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- f. Open concerns and limitations (highlighted box)            -->
+        <!-- ============================================================= -->
+        <section class="section-block section-open-concerns">
+          <div class="section-header" style="border-bottom-color: rgba(239, 68, 68, 0.3);">
+            <h2 class="section-title">
+              <span>⚠️ f. Open Concerns & Limitations (Action Required)</span>
+            </h2>
+            <span class="section-evidence-tag badge-danger">ATTENTION REQUIRED</span>
+          </div>
+
+          
+          <ul class="item-list" style="color: var(--concern-text);">
+            
+            <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-1872 (CVE-2024-47081, GHSA-9hjg-9r4m-mvj7) [fixed in: 2.32.4] - Due to a URL parsing i...' (severity: HIGH) has no matching verification test in the test suite.</li>
+            
+            <li><strong>!</strong> AI-generated test 'test_api_client_fetch_status' was never executed in the verification test suite.</li>
+            
+            <li><strong>!</strong> AI-generated test 'test_api_client_timeout' was never executed in the verification test suite.</li>
+            
+          </ul>
+          
+        </section>
+      </div>
+    </article>
+    
+    <article class="capsule-card" id="card-urllib3">
+      <!-- Card Topbar -->
+      <div class="card-topbar">
+        <div>
+          <div class="card-dep-name">urllib3</div>
+          <div class="card-dep-meta">
+            Declared Version: <strong>1.26.4</strong> | Source: <code>requirements.txt</code>
+          </div>
+        </div>
+        <div class="card-badges">
+          
+          <span class="legend-pill badge-ai">REPLACEMENT: httpx</span>
+          
+          
+          
+          <span class="legend-pill badge-unverified">⚠ UNVERIFIED (REGRESSIONS OR NOT RUN)</span>
+          
+        </div>
+      </div>
+
+      <div class="card-body">
+        <!-- ============================================================= -->
+        <!-- a. Dependency details and risk indicators (OBSERVED, blue/grey) -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🛡️ a. Dependency Details & Risk Indicators</span>
+            </h2>
+            <span class="section-evidence-tag badge-observed">EVIDENCE: OBSERVED</span>
+          </div>
+
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Risk Type</th>
+                <th>Severity</th>
+                <th>Reason / Advisory</th>
+                <th>Evidence</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2021-108 (CVE-2021-33503, GHSA-q2q7-5pp4-w6pg) [fixed in: 1.26.5] - An issue was discovered in urllib3 before 1.26.5. When provided with a URL containing many @ characters in the authority component, the authority regu...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2026-1995 (CVE-2024-37891, GHSA-34jh-p97f-mpxf) [fixed in: 1.26.19, 2.2.2] - When using urllib3's proxy support with `ProxyManager`, the `Proxy-Authorization` header is only sent to the configured proxy, as expected.  However, ...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2023-192 (CVE-2023-43804, GHSA-v845-jxx5-vc9f) [fixed in: 1.26.17, 2.0.6] - urllib3 doesn't treat the `Cookie` HTTP header special or provide any helpers for managing cookies over HTTP, that is the responsibility of the user. ...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2023-212 (CVE-2023-45803, GHSA-g4mx-q9vg-27p4) [fixed in: 1.26.18, 2.0.7] - urllib3 previously wouldn't remove the HTTP request body when an HTTP redirect response using status 303 "See Other" after the request had its method ...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2026-1999 (CVE-2025-50181, GHSA-pq67-6m6q-mj2v) [fixed in: 2.5.0] - urllib3 handles redirects and retries using the same mechanism, which is controlled by the `Retry` object. The most common way to disable redirects is...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2026-1998 (CVE-2025-66418, GHSA-gm62-xv2j-4w53) [fixed in: 2.6.0] - ## Impact  urllib3 supports chained HTTP encoding algorithms for response content according to RFC 9110 (e.g., `Content-Encoding: gzip, zstd`).  Howev...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2026-1994 (CVE-2025-66471, GHSA-2xpw-w6gg-jr37) [fixed in: 2.6.0] - ### Impact  urllib3's [streaming API](https://urllib3.readthedocs.io/en/2.5.0/advanced-usage.html#streaming-and-i-o) is designed for the efficient han...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2026-1996 (CVE-2026-21441, GHSA-38jv-5279-wg99) [fixed in: 2.6.3] - ### Impact  urllib3's [streaming API](https://urllib3.readthedocs.io/en/2.6.2/advanced-usage.html#streaming-and-i-o) is designed for the efficient han...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2026-141 (CVE-2026-44431, GHSA-qccp-gfcp-xxvc) [fixed in: 2.7.0] - ### Impact  When following cross-origin redirects for requests made using urllib3’s high-level APIs, such as `urllib3.request()`, `PoolManager.request...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2026-4177 (CVE-2026-97689, GHSA-vxq7-64xx-v4gw) [fixed in: 2.8.0] - ## Impact  urllib3's [streaming API](https://urllib3.readthedocs.io/en/2.7.0/advanced-usage.html#streaming-and-i-o) is designed for efficiently handli...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2026-4175 (CVE-2026-97687, GHSA-8988-9cw3-xx77) [fixed in: 2.8.0] - ## Impact  urllib3 supports configuring TLS independently for an HTTPS proxy and the target server.  `proxy_ssl_context`, `proxy_assert_hostname`, and...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- b. Usage locations (OBSERVED, blue/grey)                       -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>📍 b. Code Usage Locations (AST Mapped)</span>
+            </h2>
+            <span class="section-evidence-tag badge-observed">EVIDENCE: OBSERVED</span>
+          </div>
+
+          
+          <p style="font-size: 0.9rem; margin-bottom: 8px;">
+            Identified <strong>4</strong> concrete AST usage location(s) in the target codebase:
+          </p>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 client.py:3 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">IMPORT</span>
+            </div>
+            <pre class="code-block"><code>import urllib3</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 client.py:15 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">CLASS_INSTANCE</span>
+            </div>
+            <pre class="code-block"><code>http = urllib3.PoolManager()</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 client.py:16 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">CALL</span>
+            </div>
+            <pre class="code-block"><code>response = http.request("GET", f"https://{host}/health")</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 client.py:17 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">ATTRIBUTE</span>
+            </div>
+            <pre class="code-block"><code>return response.status</code></pre>
+          </div>
+          
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- c. Proposed replacement, migration steps, suggested tests,    -->
+        <!--    and patch (AI-GENERATED, UNVERIFIED, orange/yellow)        -->
+        <!-- ============================================================= -->
+        <section class="section-block section-ai-unverified">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🤖 c. Proposed Replacement & Migration Plan</span>
+            </h2>
+            <span class="section-evidence-tag badge-ai">EVIDENCE: AI-GENERATED (UNVERIFIED)</span>
+          </div>
+
+          <div class="banner-warning">
+            ⚠️ <strong>UNVERIFIED AI PROPOSAL:</strong> The replacement below was synthesized by Gemma 4. 
+            Do not merge without human code review and successful execution of the test suite.
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 14px; align-items: center;">
+            <div>
+              Proposed Replacement: <strong style="font-size: 1.15rem; color: #fde68a;">httpx</strong>
+            </div>
+            <div>
+              Usage Complexity: 
+              <span class="legend-pill badge-warning">BASIC</span>
+            </div>
+            <div>
+              Verification State: 
+              
+              <span class="legend-pill badge-unverified">UNVERIFIED</span>
+              
+            </div>
+          </div>
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">AI Reasoning:</strong>
+            <p style="font-size: 0.92rem; margin-top: 4px;">Migrating urllib3 PoolManager calls to httpx provides safer redirect and connection pooling semantics while eliminating CVE-2021-33503 and subsequent ReDoS risks.</p>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Evaluated Candidates:</strong>
+            <ul class="item-list">
+              
+              <li>
+                <strong>httpx</strong>: Provides a high-level modern HTTP client with connection pooling, resolving urllib3 connection and redirect CVEs.
+                
+                <span style="color: #fca5a5;">(API Gaps: Uses Client session instead of PoolManager.)</span>
+                
+              </li>
+              
+              <li>
+                <strong>urllib3</strong>: Updated version (>=2.0.0) addresses security advisories and ReDoS vulnerabilities.
+                
+                <span style="color: #fca5a5;">(API Gaps: Breaking changes in Python 3.7 support and TLS options.)</span>
+                
+              </li>
+              
+            </ul>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Step-by-Step Migration Instructions:</strong>
+            <ol class="item-list">
+              
+              <li>Add 'httpx' to requirements.txt and remove 'urllib3'</li>
+              
+              <li>Replace 'urllib3.PoolManager()' with 'httpx.Client()'</li>
+              
+              <li>Update 'http.request()' calls to 'client.get()' or 'client.post()'</li>
+              
+              <li>Run verification test suite to ensure connection handling matches expectations</li>
+              
+            </ol>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Proposed Unified Diff Code Patch:</strong>
+            <pre class="code-block"><code>--- a/client.py
++++ b/client.py
+@@ -2,2 +2,2 @@
+-import urllib3
++import httpx
+</code></pre>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">AI-Suggested Dual-Passing Pytest Functions:</strong>
+            
+            <pre class="code-block"><code>def test_client_health_check():
+    import httpx
+    assert True</code></pre>
+            
+          </div>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- d. Executed test results, baseline vs replacement             -->
+        <!--    (VERIFIED BY EXECUTION, green)                             -->
+        <!-- ============================================================= -->
+        <section class="section-block section-verified-execution">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🧪 d. Executed Test Results (Baseline vs Replacement)</span>
+            </h2>
+            <span class="section-evidence-tag badge-verified">EVIDENCE: VERIFIED BY EXECUTION</span>
+          </div>
+
+          <!-- Scoreboard comparing Before Swap vs After Swap -->
+          <div class="scoreboard-grid">
+            <div class="score-card">
+              <div class="score-card-title">Before Swap (Baseline: urllib3)</div>
+              <div class="score-stats">
+                <span class="stat-pass">3 Pass</span>
+                <span class="stat-fail">0 Fail</span>
+                <span class="stat-err">0 Error</span>
+                <span class="stat-notrun">0 Unrun</span>
+              </div>
+            </div>
+            <div class="score-card">
+              <div class="score-card-title">After Swap (Replacement: httpx)</div>
+              <div class="score-stats">
+                <span class="stat-pass">0 Pass</span>
+                <span class="stat-fail">0 Fail</span>
+                <span class="stat-err">0 Error</span>
+                <span class="stat-notrun">0 Unrun</span>
+              </div>
+            </div>
+          </div>
+
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Target</th>
+                <th>Test Identifier</th>
+                <th>Status</th>
+                <th>Verified?</th>
+                <th>Output Summary</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><code>urllib3</code></td>
+                <td><strong>baseline_unittest</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  Command: C:\Users\simar\AppData\Local\Programs\Python\Python312\python.exe -m unittest discover -s tests
+Exit Code: 0
+--
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>urllib3</code></td>
+                <td><strong>install_httpx</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  Command: C:\Users\simar\AppData\Local\Temp\depexit_verify_3drrocoi\venv\Scripts\python.exe -m pip install --no-input htt
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>urllib3</code></td>
+                <td><strong>swapped_unittest</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  Command: C:\Users\simar\AppData\Local\Temp\depexit_verify_3drrocoi\venv\Scripts\python.exe -m unittest discover -s tests
+                </td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- e. Compatibility gaps (observed) and Gemma's explanation      -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed" style="border-left-color: #38bdf8;">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🔍 e. Compatibility Gaps & AI Interpretations</span>
+            </h2>
+            <div style="display: flex; gap: 8px;">
+              <span class="section-evidence-tag badge-observed">GAPS: OBSERVED</span>
+              <span class="section-evidence-tag badge-ai">EXPLANATION: AI-GENERATED</span>
+            </div>
+          </div>
+
+          <!-- Observed Gaps -->
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #7dd3fc;">Observed Execution Discrepancies & Regressions:</strong>
+            
+            <ul class="item-list">
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'baseline_unittest' was executed in baseline (urllib3) [PASS], but was not executed in replacement (httpx) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'install_httpx' was executed in baseline (urllib3) [PASS], but was not executed in replacement (httpx) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'swapped_unittest' was executed in baseline (urllib3) [PASS], but was not executed in replacement (httpx) run.
+              </li>
+              
+            </ul>
+            
+          </div>
+
+          <!-- AI Gap Explanations -->
+          <div>
+            <strong style="color: #fde68a;">Gemma 4 Failure Explanations & Suggested Fixes (AI Interpretation):</strong>
+            
+            <p style="font-size: 0.9rem; margin-top: 4px; color: var(--color-text-muted);">
+              No failing test interpretations required.
+            </p>
+            
+          </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- f. Open concerns and limitations (highlighted box)            -->
+        <!-- ============================================================= -->
+        <section class="section-block section-open-concerns">
+          <div class="section-header" style="border-bottom-color: rgba(239, 68, 68, 0.3);">
+            <h2 class="section-title">
+              <span>⚠️ f. Open Concerns & Limitations (Action Required)</span>
+            </h2>
+            <span class="section-evidence-tag badge-danger">ATTENTION REQUIRED</span>
+          </div>
+
+          
+          <ul class="item-list" style="color: var(--concern-text);">
+            
+            <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-1994 (CVE-2025-66471, GHSA-2xpw-w6gg-jr37) is designed for the efficient han...' (severity: HIGH) has no matching verification test in the test suite.</li>
+            
+            <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-1996 (CVE-2026-21441, GHSA-38jv-5279-wg99) is designed for the efficient han...' (severity: HIGH) has no matching verification test in the test suite.</li>
+            
+            <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-4177 (CVE-2026-97689, GHSA-vxq7-64xx-v4gw) is designed for efficiently handli...' (severity: HIGH) has no matching verification test in the test suite.</li>
+            
+            <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-4175 (CVE-2026-97687, GHSA-8988-9cw3-xx77) [fixed in: 2.8.0] - urllib3 supports config...' (severity: HIGH) has no matching verification test in the test suite.</li>
+            
+            <li><strong>!</strong> AI-generated test 'test_client_health_check' was never executed in the verification test suite.</li>
+            
+          </ul>
+          
+        </section>
+      </div>
+    </article>
+    
 
     <!-- Footer -->
     <footer class="report-footer">
@@ -417,7 +1379,7 @@
         </a>
       </div>
       <div style="margin-top: 12px; font-size: 0.75rem; color: #64748b;">
-        Generated by DepExit • 2026-10-15T09:00:08.202835+00:00
+        Generated by DepExit • 2026-10-15T11:17:11.802792+00:00
       </div>
     </footer>
   </div>

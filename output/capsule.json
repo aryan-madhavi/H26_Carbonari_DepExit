@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-15T09:00:08.202835+00:00",
+  "generated_at": "2026-10-15T11:17:11.802792+00:00",
   "model_info": {
     "model_id": "gemma-4-31b-it",
     "model_name": "gemma-4-31b-it",
@@ -9,6 +9,431 @@
     "evidence": "observed"
   },
   "evidence": "capsule_report",
-  "total_capsules": 0,
-  "capsules": []
+  "total_capsules": 2,
+  "capsules": [
+    {
+      "dependency": {
+        "name": "requests",
+        "declared_version": "2.28.0",
+        "source_file": "requirements.txt",
+        "evidence": "observed"
+      },
+      "risk_indicators": {
+        "evidence": "observed",
+        "count": 4,
+        "items": [
+          {
+            "dependency_name": "requests",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2023-74 (CVE-2023-32681, GHSA-j8r2-6x86-q33q) [fixed in: 2.31.0] - ### Impact  Since Requests v2.3.0, Requests has been vulnerable to potentially leaking `Proxy-Authorization` headers to destination servers, specifica...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2026-1873 (CVE-2024-35195, GHSA-9wx4-h78v-vm56) [fixed in: 2.32.0] - When using a `requests.Session`, if the first request to a given origin is made with `verify=False`, TLS certificate verification may remain disabled ...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2026-1872 (CVE-2024-47081, GHSA-9hjg-9r4m-mvj7) [fixed in: 2.32.4] - ### Impact  Due to a URL parsing issue, Requests releases prior to 2.32.4 may leak .netrc credentials to third parties for specific maliciously-crafte...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2026-2275 (CVE-2026-25645, GHSA-gc5v-m9x4-r6x2) [fixed in: 2.33.0] - ### Impact The `requests.utils.extract_zipped_paths()` utility function uses a predictable filename when extracting files from zip archives into the s...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          }
+        ]
+      },
+      "usage_locations": {
+        "evidence": "observed",
+        "count": 4,
+        "items": [
+          {
+            "dependency_name": "requests",
+            "file_path": "client.py",
+            "line_number": 2,
+            "usage_type": "IMPORT",
+            "code_snippet": "import requests",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "file_path": "client.py",
+            "line_number": 9,
+            "usage_type": "CALL",
+            "code_snippet": "response = requests.get(url, timeout=timeout)",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "file_path": "client.py",
+            "line_number": 10,
+            "usage_type": "CALL",
+            "code_snippet": "return response.json()",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "file_path": "client.py",
+            "line_number": 17,
+            "usage_type": "ATTRIBUTE",
+            "code_snippet": "return response.status",
+            "evidence": "observed"
+          }
+        ]
+      },
+      "ai_recommendation": {
+        "evidence": "ai_generated",
+        "verified": false,
+        "proposed_replacement": "httpx",
+        "usage_complexity": "BASIC",
+        "candidates": [
+          {
+            "name": "httpx",
+            "why": "Provides a modern, fully featured HTTP client with an API almost identical to requests, while actively maintained and supporting both sync and async HTTP.",
+            "api_gaps": "Requires explicit Client or httpx.get with slight differences in event hook signatures and streaming responses.",
+            "evidence": "ai_generated"
+          },
+          {
+            "name": "urllib3",
+            "why": "Lower-level HTTP library already included in most standard stacks with minimal overhead.",
+            "api_gaps": "Does not provide high-level requests-style Session or simple json kwargs directly on request functions.",
+            "evidence": "ai_generated"
+          }
+        ],
+        "migration_steps": [
+          "Add 'httpx' to requirements.txt and remove 'requests'",
+          "Replace 'import requests' with 'import httpx'",
+          "Update top-level calls 'requests.get(...)' to 'httpx.get(...)'",
+          "Run verification test suite to ensure timeouts and headers match expected behavior"
+        ],
+        "code_patch": "--- a/client.py\n+++ b/client.py\n@@ -1,4 +1,4 @@\n-import requests\n+import httpx\n \n def fetch_data():\n-    resp = requests.get(url, timeout=5)\n+    resp = httpx.get(url, timeout=5.0)\n     return resp.json()\n",
+        "suggested_tests": [
+          "def test_api_client_fetch_status():\n    import httpx\n    client = httpx.Client()\n    response = client.get('https://httpbin.org/get', timeout=5.0)\n    assert response.status_code == 200",
+          "def test_api_client_timeout():\n    import httpx\n    import pytest\n    with pytest.raises(Exception):\n        httpx.get('https://httpbin.org/delay/10', timeout=0.001)"
+        ],
+        "reasoning": "The codebase uses standard synchronous HTTP GET calls with timeouts. 'httpx' serves as an immediate drop-in replacement that eliminates the flagged CVE vulnerability while retaining identical function signatures for standard calls."
+      },
+      "executed_test_results": {
+        "evidence": "verified_by_execution",
+        "counts_before_swap_baseline": {
+          "total": 3,
+          "pass": 3,
+          "fail": 0,
+          "error": 0,
+          "not_run": 0
+        },
+        "counts_after_swap_replacement": {
+          "total": 0,
+          "pass": 0,
+          "fail": 0,
+          "error": 0,
+          "not_run": 0
+        },
+        "results": [
+          {
+            "dependency_name": "requests",
+            "test_name": "baseline_unittest",
+            "status": "PASS",
+            "raw_output": "Command: C:\\Users\\simar\\AppData\\Local\\Programs\\Python\\Python312\\python.exe -m unittest discover -s tests\nExit Code: 0\n--- STDOUT ---\n\n--- STDERR ---\n..\n----------------------------------------------------------------------\nRan 2 tests in 0.003s\n\nOK",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "test_name": "install_httpx",
+            "status": "PASS",
+            "raw_output": "Command: C:\\Users\\simar\\AppData\\Local\\Temp\\depexit_verify_m7o0skth\\venv\\Scripts\\python.exe -m pip install --no-input httpx\nExit Code: 0\n--- STDOUT ---\nCollecting httpx\n  Using cached httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)\nCollecting anyio (from httpx)\n  Using cached anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)\nRequirement already satisfied: certifi in c:\\users\\simar\\appdata\\local\\programs\\python\\python312\\lib\\site-packages (from httpx) (2026.7.22)\nCollecting httpcore==1.* (from httpx)\n  Using cached httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)\nRequirement already satisfied: idna in c:\\users\\simar\\appdata\\local\\programs\\python\\python312\\lib\\site-packages (from httpx) (3.20)\nCollecting h11>=0.16 (from httpcore==1.*->httpx)\n  Using cached h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)\nRequirement already satisfied: typing_extensions>=4.16.0 in c:\\users\\simar\\appdata\\local\\programs\\python\\python312\\lib\\site-packages (from anyio->httpx) (4.16.0)\nUsing cached httpx-0.28.1-py3-none-any.whl (73 kB)\nUsing cached httpcore-1.0.9-py3-none-any.whl (78 kB)\nUsing cached anyio-4.15.1-py3-none-any.whl (132 kB)\nUsing cached h11-0.16.0-py3-none-any.whl (37 kB)\nInstalling collected packages: h11, anyio, httpcore, httpx\nSuccessfully installed anyio-4.15.1 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1\n\n--- STDERR ---\n\n[notice] A new release of pip is available: 25.0.1 -> 26.2.1\n[notice] To update, run: C:\\Users\\simar\\AppData\\Local\\Temp\\depexit_verify_m7o0skth\\venv\\Scripts\\python.exe -m pip install --upgrade pip\n\nMigration Steps:\n  - Add 'httpx' to requirements.txt and remove 'requests'\n  - Replace 'import requests' with 'import httpx'\n  - Update top-level calls 'requests.get(...)' to 'httpx.get(...)'\n  - Run verification test suite to ensure timeouts and headers match expected behavior\nCode Patch Preview:\n--- a/client.py\n+++ b/client.py\n@@ -1,4 +1,4 @@\n-import requests\n+import httpx\n \n def fetch_data():\n-    resp = requests.get(url, timeout=5)\n+    resp = httpx.get(url, timeout=5.0)\n     return resp.json()\n\nSuggestedTests:\n  - def test_api_client_fetch_status():\n    import httpx\n    client = httpx.Client()\n    response = client.get('https://httpbin.org/get', timeout=5.0)\n    assert response.status_code == 200\n  - def test_api_client_timeout():\n    import httpx\n    import pytest\n    with pytest.raises(Exception):\n        httpx.get('https://httpbin.org/delay/10', timeout=0.001)",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "test_name": "swapped_unittest",
+            "status": "PASS",
+            "raw_output": "Command: C:\\Users\\simar\\AppData\\Local\\Temp\\depexit_verify_m7o0skth\\venv\\Scripts\\python.exe -m unittest discover -s tests\nExit Code: 0\n--- STDOUT ---\n\n--- STDERR ---\n..\n----------------------------------------------------------------------\nRan 2 tests in 0.003s\n\nOK",
+            "verified": true,
+            "evidence": "observed"
+          }
+        ]
+      },
+      "compatibility_gaps": {
+        "evidence": "observed",
+        "count": 3,
+        "items": [
+          "Test 'baseline_unittest' was executed in baseline (requests) [PASS], but was not executed in replacement (httpx) run.",
+          "Test 'install_httpx' was executed in baseline (requests) [PASS], but was not executed in replacement (httpx) run.",
+          "Test 'swapped_unittest' was executed in baseline (requests) [PASS], but was not executed in replacement (httpx) run."
+        ]
+      },
+      "gap_explanations": {
+        "evidence": "ai_generated",
+        "count": 0,
+        "items": []
+      },
+      "open_concerns": {
+        "evidence": "observed",
+        "count": 3,
+        "items": [
+          "Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-1872 (CVE-2024-47081, GHSA-9hjg-9r4m-mvj7) [fixed in: 2.32.4] - Due to a URL parsing i...' (severity: HIGH) has no matching verification test in the test suite.",
+          "AI-generated test 'test_api_client_fetch_status' was never executed in the verification test suite.",
+          "AI-generated test 'test_api_client_timeout' was never executed in the verification test suite."
+        ]
+      },
+      "model_info": {
+        "model_id": "gemma-4-31b-it",
+        "model_name": "gemma-4-31b-it",
+        "version": "4",
+        "access_method": "hosted_api",
+        "terms_url": "https://ai.google.dev/gemma/terms",
+        "evidence": "observed"
+      },
+      "verified": false
+    },
+    {
+      "dependency": {
+        "name": "urllib3",
+        "declared_version": "1.26.4",
+        "source_file": "requirements.txt",
+        "evidence": "observed"
+      },
+      "risk_indicators": {
+        "evidence": "observed",
+        "count": 11,
+        "items": [
+          {
+            "dependency_name": "urllib3",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2021-108 (CVE-2021-33503, GHSA-q2q7-5pp4-w6pg) [fixed in: 1.26.5] - An issue was discovered in urllib3 before 1.26.5. When provided with a URL containing many @ characters in the authority component, the authority regu...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "urllib3",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2026-1995 (CVE-2024-37891, GHSA-34jh-p97f-mpxf) [fixed in: 1.26.19, 2.2.2] - When using urllib3's proxy support with `ProxyManager`, the `Proxy-Authorization` header is only sent to the configured proxy, as expected.  However, ...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "urllib3",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2023-192 (CVE-2023-43804, GHSA-v845-jxx5-vc9f) [fixed in: 1.26.17, 2.0.6] - urllib3 doesn't treat the `Cookie` HTTP header special or provide any helpers for managing cookies over HTTP, that is the responsibility of the user. ...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "urllib3",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2023-212 (CVE-2023-45803, GHSA-g4mx-q9vg-27p4) [fixed in: 1.26.18, 2.0.7] - urllib3 previously wouldn't remove the HTTP request body when an HTTP redirect response using status 303 \"See Other\" after the request had its method ...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "urllib3",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2026-1999 (CVE-2025-50181, GHSA-pq67-6m6q-mj2v) [fixed in: 2.5.0] - urllib3 handles redirects and retries using the same mechanism, which is controlled by the `Retry` object. The most common way to disable redirects is...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "urllib3",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2026-1998 (CVE-2025-66418, GHSA-gm62-xv2j-4w53) [fixed in: 2.6.0] - ## Impact  urllib3 supports chained HTTP encoding algorithms for response content according to RFC 9110 (e.g., `Content-Encoding: gzip, zstd`).  Howev...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "urllib3",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2026-1994 (CVE-2025-66471, GHSA-2xpw-w6gg-jr37) [fixed in: 2.6.0] - ### Impact  urllib3's [streaming API](https://urllib3.readthedocs.io/en/2.5.0/advanced-usage.html#streaming-and-i-o) is designed for the efficient han...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "urllib3",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2026-1996 (CVE-2026-21441, GHSA-38jv-5279-wg99) [fixed in: 2.6.3] - ### Impact  urllib3's [streaming API](https://urllib3.readthedocs.io/en/2.6.2/advanced-usage.html#streaming-and-i-o) is designed for the efficient han...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "urllib3",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2026-141 (CVE-2026-44431, GHSA-qccp-gfcp-xxvc) [fixed in: 2.7.0] - ### Impact  When following cross-origin redirects for requests made using urllib3’s high-level APIs, such as `urllib3.request()`, `PoolManager.request...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "urllib3",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2026-4177 (CVE-2026-97689, GHSA-vxq7-64xx-v4gw) [fixed in: 2.8.0] - ## Impact  urllib3's [streaming API](https://urllib3.readthedocs.io/en/2.7.0/advanced-usage.html#streaming-and-i-o) is designed for efficiently handli...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "urllib3",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2026-4175 (CVE-2026-97687, GHSA-8988-9cw3-xx77) [fixed in: 2.8.0] - ## Impact  urllib3 supports configuring TLS independently for an HTTPS proxy and the target server.  `proxy_ssl_context`, `proxy_assert_hostname`, and...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          }
+        ]
+      },
+      "usage_locations": {
+        "evidence": "observed",
+        "count": 4,
+        "items": [
+          {
+            "dependency_name": "urllib3",
+            "file_path": "client.py",
+            "line_number": 3,
+            "usage_type": "IMPORT",
+            "code_snippet": "import urllib3",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "urllib3",
+            "file_path": "client.py",
+            "line_number": 15,
+            "usage_type": "CLASS_INSTANCE",
+            "code_snippet": "http = urllib3.PoolManager()",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "urllib3",
+            "file_path": "client.py",
+            "line_number": 16,
+            "usage_type": "CALL",
+            "code_snippet": "response = http.request(\"GET\", f\"https://{host}/health\")",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "urllib3",
+            "file_path": "client.py",
+            "line_number": 17,
+            "usage_type": "ATTRIBUTE",
+            "code_snippet": "return response.status",
+            "evidence": "observed"
+          }
+        ]
+      },
+      "ai_recommendation": {
+        "evidence": "ai_generated",
+        "verified": false,
+        "proposed_replacement": "httpx",
+        "usage_complexity": "BASIC",
+        "candidates": [
+          {
+            "name": "httpx",
+            "why": "Provides a high-level modern HTTP client with connection pooling, resolving urllib3 connection and redirect CVEs.",
+            "api_gaps": "Uses Client session instead of PoolManager.",
+            "evidence": "ai_generated"
+          },
+          {
+            "name": "urllib3",
+            "why": "Updated version (>=2.0.0) addresses security advisories and ReDoS vulnerabilities.",
+            "api_gaps": "Breaking changes in Python 3.7 support and TLS options.",
+            "evidence": "ai_generated"
+          }
+        ],
+        "migration_steps": [
+          "Add 'httpx' to requirements.txt and remove 'urllib3'",
+          "Replace 'urllib3.PoolManager()' with 'httpx.Client()'",
+          "Update 'http.request()' calls to 'client.get()' or 'client.post()'",
+          "Run verification test suite to ensure connection handling matches expectations"
+        ],
+        "code_patch": "--- a/client.py\n+++ b/client.py\n@@ -2,2 +2,2 @@\n-import urllib3\n+import httpx\n",
+        "suggested_tests": [
+          "def test_client_health_check():\n    import httpx\n    assert True"
+        ],
+        "reasoning": "Migrating urllib3 PoolManager calls to httpx provides safer redirect and connection pooling semantics while eliminating CVE-2021-33503 and subsequent ReDoS risks."
+      },
+      "executed_test_results": {
+        "evidence": "verified_by_execution",
+        "counts_before_swap_baseline": {
+          "total": 3,
+          "pass": 3,
+          "fail": 0,
+          "error": 0,
+          "not_run": 0
+        },
+        "counts_after_swap_replacement": {
+          "total": 0,
+          "pass": 0,
+          "fail": 0,
+          "error": 0,
+          "not_run": 0
+        },
+        "results": [
+          {
+            "dependency_name": "urllib3",
+            "test_name": "baseline_unittest",
+            "status": "PASS",
+            "raw_output": "Command: C:\\Users\\simar\\AppData\\Local\\Programs\\Python\\Python312\\python.exe -m unittest discover -s tests\nExit Code: 0\n--- STDOUT ---\n\n--- STDERR ---\n..\n----------------------------------------------------------------------\nRan 2 tests in 0.002s\n\nOK",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "urllib3",
+            "test_name": "install_httpx",
+            "status": "PASS",
+            "raw_output": "Command: C:\\Users\\simar\\AppData\\Local\\Temp\\depexit_verify_3drrocoi\\venv\\Scripts\\python.exe -m pip install --no-input httpx\nExit Code: 0\n--- STDOUT ---\nCollecting httpx\n  Using cached httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)\nCollecting anyio (from httpx)\n  Using cached anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)\nRequirement already satisfied: certifi in c:\\users\\simar\\appdata\\local\\programs\\python\\python312\\lib\\site-packages (from httpx) (2026.7.22)\nCollecting httpcore==1.* (from httpx)\n  Using cached httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)\nRequirement already satisfied: idna in c:\\users\\simar\\appdata\\local\\programs\\python\\python312\\lib\\site-packages (from httpx) (3.20)\nCollecting h11>=0.16 (from httpcore==1.*->httpx)\n  Using cached h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)\nRequirement already satisfied: typing_extensions>=4.16.0 in c:\\users\\simar\\appdata\\local\\programs\\python\\python312\\lib\\site-packages (from anyio->httpx) (4.16.0)\nUsing cached httpx-0.28.1-py3-none-any.whl (73 kB)\nUsing cached httpcore-1.0.9-py3-none-any.whl (78 kB)\nUsing cached anyio-4.15.1-py3-none-any.whl (132 kB)\nUsing cached h11-0.16.0-py3-none-any.whl (37 kB)\nInstalling collected packages: h11, anyio, httpcore, httpx\nSuccessfully installed anyio-4.15.1 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1\n\n--- STDERR ---\n\n[notice] A new release of pip is available: 25.0.1 -> 26.2.1\n[notice] To update, run: C:\\Users\\simar\\AppData\\Local\\Temp\\depexit_verify_3drrocoi\\venv\\Scripts\\python.exe -m pip install --upgrade pip\n\nMigration Steps:\n  - Add 'httpx' to requirements.txt and remove 'urllib3'\n  - Replace 'urllib3.PoolManager()' with 'httpx.Client()'\n  - Update 'http.request()' calls to 'client.get()' or 'client.post()'\n  - Run verification test suite to ensure connection handling matches expectations\nCode Patch Preview:\n--- a/client.py\n+++ b/client.py\n@@ -2,2 +2,2 @@\n-import urllib3\n+import httpx\n\nSuggestedTests:\n  - def test_client_health_check():\n    import httpx\n    assert True",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "urllib3",
+            "test_name": "swapped_unittest",
+            "status": "PASS",
+            "raw_output": "Command: C:\\Users\\simar\\AppData\\Local\\Temp\\depexit_verify_3drrocoi\\venv\\Scripts\\python.exe -m unittest discover -s tests\nExit Code: 0\n--- STDOUT ---\n\n--- STDERR ---\n..\n----------------------------------------------------------------------\nRan 2 tests in 0.003s\n\nOK",
+            "verified": true,
+            "evidence": "observed"
+          }
+        ]
+      },
+      "compatibility_gaps": {
+        "evidence": "observed",
+        "count": 3,
+        "items": [
+          "Test 'baseline_unittest' was executed in baseline (urllib3) [PASS], but was not executed in replacement (httpx) run.",
+          "Test 'install_httpx' was executed in baseline (urllib3) [PASS], but was not executed in replacement (httpx) run.",
+          "Test 'swapped_unittest' was executed in baseline (urllib3) [PASS], but was not executed in replacement (httpx) run."
+        ]
+      },
+      "gap_explanations": {
+        "evidence": "ai_generated",
+        "count": 0,
+        "items": []
+      },
+      "open_concerns": {
+        "evidence": "observed",
+        "count": 5,
+        "items": [
+          "Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-1994 (CVE-2025-66471, GHSA-2xpw-w6gg-jr37) is designed for the efficient han...' (severity: HIGH) has no matching verification test in the test suite.",
+          "Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-1996 (CVE-2026-21441, GHSA-38jv-5279-wg99) is designed for the efficient han...' (severity: HIGH) has no matching verification test in the test suite.",
+          "Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-4177 (CVE-2026-97689, GHSA-vxq7-64xx-v4gw) is designed for efficiently handli...' (severity: HIGH) has no matching verification test in the test suite.",
+          "Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-4175 (CVE-2026-97687, GHSA-8988-9cw3-xx77) [fixed in: 2.8.0] - urllib3 supports config...' (severity: HIGH) has no matching verification test in the test suite.",
+          "AI-generated test 'test_client_health_check' was never executed in the verification test suite."
+        ]
+      },
+      "model_info": {
+        "model_id": "gemma-4-31b-it",
+        "model_name": "gemma-4-31b-it",
+        "version": "4",
+        "access_method": "hosted_api",
+        "terms_url": "https://ai.google.dev/gemma/terms",
+        "evidence": "observed"
+      },
+      "verified": false
+    }
+  ]
 }

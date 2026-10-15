@@ -1220,12 +1220,15 @@ def render_report(
 
 
 def print_summary(capsules: Union[ExitCapsule, Sequence[ExitCapsule]]) -> str:
-    """Print a compact, highly readable terminal version of the capsule per dependency.
+    """Print a spacious, highly readable terminal summary of each dependency capsule.
 
-    Features two clearly labeled blocks:
-    - [BLOCK 1: OBSERVED / VERIFIED]
-    - [BLOCK 2: AI-SUGGESTED (unverified)]
-    Plus the before-and-after test pass/fail counts and open concerns.
+    Each capsule is rendered with clear section blocks, generous vertical spacing,
+    and labelled sub-sections so the output is easy to scan at a glance.
+
+    Features:
+    - [BLOCK 1: OBSERVED / VERIFIED]  -- source-grounded & execution-tested facts
+    - [BLOCK 2: AI-SUGGESTED]         -- Gemma 4 model output (requires human review)
+    - [OPEN CONCERNS & LIMITATIONS]   -- highlighted action items
 
     Args:
         capsules: ExitCapsule instance or list of ExitCapsule instances.
@@ -1240,128 +1243,195 @@ def print_summary(capsules: Union[ExitCapsule, Sequence[ExitCapsule]]) -> str:
 
     output_lines: list[str] = []
 
+    WIDE  = "=" * 80
+    THIN  = "-" * 80
+    BLANK = ""
+
     for idx, c in enumerate(capsule_list, 1):
-        dep = c.dependency
-        rec = c.ai_recommendation
-        repl_name = rec.proposed_replacement if rec else "None"
+        dep        = c.dependency
+        rec        = c.ai_recommendation
+        repl_name  = rec.proposed_replacement if rec else "None"
         model_info = _resolve_model_info(c)
         b_counts, r_counts, _, _ = _partition_and_count_tests(c)
 
-        sep = "=" * 80
-        divider = "-" * 80
-
+        # ── Header ────────────────────────────────────────────────────────────
         lines = [
-            sep,
-            f"  DEPEXIT CAPSULE [{idx}/{len(capsule_list)}]: {dep.name}=={dep.declared_version}",
-            f"  Declared in: {dep.source_file}",
-            sep,
-            "",
-            "  [BLOCK 1: OBSERVED / VERIFIED] (Source-grounded & execution-tested facts)",
-            divider,
-            f"  * Target Dependency: {dep.name} (declared: {dep.declared_version})",
+            BLANK,
+            WIDE,
+            BLANK,
+            f"    DEPEXIT CAPSULE  [{idx} of {len(capsule_list)}]",
+            BLANK,
+            f"    Package   : {dep.name}  (declared version: {dep.declared_version})",
+            f"    Manifest  : {dep.source_file}",
+            BLANK,
+            WIDE,
         ]
 
-        # Risk indicators
+        # ── Block 1 ───────────────────────────────────────────────────────────
+        lines += [
+            BLANK,
+            "  ┌" + THIN[2:],
+            "  │  BLOCK 1 — OBSERVED & VERIFIED",
+            "  │  Source-grounded and execution-tested facts",
+            "  └" + THIN[2:],
+            BLANK,
+        ]
+
+        # Target
+        lines.append(f"    Target Dependency : {dep.name}  v{dep.declared_version}")
+        lines.append(BLANK)
+
+        # Risk flags
         if c.risk_flags:
-            lines.append(f"  * Observed Risk Flags ({len(c.risk_flags)}):")
+            lines.append(f"    Risk Flags Observed ({len(c.risk_flags)} flag(s)):")
             for rf in c.risk_flags:
                 rtype = rf.risk_type.value if hasattr(rf.risk_type, "value") else str(rf.risk_type)
-                rsev = rf.severity.value if hasattr(rf.severity, "value") else str(rf.severity)
-                lines.append(f"    - [{rsev}] {rtype}: {rf.reason}")
+                rsev  = rf.severity.value  if hasattr(rf.severity,  "value") else str(rf.severity)
+                lines.append(f"        • [{rsev:4s}]  {rtype}")
+                lines.append(f"               {rf.reason}")
+                lines.append(BLANK)
         else:
-            lines.append("  * Observed Risk Flags: None flagged")
+            lines.append("    Risk Flags Observed : None flagged")
+            lines.append(BLANK)
 
-        # Usage locations
+        # AST usages
         if c.usage_locations:
-            lines.append(f"  * AST Code Usages ({len(c.usage_locations)} location(s)):")
+            lines.append(f"    Code Usages in Repository ({len(c.usage_locations)} location(s)):")
             for u in c.usage_locations:
-                utype = u.usage_type.value if hasattr(u.usage_type, "value") else str(u.usage_type)
-                code_one_line = " ".join(u.code_snippet.strip().splitlines())[:60]
-                lines.append(f"    - {u.file_path}:{u.line_number} [{utype}]: {code_one_line}")
+                utype         = u.usage_type.value if hasattr(u.usage_type, "value") else str(u.usage_type)
+                code_one_line = " ".join(u.code_snippet.strip().splitlines())[:70]
+                lines.append(f"        • {u.file_path}  line {u.line_number}")
+                lines.append(f"          Type    : {utype}")
+                lines.append(f"          Snippet : {code_one_line}")
+                lines.append(BLANK)
         else:
-            lines.append("  * AST Code Usages: No direct code usages detected")
+            lines.append("    Code Usages in Repository : No direct usages detected")
+            lines.append(BLANK)
 
-        # Test verification before & after
-        lines.append("  * Test Verification Counts (Before vs After Swap):")
+        # Test counts
+        lines.append("    Test Suite Results (Before vs After Package Swap):")
+        lines.append(BLANK)
+        lines.append(f"        Before Swap  — Baseline ({dep.name}):")
         lines.append(
-            f"    - Before Swap (Baseline: {dep.name}):      "
-            f"{b_counts['pass']} PASS, {b_counts['fail']} FAIL, {b_counts['error']} ERROR, {b_counts['not_run']} NOT_RUN"
+            f"            PASS: {b_counts['pass']}   "
+            f"FAIL: {b_counts['fail']}   "
+            f"ERROR: {b_counts['error']}   "
+            f"NOT_RUN: {b_counts['not_run']}"
         )
+        lines.append(BLANK)
+        lines.append(f"        After Swap   — Replacement ({repl_name}):")
         lines.append(
-            f"    - After Swap  (Replacement: {repl_name}): "
-            f"{r_counts['pass']} PASS, {r_counts['fail']} FAIL, {r_counts['error']} ERROR, {r_counts['not_run']} NOT_RUN"
+            f"            PASS: {r_counts['pass']}   "
+            f"FAIL: {r_counts['fail']}   "
+            f"ERROR: {r_counts['error']}   "
+            f"NOT_RUN: {r_counts['not_run']}"
         )
+        lines.append(BLANK)
 
         # Compatibility gaps
         if c.compatibility_gaps:
-            lines.append(f"  * Observed Compatibility Gaps ({len(c.compatibility_gaps)}):")
+            lines.append(f"    Compatibility Gaps Observed ({len(c.compatibility_gaps)}):")
             for g in c.compatibility_gaps:
-                lines.append(f"    - {g}")
+                lines.append(f"        • {g}")
         else:
-            lines.append("  * Observed Compatibility Gaps: None (no regressions observed)")
+            lines.append("    Compatibility Gaps : None  (no regressions observed)")
+        lines.append(BLANK)
 
-        lines.extend([
-            "",
-            "  [BLOCK 2: AI-SUGGESTED (unverified)] (Gemma 4 model output - requires review)",
-            divider,
-            f"  * Proposed Replacement: {repl_name}",
-        ])
+        # ── Block 2 ───────────────────────────────────────────────────────────
+        lines += [
+            "  ┌" + THIN[2:],
+            "  │  BLOCK 2 — AI-SUGGESTED  (requires human review)",
+            "  │  Gemma 4 model output — not independently verified",
+            "  └" + THIN[2:],
+            BLANK,
+        ]
+
+        lines.append(f"    Proposed Replacement : {repl_name}")
+        lines.append(BLANK)
 
         if rec:
-            comp = getattr(rec, "usage_complexity", "BASIC")
-            ver_status = "VERIFIED PASS" if getattr(rec, "verified", False) else "UNVERIFIED (regressions/untested)"
-            lines.append(f"  * Verification Status:  {ver_status}")
-            lines.append(f"  * Usage Complexity:     {comp}")
+            comp       = getattr(rec, "usage_complexity", "BASIC")
+            ver_status = "VERIFIED PASS" if getattr(rec, "verified", False) else "UNVERIFIED  (regressions present / untested)"
+
+            lines.append(f"    Verification Status  : {ver_status}")
+            lines.append(f"    Migration Complexity : {comp}")
+            lines.append(BLANK)
 
             if rec.reasoning:
-                lines.append(f"  * Reasoning:            {rec.reasoning[:120]}...")
+                # Wrap reasoning at ~70 chars
+                raw   = rec.reasoning[:300]
+                words = raw.split()
+                wrapped_lines, current = [], []
+                for w in words:
+                    if sum(len(x) + 1 for x in current) + len(w) > 70:
+                        wrapped_lines.append("        " + " ".join(current))
+                        current = [w]
+                    else:
+                        current.append(w)
+                if current:
+                    wrapped_lines.append("        " + " ".join(current))
+                if len(rec.reasoning) > 300:
+                    wrapped_lines.append("        ... (truncated)")
+                lines.append("    Reasoning:")
+                lines.extend(wrapped_lines)
+                lines.append(BLANK)
 
             if rec.migration_steps:
-                lines.append(f"  * Migration Steps ({len(rec.migration_steps)}):")
+                lines.append(f"    Migration Steps ({len(rec.migration_steps)} step(s)):")
                 for s_idx, step in enumerate(rec.migration_steps, 1):
-                    lines.append(f"    {s_idx}. {step}")
+                    lines.append(f"        {s_idx}.  {step}")
+                lines.append(BLANK)
 
             patch = getattr(rec, "code_patch", "")
             if patch:
-                patch_first_lines = "\n".join(f"      {l}" for l in patch.strip().splitlines()[:4])
-                lines.append(f"  * Code Patch Preview:\n{patch_first_lines}")
+                lines.append("    Code Patch Preview (first 5 lines):")
+                for pl in patch.strip().splitlines()[:5]:
+                    lines.append(f"        {pl}")
+                lines.append(BLANK)
 
             tests = getattr(rec, "suggested_tests", []) or []
             if tests:
-                lines.append(f"  * Suggested Pytest Functions ({len(tests)} test(s)):")
+                lines.append(f"    Suggested Pytest Functions ({len(tests)} test(s)):")
                 for t in tests:
                     fn_match = re.search(r"def\s+([a-zA-Z0-9_]+)", str(t))
-                    fn_name = fn_match.group(1) if fn_match else "test_function"
-                    lines.append(f"    - def {fn_name}()")
+                    fn_name  = fn_match.group(1) if fn_match else "test_function"
+                    lines.append(f"        • def {fn_name}()")
+                lines.append(BLANK)
         else:
-            lines.append("  * Recommendation: No AI recommendation generated")
+            lines.append("    Recommendation : No AI recommendation was generated.")
+            lines.append(BLANK)
 
         # Gap explanations from Gemma
         gap_exps = getattr(c, "gap_explanations", []) or []
         if gap_exps:
-            lines.append(f"  * AI Gap Interpretations ({len(gap_exps)}):")
+            lines.append(f"    AI Gap Interpretations ({len(gap_exps)}):")
             for exp in gap_exps:
-                lines.append(f"    - {exp}")
+                lines.append(f"        • {exp}")
+            lines.append(BLANK)
 
         # Model metadata
-        lines.append(
-            f"  * Model Info: {model_info['model_name']} (Version: {model_info['version']}, Method: {model_info['access_method']})"
-        )
-        lines.append(f"    Terms: {model_info['terms_url']}")
+        lines.append("    Model Information:")
+        lines.append(f"        Name    : {model_info['model_name']}")
+        lines.append(f"        Version : {model_info['version']}")
+        lines.append(f"        Method  : {model_info['access_method']}")
+        lines.append(f"        Terms   : {model_info['terms_url']}")
+        lines.append(BLANK)
 
-        # Open concerns box (always shown)
-        lines.extend([
-            "",
-            "  [OPEN CONCERNS & LIMITATIONS] (Highlighted action items)",
-            divider,
-        ])
+        # ── Open Concerns ─────────────────────────────────────────────────────
+        lines += [
+            "  ┌" + THIN[2:],
+            "  │  OPEN CONCERNS & LIMITATIONS",
+            "  │  Action items that still require attention",
+            "  └" + THIN[2:],
+            BLANK,
+        ]
         if c.open_concerns:
             for concern in c.open_concerns:
-                lines.append(f"    ! {concern}")
+                lines.append(f"    !  {concern}")
         else:
-            lines.append("    [OK] No unresolved concerns or unverified risk flags identified.")
+            lines.append("    [OK]  No unresolved concerns or unverified risk flags identified.")
 
-        lines.extend([sep, ""])
+        lines += [BLANK, WIDE, BLANK]
         output_lines.extend(lines)
 
     summary_str = "\n".join(output_lines)
