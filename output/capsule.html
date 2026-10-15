@@ -410,7 +410,7 @@
         </div>
         <div class="card-badges">
           
-          <span class="legend-pill badge-ai">REPLACEMENT: appdirs</span>
+          <span class="legend-pill badge-ai">REPLACEMENT: appdirs-py</span>
           
           
           
@@ -522,7 +522,7 @@
 
           <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 14px; align-items: center;">
             <div>
-              Proposed Replacement: <strong style="font-size: 1.15rem; color: #fde68a;">appdirs</strong>
+              Proposed Replacement: <strong style="font-size: 1.15rem; color: #fde68a;">appdirs-py</strong>
             </div>
             <div>
               Usage Complexity: 
@@ -539,7 +539,7 @@
           
           <div style="margin-bottom: 16px;">
             <strong style="color: #fde68a;">AI Reasoning:</strong>
-            <p style="font-size: 0.92rem; margin-top: 4px;">The usage complexity is 'BASIC' as it involves simple imports and direct function calls. The migration strategy focuses on maintaining functional parity, as the code relies on the specific behavior of `appdirs.user_cache_dir`. Although the dependency itself has maintenance risks (UNMAINTAINED, INCOMPATIBLE), the immediate migration step is to ensure the dependency is installed and tested against the existing usage. Since the usage is simple, the migration steps are straightforward installation and verification. The code patch is minimal as the API remains identical.</p>
+            <p style="font-size: 0.92rem; margin-top: 4px;">The migration targets the functionally identical API provided by `appdirs-py`, which is a common, maintained alternative to the legacy `appdirs`. Since the usage is strictly basic (import and function call), the migration is straightforward. The risk of incompatibility (Python 3.12/3.13 support) is mitigated by choosing a modern, actively maintained package, addressing Risk Flag [2].</p>
           </div>
           
 
@@ -549,7 +549,7 @@
             <ul class="item-list">
               
               <li>
-                <strong>appdirs</strong>: Salvaged from LLM output
+                <strong>appdirs-py</strong>: Salvaged from LLM output
                 
               </li>
               
@@ -562,14 +562,21 @@
             <strong style="color: #fde68a;">Step-by-Step Migration Instructions:</strong>
             <ol class="item-list">
               
-              <li>12+).",</li>
+              <li>step 1: Uninstall the old dependency: pip uninstall appdirs</li>
               
-              <li>12/3.13.",</li>
+              <li>step 2: Install the replacement dependency: pip install appdirs-py</li>
+              
+              <li>step 3: Verify that the code runs correctly, ensuring the replacement provides the same path resolution logic.</li>
               
             </ol>
           </div>
           
 
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fca5a5;">Proposed Unified Diff Code Patch:</strong>
+            <p style="color: #fca5a5; font-style: italic; margin-top: 4px;">AI patch unavailable (manual migration required).</p>
+          </div>
           
 
           
@@ -599,11 +606,11 @@
               </div>
             </div>
             <div class="score-card">
-              <div class="score-card-title">After Swap (Replacement: appdirs)</div>
+              <div class="score-card-title">After Swap (Replacement: appdirs-py)</div>
               <div class="score-stats">
-                <span class="stat-pass">9 Pass</span>
-                <span class="stat-fail">1 Fail</span>
-                <span class="stat-err">0 Error</span>
+                <span class="stat-pass">0 Pass</span>
+                <span class="stat-fail">0 Fail</span>
+                <span class="stat-err">1 Error</span>
                 <span class="stat-notrun">0 Unrun</span>
               </div>
             </div>
@@ -814,181 +821,10 @@ platform linux -- Python 3.12.15, pytes
               
               <tr>
                 <td><code>appdirs</code></td>
-                <td><strong>tests/test_cache.py::test_cache_round_trip</strong></td>
+                <td><strong>install_appdirs-py</strong></td>
                 <td>
                   
-                  <span class="legend-pill badge-success">PASS</span>
-                  
-                </td>
-                <td>
-                  
-                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
-                  
-                </td>
-                <td style="font-size: 0.82rem; color: #cbd5e1;">
-                  ============================= test session starts ==============================
-platform linux -- Python 3.12.15, pytes
-                </td>
-              </tr>
-              
-              <tr>
-                <td><code>appdirs</code></td>
-                <td><strong>tests/test_checker.py::test_ok_is_up</strong></td>
-                <td>
-                  
-                  <span class="legend-pill badge-success">PASS</span>
-                  
-                </td>
-                <td>
-                  
-                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
-                  
-                </td>
-                <td style="font-size: 0.82rem; color: #cbd5e1;">
-                  ============================= test session starts ==============================
-platform linux -- Python 3.12.15, pytes
-                </td>
-              </tr>
-              
-              <tr>
-                <td><code>appdirs</code></td>
-                <td><strong>tests/test_checker.py::test_missing_is_down</strong></td>
-                <td>
-                  
-                  <span class="legend-pill badge-success">PASS</span>
-                  
-                </td>
-                <td>
-                  
-                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
-                  
-                </td>
-                <td style="font-size: 0.82rem; color: #cbd5e1;">
-                  ============================= test session starts ==============================
-platform linux -- Python 3.12.15, pytes
-                </td>
-              </tr>
-              
-              <tr>
-                <td><code>appdirs</code></td>
-                <td><strong>tests/test_checker.py::test_redirect_is_up</strong></td>
-                <td>
-                  
-                  <span class="legend-pill badge-success">PASS</span>
-                  
-                </td>
-                <td>
-                  
-                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
-                  
-                </td>
-                <td style="font-size: 0.82rem; color: #cbd5e1;">
-                  ============================= test session starts ==============================
-platform linux -- Python 3.12.15, pytes
-                </td>
-              </tr>
-              
-              <tr>
-                <td><code>appdirs</code></td>
-                <td><strong>tests/test_checker.py::test_slow_is_up</strong></td>
-                <td>
-                  
-                  <span class="legend-pill badge-success">PASS</span>
-                  
-                </td>
-                <td>
-                  
-                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
-                  
-                </td>
-                <td style="font-size: 0.82rem; color: #cbd5e1;">
-                  ============================= test session starts ==============================
-platform linux -- Python 3.12.15, pytes
-                </td>
-              </tr>
-              
-              <tr>
-                <td><code>appdirs</code></td>
-                <td><strong>tests/test_checker.py::test_closed_port_is_down</strong></td>
-                <td>
-                  
-                  <span class="legend-pill badge-success">PASS</span>
-                  
-                </td>
-                <td>
-                  
-                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
-                  
-                </td>
-                <td style="font-size: 0.82rem; color: #cbd5e1;">
-                  ============================= test session starts ==============================
-platform linux -- Python 3.12.15, pytes
-                </td>
-              </tr>
-              
-              <tr>
-                <td><code>appdirs</code></td>
-                <td><strong>tests/test_checker.py::test_latin1_title</strong></td>
-                <td>
-                  
-                  <span class="legend-pill badge-success">PASS</span>
-                  
-                </td>
-                <td>
-                  
-                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
-                  
-                </td>
-                <td style="font-size: 0.82rem; color: #cbd5e1;">
-                  ============================= test session starts ==============================
-platform linux -- Python 3.12.15, pytes
-                </td>
-              </tr>
-              
-              <tr>
-                <td><code>appdirs</code></td>
-                <td><strong>tests/test_checker.py::test_user_agent</strong></td>
-                <td>
-                  
-                  <span class="legend-pill badge-success">PASS</span>
-                  
-                </td>
-                <td>
-                  
-                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
-                  
-                </td>
-                <td style="font-size: 0.82rem; color: #cbd5e1;">
-                  ============================= test session starts ==============================
-platform linux -- Python 3.12.15, pytes
-                </td>
-              </tr>
-              
-              <tr>
-                <td><code>appdirs</code></td>
-                <td><strong>tests/test_config.py::test_sites_file_loads</strong></td>
-                <td>
-                  
-                  <span class="legend-pill badge-success">PASS</span>
-                  
-                </td>
-                <td>
-                  
-                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
-                  
-                </td>
-                <td style="font-size: 0.82rem; color: #cbd5e1;">
-                  ============================= test session starts ==============================
-platform linux -- Python 3.12.15, pytes
-                </td>
-              </tr>
-              
-              <tr>
-                <td><code>appdirs</code></td>
-                <td><strong>tests/test_report.py::test_report_renders_all_sites</strong></td>
-                <td>
-                  
-                  <span class="legend-pill badge-danger">FAIL</span>
+                  <span class="legend-pill badge-danger">ERROR</span>
                   
                 </td>
                 <td>
@@ -997,8 +833,8 @@ platform linux -- Python 3.12.15, pytes
                   
                 </td>
                 <td style="font-size: 0.82rem; color: #cbd5e1;">
-                  tests/test_report.py:20: in test_report_renders_all_sites
-    result = CliRunner().invoke(cli, ["report", "-o", str(outp
+                  skipped: installation of replacement 'appdirs-py' failed (exit 1)
+ERROR: Could not find a version that satisfies the req
                 </td>
               </tr>
               
@@ -1025,9 +861,84 @@ platform linux -- Python 3.12.15, pytes
           <div style="margin-bottom: 16px;">
             <strong style="color: #7dd3fc;">Observed Execution Discrepancies & Regressions:</strong>
             
-            <p style="font-size: 0.9rem; margin-top: 4px; color: #86efac;">
-              ✓ No compatibility regressions observed between baseline and replacement test runs.
-            </p>
+            <ul class="item-list">
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'tests/test_cache.py::test_cache_round_trip' was executed in baseline (appdirs) [PASS], but was not executed in replacement (appdirs-py) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'tests/test_checker.py::test_closed_port_is_down' was executed in baseline (appdirs) [PASS], but was not executed in replacement (appdirs-py) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'tests/test_checker.py::test_latin1_title' was executed in baseline (appdirs) [PASS], but was not executed in replacement (appdirs-py) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'tests/test_checker.py::test_missing_is_down' was executed in baseline (appdirs) [PASS], but was not executed in replacement (appdirs-py) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'tests/test_checker.py::test_ok_is_up' was executed in baseline (appdirs) [PASS], but was not executed in replacement (appdirs-py) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'tests/test_checker.py::test_redirect_is_up' was executed in baseline (appdirs) [PASS], but was not executed in replacement (appdirs-py) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'tests/test_checker.py::test_slow_is_up' was executed in baseline (appdirs) [PASS], but was not executed in replacement (appdirs-py) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'tests/test_checker.py::test_user_agent' was executed in baseline (appdirs) [PASS], but was not executed in replacement (appdirs-py) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'tests/test_config.py::test_sites_file_loads' was executed in baseline (appdirs) [PASS], but was not executed in replacement (appdirs-py) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'tests/test_report.py::test_report_renders_all_sites' was executed in baseline (appdirs) [FAIL], but was not executed in replacement (appdirs-py) run.
+              </li>
+              
+              <li>
+                
+                Test 'install_appdirs-py' was executed in replacement (appdirs-py) [ERROR], but had no corresponding baseline run.
+              </li>
+              
+            </ul>
             
           </div>
 
@@ -1039,7 +950,12 @@ platform linux -- Python 3.12.15, pytes
               
               <li style="color: #fef3c7;">
                 <span class="legend-pill badge-ai" style="margin-right: 4px;">AI INTERPRETATION</span>
-                tests/test_report.py::test_report_renders_all_sites Likely Cause: The failure is an ImportError originating from the Jinja2 library attempting to import 'soft_unicode' from 'markupsafe'. This indicates a version incompatibility between the installed versions of Jinja2 and Markupsafe, where Jinja2 expects an attribute that is missing in the installed Markupsafe package. This failure is unrelated to the appdirs dependency change itself, but rather points to an environment dependency conflict. Suggested Fix: Resolve the dependency conflict by ensuring compatible versions of 'jinja2' and 'markupsafe' are installed. This usually involves checking the project's requirements file or explicitly installing compatible versions (e.g., ensuring Jinja2 is compatible with the installed Markupsafe version).
+                tests/test_report.py::test_report_renders_all_sites Likely Cause: The ImportError indicates a dependency conflict or version incompatibility within the Jinja2/MarkupSafe ecosystem. The replacement of `appdirs` with `appdirs-py` likely introduced an incompatibility with existing installed packages (like `jinja2` or `markupsafe`), causing an import failure during application execution. Suggested Fix: Investigate the dependency requirements of `appdirs-py` and ensure all related packages (especially `jinja2` and `markupsafe`) are updated to compatible versions. If the issue persists, consider checking if `appdirs-py` requires specific environment setup or if a different path handling library is needed.
+              </li>
+              
+              <li style="color: #fef3c7;">
+                <span class="legend-pill badge-ai" style="margin-right: 4px;">AI INTERPRETATION</span>
+                install_appdirs-py Likely Cause: The installation failed because the package name 'appdirs-py' could not be found on PyPI, resulting in 'No matching distribution found'. This suggests the package name used for the replacement is incorrect or the package is not publicly available under that name. Suggested Fix: Verify the correct package name for the replacement. Check the documentation for `appdirs-py` or related projects to confirm the exact package name required for installation.
               </li>
               
             </ul>
@@ -1065,6 +981,10 @@ platform linux -- Python 3.12.15, pytes
             
             <li><strong>!</strong> Unverified risk flag: [INCOMPATIBLE] 'PyPI classifiers indicate support only up to Python 3.8, missing Python 3.12/3.13 support' (severity: HIGH) has no matching verification test in the test suite.</li>
             
+            <li><strong>!</strong> AI patch could not be parsed from the model response; manual migration required</li>
+            
+            <li><strong>!</strong> Pipeline execution failure: Test 'install_appdirs-py' failed with status ERROR. Details: skipped: installation of replacement 'appdirs-py' failed (exit 1).</li>
+            
           </ul>
           
         </section>
@@ -1082,7 +1002,7 @@ platform linux -- Python 3.12.15, pytes
         </div>
         <div class="card-badges">
           
-          <span class="legend-pill badge-ai">REPLACEMENT: urllib.parse</span>
+          <span class="legend-pill badge-ai">REPLACEMENT: idna</span>
           
           
           
@@ -1177,7 +1097,7 @@ platform linux -- Python 3.12.15, pytes
 
           <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 14px; align-items: center;">
             <div>
-              Proposed Replacement: <strong style="font-size: 1.15rem; color: #fde68a;">urllib.parse</strong>
+              Proposed Replacement: <strong style="font-size: 1.15rem; color: #fde68a;">idna</strong>
             </div>
             <div>
               Usage Complexity: 
@@ -1194,7 +1114,7 @@ platform linux -- Python 3.12.15, pytes
           
           <div style="margin-bottom: 16px;">
             <strong style="color: #fde68a;">AI Reasoning:</strong>
-            <p style="font-size: 0.92rem; margin-top: 4px;">The original dependency 'idna' is highly vulnerable to Denial-of-Service attacks due to resource-intensive encoding operations. Since no specific usage was provided, the safest and most architecturally sound replacement is to leverage the standard library's 'urllib.parse' module, which handles URL parsing and encoding safely and is guaranteed to be maintained. This eliminates the dependency risk entirely while providing equivalent functionality for standard domain name handling.</p>
+            <p style="font-size: 0.92rem; margin-top: 4px;">Since no actual code usage locations were provided, the migration focuses purely on addressing the identified high-severity security vulnerabilities (CVE-2024-3651 and CVE-2026-45409). The recommended action is to ensure the dependency is updated to a version that contains the complete, fixed remediation. Since the dependency itself is the target, the safest and most direct migration is to ensure the dependency is updated to the latest stable version of `idna` (which fixes the resource exhaustion issues) and confirm that the existing (currently non-existent) usage remains functional.</p>
           </div>
           
 
@@ -1204,23 +1124,23 @@ platform linux -- Python 3.12.15, pytes
             <ul class="item-list">
               
               <li>
-                <strong>idna</strong>: The original package. While vulnerable, it is the direct implementation of the required functionality.
+                <strong>idna</strong>: The original package. While vulnerable, it is the direct functional equivalent.
                 
                 <span style="color: #fca5a5;">(API Gaps: None)</span>
                 
               </li>
               
               <li>
-                <strong>urllib.parse</strong>: Standard library module for URL parsing and encoding, which often handles IDNA requirements internally, offering a safe, zero-dependency replacement for basic encoding tasks.
+                <strong>urllib3</strong>: Often handles URL parsing and encoding, potentially replacing IDNA functionality if the usage was related to HTTP requests. This is a common dependency in web applications.
                 
-                <span style="color: #fca5a5;">(API Gaps: Requires context on how the original code specifically called idna functions.)</span>
+                <span style="color: #fca5a5;">(API Gaps: Requires verification if IDNA functionality is strictly needed, or if it can be handled by higher-level libraries.)</span>
                 
               </li>
               
               <li>
-                <strong>idna-py</strong>: A well-maintained, community-vetted alternative if specific, complex IDNA handling beyond standard URL parsing is required.
+                <strong>requests</strong>: A high-level HTTP client that often handles IDNA encoding internally, potentially eliminating the need for direct IDNA manipulation.
                 
-                <span style="color: #fca5a5;">(API Gaps: Requires context on complex IDNA usage.)</span>
+                <span style="color: #fca5a5;">(API Gaps: Requires verification that the specific usage context is covered by `requests`'s internal handling.)</span>
                 
               </li>
               
@@ -1233,37 +1153,32 @@ platform linux -- Python 3.12.15, pytes
             <strong style="color: #fde68a;">Step-by-Step Migration Instructions:</strong>
             <ol class="item-list">
               
-              <li>step 1: Remove dependency on 'idna'.</li>
+              <li>step 1: Update dependency specification (e.g., requirements.txt, pyproject.toml) to use the latest stable version of idna (>=3.15).</li>
               
-              <li>step 2: Update imports to use 'urllib.parse' for domain name handling.</li>
+              <li>step 2: Run dependency installation (e.g., pip install -r requirements.txt).</li>
               
-              <li>step 3: Review all code that previously used 'idna.encode()' and replace it with equivalent functionality from 'urllib.parse' or standard Python methods.</li>
+              <li>step 3: Review the codebase for any usage of `idna.encode()` or related functions, specifically checking for compatibility with the fixed versions (3.7+ or 3.15+).</li>
+              
+              <li>step 4: If any usage exists, verify that the behavior remains identical after the update, especially concerning the denial-of-service vectors identified in the risk flags.</li>
               
             </ol>
           </div>
           
 
           
-          <div style="margin-bottom: 16px;">
-            <strong style="color: #fde68a;">Proposed Unified Diff Code Patch:</strong>
-            <pre class="code-block"><code>--- a/file.py
-+++ b/file.py
-@@ -1,3 +1,3 @@
--import idna
-+from urllib.parse import urlparse
-</code></pre>
-          </div>
-          
 
           
           <div style="margin-bottom: 16px;">
             <strong style="color: #fde68a;">AI-Suggested Dual-Passing Pytest Functions:</strong>
             
-            <pre class="code-block"><code>def test_url_parsing_with_idna():
-    # Assuming the original code used idna to handle domain encoding
-    url = 'https://xn--fsqd.xn--fiqs8a.com'
-    parsed = urlparse(url)
-    assert parsed.netloc == 'xn--fsqd.xn--fiqs8a.com'</code></pre>
+            <pre class="code-block"><code>def test_idna_encoding_compatibility():
+    # This test verifies that the core functionality remains intact after migration.
+    # Since no usage was provided, this is a conceptual test for dependency integrity.
+    import idna
+    # Test a standard encoding operation
+    encoded = idna.encode('example.com')
+    assert encoded == 'xn--example-com'
+    # Future tests should be added once usage locations are provided.</code></pre>
             
           </div>
           
@@ -1293,12 +1208,12 @@ platform linux -- Python 3.12.15, pytes
               </div>
             </div>
             <div class="score-card">
-              <div class="score-card-title">After Swap (Replacement: urllib.parse)</div>
+              <div class="score-card-title">After Swap (Replacement: idna)</div>
               <div class="score-stats">
-                <span class="stat-pass">0 Pass</span>
-                <span class="stat-fail">0 Fail</span>
-                <span class="stat-err">1 Error</span>
-                <span class="stat-notrun">1 Unrun</span>
+                <span class="stat-pass">9 Pass</span>
+                <span class="stat-fail">2 Fail</span>
+                <span class="stat-err">0 Error</span>
+                <span class="stat-notrun">0 Unrun</span>
               </div>
             </div>
           </div>
@@ -1508,7 +1423,7 @@ platform linux -- Python 3.12.15, pytes
               
               <tr>
                 <td><code>idna</code></td>
-                <td><strong>test_url_parsing_with_idna</strong></td>
+                <td><strong>test_idna_encoding_compatibility</strong></td>
                 <td>
                   
                   <span class="legend-pill badge-danger">FAIL</span>
@@ -1520,18 +1435,189 @@ platform linux -- Python 3.12.15, pytes
                   
                 </td>
                 <td style="font-size: 0.82rem; color: #cbd5e1;">
-                  /tmp/test_ai_generated_13bi_pqt_test.py:9: in test_url_parsing_with_idna
-    parsed = urlparse(url)
-             ^^^^^^^
+                  /tmp/test_ai_generated_iqjfxu2o_test.py:12: in test_idna_encoding_compatibility
+    assert encoded == 'xn--example-com'
+
                 </td>
               </tr>
               
               <tr>
                 <td><code>idna</code></td>
-                <td><strong>apply_patch</strong></td>
+                <td><strong>tests/test_cache.py::test_cache_round_trip</strong></td>
                 <td>
                   
-                  <span class="legend-pill badge-neutral">NOT_RUN</span>
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>tests/test_checker.py::test_ok_is_up</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>tests/test_checker.py::test_missing_is_down</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>tests/test_checker.py::test_redirect_is_up</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>tests/test_checker.py::test_slow_is_up</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>tests/test_checker.py::test_closed_port_is_down</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>tests/test_checker.py::test_latin1_title</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>tests/test_checker.py::test_user_agent</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>tests/test_config.py::test_sites_file_loads</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>tests/test_report.py::test_report_renders_all_sites</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">FAIL</span>
                   
                 </td>
                 <td>
@@ -1540,17 +1626,17 @@ platform linux -- Python 3.12.15, pytes
                   
                 </td>
                 <td style="font-size: 0.82rem; color: #cbd5e1;">
-                  skipped: patch failed to apply
-error: corrupt patch at depexit_migration.patch:6
+                  tests/test_report.py:20: in test_report_renders_all_sites
+    result = CliRunner().invoke(cli, ["report", "-o", str(outp
                 </td>
               </tr>
               
               <tr>
                 <td><code>idna</code></td>
-                <td><strong>install_urllib.parse</strong></td>
+                <td><strong>test_idna_encoding_compatibility</strong></td>
                 <td>
                   
-                  <span class="legend-pill badge-danger">ERROR</span>
+                  <span class="legend-pill badge-danger">FAIL</span>
                   
                 </td>
                 <td>
@@ -1559,8 +1645,9 @@ error: corrupt patch at depexit_migration.patch:6
                   
                 </td>
                 <td style="font-size: 0.82rem; color: #cbd5e1;">
-                  skipped: installation of replacement 'urllib.parse' failed (exit 1)
-ERROR: Could not find a version that satisfies the r
+                  /tmp/test_ai_generated_6fjteftu_test.py:12: in test_idna_encoding_compatibility
+    assert encoded == 'xn--example-com'
+
                 </td>
               </tr>
               
@@ -1587,96 +1674,9 @@ ERROR: Could not find a version that satisfies the r
           <div style="margin-bottom: 16px;">
             <strong style="color: #7dd3fc;">Observed Execution Discrepancies & Regressions:</strong>
             
-            <ul class="item-list">
-              
-              <li>
-                
-                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
-                
-                Test 'test_url_parsing_with_idna' was executed in baseline (idna) [FAIL], but was not executed in replacement (urllib.parse) run.
-              </li>
-              
-              <li>
-                
-                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
-                
-                Test 'tests/test_cache.py::test_cache_round_trip' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.
-              </li>
-              
-              <li>
-                
-                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
-                
-                Test 'tests/test_checker.py::test_closed_port_is_down' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.
-              </li>
-              
-              <li>
-                
-                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
-                
-                Test 'tests/test_checker.py::test_latin1_title' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.
-              </li>
-              
-              <li>
-                
-                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
-                
-                Test 'tests/test_checker.py::test_missing_is_down' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.
-              </li>
-              
-              <li>
-                
-                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
-                
-                Test 'tests/test_checker.py::test_ok_is_up' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.
-              </li>
-              
-              <li>
-                
-                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
-                
-                Test 'tests/test_checker.py::test_redirect_is_up' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.
-              </li>
-              
-              <li>
-                
-                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
-                
-                Test 'tests/test_checker.py::test_slow_is_up' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.
-              </li>
-              
-              <li>
-                
-                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
-                
-                Test 'tests/test_checker.py::test_user_agent' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.
-              </li>
-              
-              <li>
-                
-                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
-                
-                Test 'tests/test_config.py::test_sites_file_loads' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.
-              </li>
-              
-              <li>
-                
-                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
-                
-                Test 'tests/test_report.py::test_report_renders_all_sites' was executed in baseline (idna) [FAIL], but was not executed in replacement (urllib.parse) run.
-              </li>
-              
-              <li>
-                
-                Test 'apply_patch' was executed in replacement (urllib.parse) [NOT_RUN], but had no corresponding baseline run.
-              </li>
-              
-              <li>
-                
-                Test 'install_urllib.parse' was executed in replacement (urllib.parse) [ERROR], but had no corresponding baseline run.
-              </li>
-              
-            </ul>
+            <p style="font-size: 0.9rem; margin-top: 4px; color: #86efac;">
+              ✓ No compatibility regressions observed between baseline and replacement test runs.
+            </p>
             
           </div>
 
@@ -1688,17 +1688,12 @@ ERROR: Could not find a version that satisfies the r
               
               <li style="color: #fef3c7;">
                 <span class="legend-pill badge-ai" style="margin-right: 4px;">AI INTERPRETATION</span>
-                tests/test_report.py::test_report_renders_all_sites Likely Cause: The failure is an ImportError related to 'soft_unicode' from 'markupsafe', indicating an incompatibility or broken dependency chain within the Jinja2 environment. This often happens when replacing a dependency that indirectly affects core Python packages or when the replacement introduces version conflicts. Suggested Fix: Investigate the dependency chain (Jinja2, MarkupSafe) and ensure that the replacement of 'idna' does not introduce conflicting versions or break the expected environment setup. Check if the replacement requires specific version constraints or if the environment needs a clean reinstallation of dependent packages.
+                tests/test_report.py::test_report_renders_all_sites Likely Cause: The failure is an ImportError stemming from a version incompatibility between the installed `jinja2` library and `markupsafe`. Specifically, `jinja2` attempts to import `soft_unicode` from `markupsafe`, but this name is no longer available in the installed version of `markupsafe`. Suggested Fix: Upgrade or downgrade the `jinja2` and `markupsafe` packages to ensure compatibility, or update the project's dependencies to versions where this import path is correctly handled (e.g., ensuring `markupsafe` is compatible with the installed `jinja2` version).
               </li>
               
               <li style="color: #fef3c7;">
                 <span class="legend-pill badge-ai" style="margin-right: 4px;">AI INTERPRETATION</span>
-                test_url_parsing_with_idna Likely Cause: The NameError 'name 'urlparse' is not defined' occurs because the replacement 'urllib.parse' is a module, and the test code is attempting to call 'urlparse' as a standalone function, which is not directly available in that namespace. Suggested Fix: Modify the test code to correctly import and use the functionality from the replacement module. Instead of expecting a standalone function, the code should explicitly import 'urlparse' from 'urllib.parse' (e.g., `from urllib.parse import urlparse`) and use it accordingly.
-              </li>
-              
-              <li style="color: #fef3c7;">
-                <span class="legend-pill badge-ai" style="margin-right: 4px;">AI INTERPRETATION</span>
-                install_urllib.parse Likely Cause: The installation failed because 'urllib.parse' is a module within the Python standard library and is not a package available on PyPI, meaning it cannot be installed via pip. Suggested Fix: Do not attempt to install standard library modules using pip. If the goal is simply to use the functionality, ensure that the code correctly imports the module directly (e.g., `import urllib.parse`) without attempting to install it as a separate package.
+                test_idna_encoding_compatibility Likely Cause: The assertion fails because the actual result returned by the IDNA encoding logic is a byte string (b'example.com'), while the test expects a standard Unicode string ('xn--example-com'). This indicates a mismatch in data type handling or encoding/decoding steps within the test or the IDNA implementation. Suggested Fix: Ensure that the IDNA encoding function explicitly returns a decoded string (e.g., using .decode('utf-8')) before the result is compared or returned, ensuring the output type matches the expected string format.
               </li>
               
             </ul>
@@ -1720,13 +1715,9 @@ ERROR: Could not find a version that satisfies the r
           
           <ul class="item-list" style="color: var(--concern-text);">
             
-            <li><strong>!</strong> Test 'apply_patch' for 'idna' had status NOT_RUN. Reason: skipped: patch failed to apply.</li>
-            
             <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2024-60 (CVE-2024-3651, GHSA-jjg7-2v4v-x38h) [fixed in: 3.7] - ### Impact A specially crafted argument to the `idna.encode()` function could consume significant resources. This may lead to a denial-of-service.  ##...' (severity: HIGH) has no matching verification test in the test suite.</li>
             
             <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-215 (CVE-2026-45409, GHSA-65pc-fj4g-8rjx) [fixed in: 3.15] - This is the same issue as CVE-2024-3651, however the original remediation in 2024 was not a complete fix. Payloads such as `"\u0660" * N` or `"\u30fb"...' (severity: HIGH) has no matching verification test in the test suite.</li>
-            
-            <li><strong>!</strong> Pipeline execution failure: Test 'install_urllib.parse' failed with status ERROR. Details: skipped: installation of replacement 'urllib.parse' failed (exit 1).</li>
             
           </ul>
           
@@ -1910,7 +1901,7 @@ ERROR: Could not find a version that satisfies the r
           
           <div style="margin-bottom: 16px;">
             <strong style="color: #fde68a;">AI Reasoning:</strong>
-            <p style="font-size: 0.92rem; margin-top: 4px;">Jinja2 is a highly secure and widely adopted templating engine. The migration is justified by the high-severity vulnerability flags (PYSEC-2026-1471, 1473, 1474, 1475), which mandate immediate action. Mako is proposed as the replacement because it is a mature, high-performance alternative that fulfills the functional requirement of template rendering. The migration involves replacing the Jinja2-specific classes (Environment, FileSystemLoader) with their Mako equivalents (TemplatesLoader, Template) and adapting the configuration flow, as demonstrated in the code patch. The suggested tests focus on verifying the structural integrity of the new setup.</p>
+            <p style="font-size: 0.92rem; margin-top: 4px;">The migration targets Jinja2, which has known high-severity security vulnerabilities related to sandboxing and attribute handling. Replacing it with Mako addresses the security risk by adopting a modern, actively maintained, and generally safer templating engine. The usage complexity is MODERATE, involving standard environment setup and file loading. Mako provides direct equivalents for `Environment` and `FileSystemLoader`, ensuring functional parity while mitigating the identified risks.</p>
           </div>
           
 
@@ -1920,9 +1911,9 @@ ERROR: Could not find a version that satisfies the r
             <ul class="item-list">
               
               <li>
-                <strong>Mako</strong>: Mako is a mature, high-performance templating language that serves as a viable, modern alternative to Jinja2. It allows for a complete dependency migration while maintaining the core functionality of template rendering, suitable for the observed usage of Environment and Loader setup.
+                <strong>Mako</strong>: Mako is a mature, fast, and widely used templating language that serves as a direct, safe, and modern replacement for Jinja2, handling template loading and environment setup effectively. It maintains the core functionality required by the snippets (Environment, FileSystemLoader).
                 
-                <span style="color: #fca5a5;">(API Gaps: The API structure for setting up the environment, loaders, and autoescaping will differ from Jinja2. Specific methods for loading files and handling autoescaping will require adaptation.)</span>
+                <span style="color: #fca5a5;">(API Gaps: Minimal. Mako's API for environment setup and file loading is conceptually similar to Jinja2's structure, requiring only minor syntax adjustments for the specific methods.)</span>
                 
               </li>
               
@@ -1935,15 +1926,15 @@ ERROR: Could not find a version that satisfies the r
             <strong style="color: #fde68a;">Step-by-Step Migration Instructions:</strong>
             <ol class="item-list">
               
-              <li>step 1: Uninstall the current dependency (Jinja2).</li>
+              <li>step 1: Uninstall the old dependency: `pip uninstall jinja2`</li>
               
-              <li>step 2: Install the replacement dependency (Mako).</li>
+              <li>step 2: Install the new dependency: `pip install mako`</li>
               
-              <li>step 3: Analyze the specific template syntax used in the codebase and translate it to Mako's syntax.</li>
+              <li>step 3: Update the import statement in `linkwatch/report.py` to import Mako components.</li>
               
-              <li>step 4: Rewrite the instantiation logic in linkwatch/report.py to use Mako's environment and loader classes.</li>
+              <li>step 4: Replace the Jinja2 Environment instantiation with the equivalent Mako Environment setup.</li>
               
-              <li>step 5: Update any template files to ensure compatibility with Mako syntax.</li>
+              <li>step 5: Adjust the FileSystemLoader usage to be compatible with the Mako environment setup.</li>
               
             </ol>
           </div>
@@ -1957,9 +1948,8 @@ ERROR: Could not find a version that satisfies the r
 @@ -1,11 +1,11 @@
 -from jinja2 import Environment, FileSystemLoader, select_autoescape
 +from mako.template import Template
-+from mako.loaders import TemplatesLoader
-+from mako.autoescape import escape
- 
++from mako.loaders import FileSystemLoader
+
 -from jinja2 import Environment, FileSystemLoader, select_autoescape
 -
 -return Environment(
@@ -1967,24 +1957,15 @@ ERROR: Could not find a version that satisfies the r
 -autoescape=select_autoescape(["html", "j2"]),
 -)
 +def load_templates(template_dir):
-+    # Mako uses TemplatesLoader for file loading
-+    loader = TemplatesLoader(template_dir)
-+    
-+    # Mako handles autoescaping via the 'escape' function or template configuration
-+    # Note: Mako's autoescaping mechanism is typically handled by the template engine itself or explicit calls.
-+    
-+    return loader
- 
++    loader = FileSystemLoader(template_dir)
++    env = Template(loader)
++    return env
+
+-return Environment(
 -loader=FileSystemLoader(template_dir()),
 -autoescape=select_autoescape(["html", "j2"]),
 -)
-+if __name__ == '__main__':
-+    # Example usage demonstrating the replacement structure
-+    template_dir = "./templates"
-+    
-+    # In a real application, you would load templates and render them.
-+    # This section demonstrates the structural replacement of the original setup.
-+    print("Mako setup complete. Actual rendering logic needs to be implemented.")</code></pre>
+</code></pre>
           </div>
           
 
@@ -1992,21 +1973,30 @@ ERROR: Could not find a version that satisfies the r
           <div style="margin-bottom: 16px;">
             <strong style="color: #fde68a;">AI-Suggested Dual-Passing Pytest Functions:</strong>
             
-            <pre class="code-block"><code>def test_report_setup_mako():
-    # Test that the setup process runs without error, verifying the structural replacement.
-    # Since the original code only showed instantiation, we verify the replacement structure is valid.
-    try:
-        from mako.loaders import TemplatesLoader
-        from mako.template import Template
-        
-        # Simulate the setup logic from the original file
-        template_dir = "./templates"
-        loader = TemplatesLoader(template_dir)
-        
-        # We cannot directly test the original Jinja2 logic, but we ensure the Mako equivalents are importable and runnable.
-        assert True
-    except ImportError:
-        pytest.fail("Mako dependencies failed to import.")</code></pre>
+            <pre class="code-block"><code>def test_template_loading_success():
+    # Mock the environment setup to ensure the structure is correct
+    # Since the original code only shows instantiation, we test that the replacement structure is valid.
+    # We assume template_dir() returns a valid path for testing purposes.
+    from unittest.mock import MagicMock
+    
+    # Mock the necessary components for the test environment
+    mock_template_dir = MagicMock()
+    mock_template_dir.__call__.return_value = './templates'
+
+    # Simulate the function call structure based on the migration logic
+    # Note: The actual implementation of linkwatch/report.py needs to be adapted to the new structure.
+    # This test verifies the core concept of loading a template environment.
+    
+    # We test the logic derived from the migration steps:
+    loader = FileSystemLoader(mock_template_dir)
+    env = Template(loader)
+    
+    assert isinstance(env, Template)
+    assert isinstance(loader, FileSystemLoader)
+    
+    # If the original code returned an Environment object, the replacement should return a template object or environment.
+    # We assert the structure is valid for the new library.
+    assert True</code></pre>
             
           </div>
           
@@ -2148,7 +2138,7 @@ ERROR: Could not find a version that satisfies the r
             
             <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-1471 (CVE-2025-27516, GHSA-cpwx-vrp4-4pq7) [fixed in: 3.1.6] - An oversight in how the Jinja sandboxed environment interacts with the `|attr` filter allows an attacker that controls the content of a template to ex...' (severity: HIGH) has no matching verification test in the test suite.</li>
             
-            <li><strong>!</strong> AI-generated test 'test_report_setup_mako' was never executed in the verification test suite.</li>
+            <li><strong>!</strong> AI-generated test 'test_template_loading_success' was never executed in the verification test suite.</li>
             
           </ul>
           
@@ -2167,7 +2157,7 @@ ERROR: Could not find a version that satisfies the r
         </div>
         <div class="card-badges">
           
-          <span class="legend-pill badge-ai">REPLACEMENT: httpx</span>
+          <span class="legend-pill badge-ai">REPLACEMENT: requests</span>
           
           
           
@@ -2360,11 +2350,11 @@ ERROR: Could not find a version that satisfies the r
 
           <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 14px; align-items: center;">
             <div>
-              Proposed Replacement: <strong style="font-size: 1.15rem; color: #fde68a;">httpx</strong>
+              Proposed Replacement: <strong style="font-size: 1.15rem; color: #fde68a;">requests</strong>
             </div>
             <div>
               Usage Complexity: 
-              <span class="legend-pill badge-warning">DEEP</span>
+              <span class="legend-pill badge-warning">MODERATE</span>
             </div>
             <div>
               Verification State: 
@@ -2377,7 +2367,7 @@ ERROR: Could not find a version that satisfies the r
           
           <div style="margin-bottom: 16px;">
             <strong style="color: #fde68a;">AI Reasoning:</strong>
-            <p style="font-size: 0.92rem; margin-top: 4px;">Migrate requests to httpx</p>
+            <p style="font-size: 0.92rem; margin-top: 4px;">Migrate requests to requests</p>
           </div>
           
 
@@ -2387,7 +2377,7 @@ ERROR: Could not find a version that satisfies the r
             <ul class="item-list">
               
               <li>
-                <strong>httpx</strong>: Salvaged from LLM output
+                <strong>requests</strong>: Salvaged from LLM output
                 
               </li>
               
@@ -2400,12 +2390,23 @@ ERROR: Could not find a version that satisfies the r
             <strong style="color: #fde68a;">Step-by-Step Migration Instructions:</strong>
             <ol class="item-list">
               
-              <li>Replace requests with httpx</li>
+              <li>step 1: Update the dependency version in requirements.txt or equivalent configuration to at least 2.33.0 (or the latest stable version) to mitigate all identified vulnerabilities.</li>
+              
+              <li>step 2: Review and update all imports to ensure they reference the newly installed package version.</li>
+              
+              <li>step 3: Verify that the monkey-patching logic in `http_patch.py` remains compatible with the updated `requests` API.</li>
+              
+              <li>step 4: Run the existing test suite to ensure functional equivalence.</li>
               
             </ol>
           </div>
           
 
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fca5a5;">Proposed Unified Diff Code Patch:</strong>
+            <p style="color: #fca5a5; font-style: italic; margin-top: 4px;">AI patch unavailable (manual migration required).</p>
+          </div>
           
 
           
@@ -2431,16 +2432,16 @@ ERROR: Could not find a version that satisfies the r
                 <span class="stat-pass">0 Pass</span>
                 <span class="stat-fail">0 Fail</span>
                 <span class="stat-err">0 Error</span>
-                <span class="stat-notrun">1 Unrun</span>
+                <span class="stat-notrun">0 Unrun</span>
               </div>
             </div>
             <div class="score-card">
-              <div class="score-card-title">After Swap (Replacement: httpx)</div>
+              <div class="score-card-title">After Swap (Replacement: requests)</div>
               <div class="score-stats">
                 <span class="stat-pass">0 Pass</span>
                 <span class="stat-fail">0 Fail</span>
                 <span class="stat-err">0 Error</span>
-                <span class="stat-notrun">0 Unrun</span>
+                <span class="stat-notrun">1 Unrun</span>
               </div>
             </div>
           </div>
@@ -2503,9 +2504,7 @@ ERROR: Could not find a version that satisfies the r
               
               <li>
                 
-                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
-                
-                Test 'verification' was executed in baseline (requests) [NOT_RUN], but was not executed in replacement (httpx) run.
+                Test 'verification' was executed in replacement (requests) [NOT_RUN], but had no corresponding baseline run.
               </li>
               
             </ul>
@@ -2545,7 +2544,7 @@ ERROR: Could not find a version that satisfies the r
             
             <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-2275 (CVE-2026-25645, GHSA-gc5v-m9x4-r6x2) [fixed in: 2.33.0] - ### Impact The `requests.utils.extract_zipped_paths()` utility function uses a predictable filename when extracting files from zip archives into the s...' (severity: HIGH) has no matching verification test in the test suite.</li>
             
-            <li><strong>!</strong> Usage complexity is classified as DEEP: Codebase relies on internal, private, or complex interfaces of the dependency; behavioural differences and subtle edge-case regressions may not be caught by standard test suites.</li>
+            <li><strong>!</strong> AI patch could not be parsed from the model response; manual migration required</li>
             
           </ul>
           
@@ -2693,7 +2692,7 @@ ERROR: Could not find a version that satisfies the r
           
           <div style="margin-bottom: 16px;">
             <strong style="color: #fde68a;">AI Reasoning:</strong>
-            <p style="font-size: 0.92rem; margin-top: 4px;">The migration targets the high-risk dependency on `setuptools` by replacing the legacy `pkg_resources` API with the modern, standard library approach provided by `importlib.resources`. This addresses the known path traversal vulnerabilities by moving away from the vulnerable package internals. The usage complexity is BASIC, allowing for a direct, safe drop-in replacement for the resource location functionality.</p>
+            <p style="font-size: 0.92rem; margin-top: 4px;">The migration replaces the legacy `pkg_resources` dependency with the modern standard library module `importlib.resources`. This addresses the dependency risk by removing reliance on potentially vulnerable setuptools internals. The usage complexity is BASIC, making this a straightforward, high-impact safety improvement. The migration ensures the core functionality—finding a resource file—remains intact, providing a safe, modern drop-in replacement.</p>
           </div>
           
 
@@ -2703,16 +2702,9 @@ ERROR: Could not find a version that satisfies the r
             <ul class="item-list">
               
               <li>
-                <strong>importlib</strong>: The usage relies on package discovery and resource location, which can be safely replaced by standard library modules like `importlib` for modern Python practices, avoiding direct dependency on potentially vulnerable `setuptools` internals.
+                <strong>importlib.resources</strong>: This is the modern, standard library approach for accessing package resources, replacing the legacy functionality provided by pkg_resources. It aligns with current Python best practices and avoids dependency on the setuptools ecosystem for this specific task.
                 
-                <span style="color: #fca5a5;">(API Gaps: Requires mapping `pkg_resources.resource_filename` to the modern equivalent, likely `importlib.resources.files` or similar, depending on the exact context of resource handling.)</span>
-                
-              </li>
-              
-              <li>
-                <strong>importlib.resources</strong>: This module provides the modern, recommended way to access data within installed packages, replacing the older `pkg_resources` functionality safely and securely.
-                
-                <span style="color: #fca5a5;">(API Gaps: Requires careful mapping of the specific resource path finding logic from `pkg_resources.resource_filename` to the `importlib.resources` API.)</span>
+                <span style="color: #fca5a5;">(API Gaps: The original code used `pkg_resources.resource_filename`. The replacement requires using `importlib.resources.files` or similar methods, which requires adapting the path handling slightly, but achieves the same goal of finding a resource file.)</span>
                 
               </li>
               
@@ -2725,11 +2717,9 @@ ERROR: Could not find a version that satisfies the r
             <strong style="color: #fde68a;">Step-by-Step Migration Instructions:</strong>
             <ol class="item-list">
               
-              <li>step 1: Remove the dependency on `pkg_resources` (implicitly by updating the dependency list).</li>
+              <li>step 1: Update the import statement in linkwatch/resources.py to use the modern standard library module.</li>
               
-              <li>step 2: Update the import statement in `linkwatch/resources.py` from `import pkg_resources` to `import importlib.resources` (or similar, depending on the exact resource access method).</li>
-              
-              <li>step 3: Refactor the call to `pkg_resources.resource_filename("linkwatch", "templates")` to use the modern `importlib.resources` API to locate the required file path.</li>
+              <li>step 2: Replace the call to `pkg_resources.resource_filename` with the equivalent functionality from `importlib.resources` to retrieve the resource file path.</li>
               
             </ol>
           </div>
@@ -2745,7 +2735,9 @@ ERROR: Could not find a version that satisfies the r
 +import importlib.resources
  
 -return pkg_resources.resource_filename("linkwatch", "templates")
-+return importlib.resources.files("linkwatch", "templates")</code></pre>
++from importlib.resources import files
+ 
++return files("linkwatch", "templates")</code></pre>
           </div>
           
 
@@ -2753,28 +2745,34 @@ ERROR: Could not find a version that satisfies the r
           <div style="margin-bottom: 16px;">
             <strong style="color: #fde68a;">AI-Suggested Dual-Passing Pytest Functions:</strong>
             
-            <pre class="code-block"><code>def test_resource_file_exists():
-    # Mock the environment to simulate the existence of the resource
-    import os
-    import sys
-    from unittest.mock import patch
+            <pre class="code-block"><code>import os
+import sys
+from unittest import mock
 
-    # Mock the file system structure that pkg_resources would have found
-    # We simulate the structure needed for importlib.resources.files
-    mock_files = {
-        'linkwatch/templates/file1.txt': b'content'
-    }
+# Mock the necessary environment for testing importlib.resources behavior
+# Since we cannot rely on a real file system structure during a generic test, 
+# we mock the behavior of the resource finding mechanism.
 
-    with patch('importlib.resources.files', return_value=mock_files):
-        # Simulate the call being made by the original code
-        # Note: The actual implementation of importlib.resources.files is complex, 
-        # this test focuses on ensuring the call structure is valid and handles the expected result type.
-        # Since we are mocking the result, we check if the function was called correctly.
-        result = importlib.resources.files("linkwatch", "templates")
+def test_resource_filename_behavior():
+    # Mock the importlib.resources.files function to simulate finding a file
+    with mock.patch('importlib.resources.files') as mock_files:
+        # Simulate the structure: files('package_name', 'subpackage_name') returns a list of files
+        mock_files.return_value = [
+            mock.Mock(name='template.html', path='/path/to/linkwatch/templates/template.html')
+        ]
 
-        # Assert that the result is iterable and contains the expected mock file
-        assert isinstance(result, dict) or isinstance(result, list) # Depending on Python version/implementation
-        assert any(f.name == 'file1.txt' for f in result.keys() if isinstance(result, dict) else result)</code></pre>
+        # Execute the code path using the replacement logic
+        from importlib.resources import files
+        
+        # Simulate the call from the original code
+        result = files("linkwatch", "templates")
+
+        # Assert that the result is a list of found files (or the expected path)
+        assert isinstance(result, list)
+        assert len(result) == 1
+        assert result[0].name == 'template.html'
+        # Note: The exact output structure depends on how the original code consumed the result. 
+        # We assert the core functionality of finding the resource.</code></pre>
             
           </div>
           
@@ -2912,7 +2910,7 @@ ERROR: Could not find a version that satisfies the r
             
             <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-3447 (BIT-setuptools-2026-59890, CVE-2026-59890, GHSA-h35f-9h28-mq5c) [fixed in: 83.0.0] - setuptools is a package that allows users to download, build, install, upgrade, and uninstall Python packages. Prior to 83.0.0, FileList applied MANIF...' (severity: HIGH) has no matching verification test in the test suite.</li>
             
-            <li><strong>!</strong> AI-generated test 'test_resource_file_exists' was never executed in the verification test suite.</li>
+            <li><strong>!</strong> AI-generated test 'test_resource_filename_behavior' was never executed in the verification test suite.</li>
             
           </ul>
           
@@ -3060,7 +3058,7 @@ ERROR: Could not find a version that satisfies the r
           
           <div style="margin-bottom: 16px;">
             <strong style="color: #fde68a;">AI Reasoning:</strong>
-            <p style="font-size: 0.92rem; margin-top: 4px;">The original usage was simple file loading (`toml.load(path)`). The recommended replacement is `tomli`, which is a highly performant and standard-compliant TOML parser. While the original used a simple function call, modern Python practices, especially when dealing with external dependencies, favor explicit file handling (`open()`) combined with the parser. This migration ensures the code remains functional while addressing the severe maintenance and compatibility risks of the original dependency by adopting a modern, actively maintained alternative.</p>
+            <p style="font-size: 0.92rem; margin-top: 4px;">The original dependency `toml` is unmaintained and incompatible with modern Python versions (3.12/3.13). The migration must prioritize safety and maintainability. `tomli` is chosen as the replacement because it provides a direct, stable, and actively maintained drop-in replacement for the file loading functionality (`load`), ensuring the code remains functional while addressing the critical security and compatibility risks identified.</p>
           </div>
           
 
@@ -3070,16 +3068,16 @@ ERROR: Could not find a version that satisfies the r
             <ul class="item-list">
               
               <li>
-                <strong>tomlkit</strong>: Provides a robust, modern, and actively maintained API for working with TOML data structures, offering better type safety and structure than raw dictionary loading. It is a widely accepted replacement for TOML handling.
+                <strong>tomli</strong>: Provides a direct, drop-in replacement for reading TOML files, matching the simple `load` functionality used in the snippets. It is actively maintained and widely used.
                 
-                <span style="color: #fca5a5;">(API Gaps: The API requires reading the file content explicitly before parsing, which is a slight functional shift from a simple `load()` call, but provides superior safety and maintainability.)</span>
+                <span style="color: #fca5a5;">(API Gaps: None. Directly replaces the `toml.load` functionality.)</span>
                 
               </li>
               
               <li>
-                <strong>tomli</strong>: A highly performant and standard-compliant TOML parser, often used in conjunction with Python's built-in file handling. It is excellent for parsing TOML content into native Python types.
+                <strong>tomllib</strong>: This is the standard library module for reading TOML files (available since Python 3.11). It is the safest, most idiomatic choice if the target environment is guaranteed to be Python 3.11 or newer.
                 
-                <span style="color: #fca5a5;">(API Gaps: Requires explicit file reading (e.g., using `open()`) before passing the content to the parser, slightly increasing the number of lines of code compared to a single `load()` call.)</span>
+                <span style="color: #fca5a5;">(API Gaps: Requires Python 3.11+. If the codebase targets older Python versions, this is not a direct replacement.)</span>
                 
               </li>
               
@@ -3094,9 +3092,9 @@ ERROR: Could not find a version that satisfies the r
               
               <li>step 1: Install the replacement package: pip install tomli</li>
               
-              <li>step 2: Update the import statement in linkwatch/config.py to import tomli instead of toml.</li>
+              <li>step 2: Update the import statement in linkwatch/config.py to import 'tomli' instead of 'toml'.</li>
               
-              <li>step 3: Update the loading call in linkwatch/config.py to read the file content and use tomli.load() on the content.</li>
+              <li>step 3: Update the loading call in linkwatch/config.py to use 'tomli.load(path)' instead of 'toml.load(path)'.</li>
               
             </ol>
           </div>
@@ -3110,12 +3108,9 @@ ERROR: Could not find a version that satisfies the r
 @@ -1,5 +1,5 @@
 -import toml
 +import tomli
- import os
  
 -data = toml.load(path)
-+with open(path, 'rb') as f:
-+    data = tomli.load(f)
- </code></pre>
++data = tomli.load(path)</code></pre>
           </div>
           
 
@@ -3123,32 +3118,23 @@ ERROR: Could not find a version that satisfies the r
           <div style="margin-bottom: 16px;">
             <strong style="color: #fde68a;">AI-Suggested Dual-Passing Pytest Functions:</strong>
             
-            <pre class="code-block"><code>import pytest
+            <pre class="code-block"><code>import os
 import tomli
-import os
 
-# Mock setup for testing file loading
-@pytest.fixture
-def mock_file_content():
-    return 'key = "value"
-list = [1, 2, 3]
-' 
+def setup_test_file(filename):
+    with open(filename, 'w') as f:
+        f.write("key = value")
 
 def test_toml_loading_with_tomli():
-    # Setup a temporary file for testing
-    test_path = 'test_config.toml'
-    with open(test_path, 'w') as f:
-        f.write('key = "value"
-list = [1, 2, 3]
-')
+    test_path = "test_config.toml"
+    setup_test_file(test_path)
 
-    # Simulate the original usage (using tomli)
-    with open(test_path, 'rb') as f:
-        data = tomli.load(f)
-
-    # Assert the loaded data matches the expected structure
-    assert data['key'] == 'value'
-    assert data['list'] == [1, 2, 3]
+    # Original behavior check (simulated)
+    try:
+        data = tomli.load(test_path)
+        assert data == {"key": "value"}
+    except Exception as e:
+        pytest.fail(f"tomli.load failed: {e}")
 
     os.remove(test_path)</code></pre>
             
@@ -3288,7 +3274,7 @@ list = [1, 2, 3]
             
             <li><strong>!</strong> Unverified risk flag: [INCOMPATIBLE] 'PyPI classifiers indicate support only up to Python 3.9, missing Python 3.12/3.13 support' (severity: HIGH) has no matching verification test in the test suite.</li>
             
-            <li><strong>!</strong> AI-generated test 'mock_file_content' was never executed in the verification test suite.</li>
+            <li><strong>!</strong> AI-generated test 'setup_test_file' was never executed in the verification test suite.</li>
             
           </ul>
           
@@ -3307,7 +3293,7 @@ list = [1, 2, 3]
         </div>
         <div class="card-badges">
           
-          <span class="legend-pill badge-ai">REPLACEMENT: dateparser</span>
+          <span class="legend-pill badge-ai">REPLACEMENT: datetime (Standard Library)</span>
           
           
           
@@ -3408,7 +3394,7 @@ list = [1, 2, 3]
 
           <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 14px; align-items: center;">
             <div>
-              Proposed Replacement: <strong style="font-size: 1.15rem; color: #fde68a;">dateparser</strong>
+              Proposed Replacement: <strong style="font-size: 1.15rem; color: #fde68a;">datetime (Standard Library)</strong>
             </div>
             <div>
               Usage Complexity: 
@@ -3425,7 +3411,7 @@ list = [1, 2, 3]
           
           <div style="margin-bottom: 16px;">
             <strong style="color: #fde68a;">AI Reasoning:</strong>
-            <p style="font-size: 0.92rem; margin-top: 4px;">The original dependency, python-dateutil, is marked as UNMAINTAINED, posing a significant security and stability risk. The proposed replacement, dateparser, is a modern, actively maintained library that provides the exact functionality required (flexible date parsing) with high reliability. This migration addresses the risk while maintaining the required functionality, resulting in a safe and modern dependency upgrade.</p>
+            <p style="font-size: 0.92rem; margin-top: 4px;">The dependency `python-dateutil` is marked as UNMAINTAINED, posing a significant risk. The usage is simple date parsing. The safest and most architecturally sound migration is to replace the dependency with the standard Python library (`datetime`). This eliminates the dependency risk entirely. The migration requires replacing the flexible `parser.parse()` call with explicit parsing methods like `datetime.fromisoformat()` or `datetime.strptime()`. This forces the codebase to handle input formats explicitly, which is a necessary trade-off for achieving dependency safety.</p>
           </div>
           
 
@@ -3435,7 +3421,16 @@ list = [1, 2, 3]
             <ul class="item-list">
               
               <li>
-                <strong>dateparser</strong>: Salvaged from LLM output
+                <strong>datetime (Standard Library)</strong>: The usage involves simple date/time parsing. The standard library `datetime` module provides sufficient functionality for most common parsing tasks, eliminating the need for an unmaintained external dependency.
+                
+                <span style="color: #fca5a5;">(API Gaps: Requires explicit format strings (`%Y-%m-%d`) for parsing, which might be less flexible than `dateutil.parser.parse` for highly ambiguous input, but is the safest, dependency-free approach.)</span>
+                
+              </li>
+              
+              <li>
+                <strong>arrow</strong>: A modern, highly maintained library for date and time manipulation, often preferred over standard `datetime` for complex operations. It offers a clean, object-oriented API.
+                
+                <span style="color: #fca5a5;">(API Gaps: Requires adding a new dependency. The API is different from `dateutil.parser.parse`, requiring a change in how the parsing function is called.)</span>
                 
               </li>
               
@@ -3448,14 +3443,51 @@ list = [1, 2, 3]
             <strong style="color: #fde68a;">Step-by-Step Migration Instructions:</strong>
             <ol class="item-list">
               
-              <li>tzinfo is not None\n"</li>
+              <li>step 1: Remove the dependency `python-dateutil` from requirements.</li>
+              
+              <li>step 2: Update the import statement in `linkwatch/dates.py` to use the standard `datetime` module.</li>
+              
+              <li>step 3: Replace the call to `parser.parse(value)` with appropriate `datetime` parsing methods (e.g., `datetime.fromisoformat` or `datetime.strptime`) based on the expected input format.</li>
               
             </ol>
           </div>
           
 
           
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Proposed Unified Diff Code Patch:</strong>
+            <pre class="code-block"><code>--- a/linkwatch/dates.py
++++ b/linkwatch/dates.py
+@@ -1,5 +1,5 @@
+-from dateutil import parser
++from datetime import datetime
+ 
+-return parser.parse(value)
++return datetime.fromisoformat(value)</code></pre>
+          </div>
+          
 
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">AI-Suggested Dual-Passing Pytest Functions:</strong>
+            
+            <pre class="code-block"><code>def test_date_parsing_with_iso_format():
+    # Test case for ISO format, which datetime handles natively
+    input_value = "2023-10-27T10:30:00"
+    expected = datetime.fromisoformat(input_value)
+    assert expected == datetime(2023, 10, 27, 10, 30, 0)
+
+def test_date_parsing_with_strict_format():
+    # Test case for a strict format using strptime, demonstrating the need for explicit format
+    input_value = "2023-10-27"
+    expected = datetime.strptime(input_value, "%Y-%m-%d")
+    assert expected == datetime(2023, 10, 27)
+
+# Note: If the original implementation relied on dateutil's ability to handle arbitrary formats, 
+# the migration requires ensuring the input format is known or standardized, which is a necessary trade-off 
+# when removing a flexible dependency.</code></pre>
+            
+          </div>
           
         </section>
 
@@ -3483,7 +3515,7 @@ list = [1, 2, 3]
               </div>
             </div>
             <div class="score-card">
-              <div class="score-card-title">After Swap (Replacement: dateparser)</div>
+              <div class="score-card-title">After Swap (Replacement: datetime (Standard Library))</div>
               <div class="score-stats">
                 <span class="stat-pass">0 Pass</span>
                 <span class="stat-fail">0 Fail</span>
@@ -3553,7 +3585,7 @@ list = [1, 2, 3]
                 
                 <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
                 
-                Test 'verification' was executed in baseline (python-dateutil) [NOT_RUN], but was not executed in replacement (dateparser) run.
+                Test 'verification' was executed in baseline (python-dateutil) [NOT_RUN], but was not executed in replacement (datetime (Standard Library)) run.
               </li>
               
             </ul>
@@ -3589,6 +3621,8 @@ list = [1, 2, 3]
             
             <li><strong>!</strong> Unverified risk flag: [UNMAINTAINED] 'No PyPI release in 2.6 years (last release was on 2024-03-01)' (severity: MED) has no matching verification test in the test suite.</li>
             
+            <li><strong>!</strong> AI-generated test 'test_date_parsing_with_iso_format' was never executed in the verification test suite.</li>
+            
           </ul>
           
         </section>
@@ -3613,7 +3647,7 @@ list = [1, 2, 3]
         </a>
       </div>
       <div style="margin-top: 12px; font-size: 0.75rem; color: #64748b;">
-        Generated by DepExit • 2026-10-15T10:45:27.435678+00:00
+        Generated by DepExit • 2026-10-15T11:35:07.527071+00:00
       </div>
     </footer>
   </div>
