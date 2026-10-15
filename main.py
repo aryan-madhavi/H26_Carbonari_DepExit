@@ -140,10 +140,15 @@ def main(repo_path: str) -> list[ExitCapsule]:
     # -------------------------------------------------------------------------
     print("\n[Stage 2/4] Filtering candidate dependencies to HIGH and MED risk severity...")
     risky_deps: list[tuple[Dependency, list[RiskFlag]]] = []
+    seen_dep_names: set[str] = set()
     for dep in discovered_deps:
-        dep_risks = flags_by_dep.get(dep.name.lower(), [])
+        norm_name = dep.name.lower()
+        if norm_name in seen_dep_names:
+            continue
+        dep_risks = flags_by_dep.get(norm_name, [])
         high_med_risks = [r for r in dep_risks if _is_high_or_med(r.severity)]
         if high_med_risks:
+            seen_dep_names.add(norm_name)
             risky_deps.append((dep, high_med_risks))
 
     if not risky_deps:

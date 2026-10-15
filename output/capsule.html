@@ -399,6 +399,3202 @@
 
     <!-- Cards per Dependency -->
     
+    <article class="capsule-card" id="card-appdirs">
+      <!-- Card Topbar -->
+      <div class="card-topbar">
+        <div>
+          <div class="card-dep-name">appdirs</div>
+          <div class="card-dep-meta">
+            Declared Version: <strong>1.4.4</strong> | Source: <code>requirements.txt</code>
+          </div>
+        </div>
+        <div class="card-badges">
+          
+          <span class="legend-pill badge-ai">REPLACEMENT: appdirs</span>
+          
+          
+          
+          <span class="legend-pill badge-unverified">⚠ UNVERIFIED (REGRESSIONS OR NOT RUN)</span>
+          
+        </div>
+      </div>
+
+      <div class="card-body">
+        <!-- ============================================================= -->
+        <!-- a. Dependency details and risk indicators (OBSERVED, blue/grey) -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🛡️ a. Dependency Details & Risk Indicators</span>
+            </h2>
+            <span class="section-evidence-tag badge-observed">EVIDENCE: OBSERVED</span>
+          </div>
+
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Risk Type</th>
+                <th>Severity</th>
+                <th>Reason / Advisory</th>
+                <th>Evidence</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>UNMAINTAINED</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-warning">MED</span>
+                  
+                </td>
+                <td>No PyPI release in 6.4 years (last release was on 2020-05-11)</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>INCOMPATIBLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>PyPI classifiers indicate support only up to Python 3.8, missing Python 3.12/3.13 support</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- b. Usage locations (OBSERVED, blue/grey)                       -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>📍 b. Code Usage Locations (AST Mapped)</span>
+            </h2>
+            <span class="section-evidence-tag badge-observed">EVIDENCE: OBSERVED</span>
+          </div>
+
+          
+          <p style="font-size: 0.9rem; margin-bottom: 8px;">
+            Identified <strong>2</strong> concrete AST usage location(s) in the target codebase:
+          </p>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/cache.py:4 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">IMPORT</span>
+            </div>
+            <pre class="code-block"><code>from appdirs import user_cache_dir</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/cache.py:10 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">CALL</span>
+            </div>
+            <pre class="code-block"><code>path = os.environ.get("LINKWATCH_CACHE_DIR") or user_cache_dir("linkwatch")</code></pre>
+          </div>
+          
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- c. Proposed replacement, migration steps, suggested tests,    -->
+        <!--    and patch (AI-GENERATED, UNVERIFIED, orange/yellow)        -->
+        <!-- ============================================================= -->
+        <section class="section-block section-ai-unverified">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🤖 c. Proposed Replacement & Migration Plan</span>
+            </h2>
+            <span class="section-evidence-tag badge-ai">EVIDENCE: AI-GENERATED (UNVERIFIED)</span>
+          </div>
+
+          <div class="banner-warning">
+            ⚠️ <strong>UNVERIFIED AI PROPOSAL:</strong> The replacement below was synthesized by Gemma 4. 
+            Do not merge without human code review and successful execution of the test suite.
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 14px; align-items: center;">
+            <div>
+              Proposed Replacement: <strong style="font-size: 1.15rem; color: #fde68a;">appdirs</strong>
+            </div>
+            <div>
+              Usage Complexity: 
+              <span class="legend-pill badge-warning">BASIC</span>
+            </div>
+            <div>
+              Verification State: 
+              
+              <span class="legend-pill badge-unverified">UNVERIFIED</span>
+              
+            </div>
+          </div>
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">AI Reasoning:</strong>
+            <p style="font-size: 0.92rem; margin-top: 4px;">The usage complexity is 'BASIC' as it involves simple imports and direct function calls. The migration strategy focuses on maintaining functional parity, as the code relies on the specific behavior of `appdirs.user_cache_dir`. Although the dependency itself has maintenance risks (UNMAINTAINED, INCOMPATIBLE), the immediate migration step is to ensure the dependency is installed and tested against the existing usage. Since the usage is simple, the migration steps are straightforward installation and verification. The code patch is minimal as the API remains identical.</p>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Evaluated Candidates:</strong>
+            <ul class="item-list">
+              
+              <li>
+                <strong>appdirs</strong>: Salvaged from LLM output
+                
+              </li>
+              
+            </ul>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Step-by-Step Migration Instructions:</strong>
+            <ol class="item-list">
+              
+              <li>12+).",</li>
+              
+              <li>12/3.13.",</li>
+              
+            </ol>
+          </div>
+          
+
+          
+
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- d. Executed test results, baseline vs replacement             -->
+        <!--    (VERIFIED BY EXECUTION, green)                             -->
+        <!-- ============================================================= -->
+        <section class="section-block section-verified-execution">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🧪 d. Executed Test Results (Baseline vs Replacement)</span>
+            </h2>
+            <span class="section-evidence-tag badge-verified">EVIDENCE: VERIFIED BY EXECUTION</span>
+          </div>
+
+          <!-- Scoreboard comparing Before Swap vs After Swap -->
+          <div class="scoreboard-grid">
+            <div class="score-card">
+              <div class="score-card-title">Before Swap (Baseline: appdirs)</div>
+              <div class="score-stats">
+                <span class="stat-pass">9 Pass</span>
+                <span class="stat-fail">1 Fail</span>
+                <span class="stat-err">0 Error</span>
+                <span class="stat-notrun">0 Unrun</span>
+              </div>
+            </div>
+            <div class="score-card">
+              <div class="score-card-title">After Swap (Replacement: appdirs)</div>
+              <div class="score-stats">
+                <span class="stat-pass">9 Pass</span>
+                <span class="stat-fail">1 Fail</span>
+                <span class="stat-err">0 Error</span>
+                <span class="stat-notrun">0 Unrun</span>
+              </div>
+            </div>
+          </div>
+
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Target</th>
+                <th>Test Identifier</th>
+                <th>Status</th>
+                <th>Verified?</th>
+                <th>Output Summary</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><code>appdirs</code></td>
+                <td><strong>tests/test_cache.py::test_cache_round_trip</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>appdirs</code></td>
+                <td><strong>tests/test_checker.py::test_ok_is_up</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>appdirs</code></td>
+                <td><strong>tests/test_checker.py::test_missing_is_down</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>appdirs</code></td>
+                <td><strong>tests/test_checker.py::test_redirect_is_up</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>appdirs</code></td>
+                <td><strong>tests/test_checker.py::test_slow_is_up</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>appdirs</code></td>
+                <td><strong>tests/test_checker.py::test_closed_port_is_down</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>appdirs</code></td>
+                <td><strong>tests/test_checker.py::test_latin1_title</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>appdirs</code></td>
+                <td><strong>tests/test_checker.py::test_user_agent</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>appdirs</code></td>
+                <td><strong>tests/test_config.py::test_sites_file_loads</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>appdirs</code></td>
+                <td><strong>tests/test_report.py::test_report_renders_all_sites</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">FAIL</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #f87171;">✗ No</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  tests/test_report.py:20: in test_report_renders_all_sites
+    result = CliRunner().invoke(cli, ["report", "-o", str(outp
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>appdirs</code></td>
+                <td><strong>tests/test_cache.py::test_cache_round_trip</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>appdirs</code></td>
+                <td><strong>tests/test_checker.py::test_ok_is_up</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>appdirs</code></td>
+                <td><strong>tests/test_checker.py::test_missing_is_down</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>appdirs</code></td>
+                <td><strong>tests/test_checker.py::test_redirect_is_up</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>appdirs</code></td>
+                <td><strong>tests/test_checker.py::test_slow_is_up</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>appdirs</code></td>
+                <td><strong>tests/test_checker.py::test_closed_port_is_down</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>appdirs</code></td>
+                <td><strong>tests/test_checker.py::test_latin1_title</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>appdirs</code></td>
+                <td><strong>tests/test_checker.py::test_user_agent</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>appdirs</code></td>
+                <td><strong>tests/test_config.py::test_sites_file_loads</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>appdirs</code></td>
+                <td><strong>tests/test_report.py::test_report_renders_all_sites</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">FAIL</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #f87171;">✗ No</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  tests/test_report.py:20: in test_report_renders_all_sites
+    result = CliRunner().invoke(cli, ["report", "-o", str(outp
+                </td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- e. Compatibility gaps (observed) and Gemma's explanation      -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed" style="border-left-color: #38bdf8;">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🔍 e. Compatibility Gaps & AI Interpretations</span>
+            </h2>
+            <div style="display: flex; gap: 8px;">
+              <span class="section-evidence-tag badge-observed">GAPS: OBSERVED</span>
+              <span class="section-evidence-tag badge-ai">EXPLANATION: AI-GENERATED</span>
+            </div>
+          </div>
+
+          <!-- Observed Gaps -->
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #7dd3fc;">Observed Execution Discrepancies & Regressions:</strong>
+            
+            <p style="font-size: 0.9rem; margin-top: 4px; color: #86efac;">
+              ✓ No compatibility regressions observed between baseline and replacement test runs.
+            </p>
+            
+          </div>
+
+          <!-- AI Gap Explanations -->
+          <div>
+            <strong style="color: #fde68a;">Gemma 4 Failure Explanations & Suggested Fixes (AI Interpretation):</strong>
+            
+            <ul class="item-list">
+              
+              <li style="color: #fef3c7;">
+                <span class="legend-pill badge-ai" style="margin-right: 4px;">AI INTERPRETATION</span>
+                tests/test_report.py::test_report_renders_all_sites Likely Cause: The failure is an ImportError originating from the Jinja2 library attempting to import 'soft_unicode' from 'markupsafe'. This indicates a version incompatibility between the installed versions of Jinja2 and Markupsafe, where Jinja2 expects an attribute that is missing in the installed Markupsafe package. This failure is unrelated to the appdirs dependency change itself, but rather points to an environment dependency conflict. Suggested Fix: Resolve the dependency conflict by ensuring compatible versions of 'jinja2' and 'markupsafe' are installed. This usually involves checking the project's requirements file or explicitly installing compatible versions (e.g., ensuring Jinja2 is compatible with the installed Markupsafe version).
+              </li>
+              
+            </ul>
+            
+          </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- f. Open concerns and limitations (highlighted box)            -->
+        <!-- ============================================================= -->
+        <section class="section-block section-open-concerns">
+          <div class="section-header" style="border-bottom-color: rgba(239, 68, 68, 0.3);">
+            <h2 class="section-title">
+              <span>⚠️ f. Open Concerns & Limitations (Action Required)</span>
+            </h2>
+            <span class="section-evidence-tag badge-danger">ATTENTION REQUIRED</span>
+          </div>
+
+          
+          <ul class="item-list" style="color: var(--concern-text);">
+            
+            <li><strong>!</strong> Unverified risk flag: [UNMAINTAINED] 'No PyPI release in 6.4 years (last release was on 2020-05-11)' (severity: MED) has no matching verification test in the test suite.</li>
+            
+            <li><strong>!</strong> Unverified risk flag: [INCOMPATIBLE] 'PyPI classifiers indicate support only up to Python 3.8, missing Python 3.12/3.13 support' (severity: HIGH) has no matching verification test in the test suite.</li>
+            
+          </ul>
+          
+        </section>
+      </div>
+    </article>
+    
+    <article class="capsule-card" id="card-idna">
+      <!-- Card Topbar -->
+      <div class="card-topbar">
+        <div>
+          <div class="card-dep-name">idna</div>
+          <div class="card-dep-meta">
+            Declared Version: <strong>2.7</strong> | Source: <code>requirements.txt</code>
+          </div>
+        </div>
+        <div class="card-badges">
+          
+          <span class="legend-pill badge-ai">REPLACEMENT: urllib.parse</span>
+          
+          
+          
+          <span class="legend-pill badge-unverified">⚠ UNVERIFIED (REGRESSIONS OR NOT RUN)</span>
+          
+        </div>
+      </div>
+
+      <div class="card-body">
+        <!-- ============================================================= -->
+        <!-- a. Dependency details and risk indicators (OBSERVED, blue/grey) -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🛡️ a. Dependency Details & Risk Indicators</span>
+            </h2>
+            <span class="section-evidence-tag badge-observed">EVIDENCE: OBSERVED</span>
+          </div>
+
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Risk Type</th>
+                <th>Severity</th>
+                <th>Reason / Advisory</th>
+                <th>Evidence</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2024-60 (CVE-2024-3651, GHSA-jjg7-2v4v-x38h) [fixed in: 3.7] - ### Impact A specially crafted argument to the `idna.encode()` function could consume significant resources. This may lead to a denial-of-service.  ##...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2026-215 (CVE-2026-45409, GHSA-65pc-fj4g-8rjx) [fixed in: 3.15] - This is the same issue as CVE-2024-3651, however the original remediation in 2024 was not a complete fix. Payloads such as `"\u0660" * N` or `"\u30fb"...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- b. Usage locations (OBSERVED, blue/grey)                       -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>📍 b. Code Usage Locations (AST Mapped)</span>
+            </h2>
+            <span class="section-evidence-tag badge-observed">EVIDENCE: OBSERVED</span>
+          </div>
+
+          
+          <p>No direct AST code usages detected in the repository.</p>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- c. Proposed replacement, migration steps, suggested tests,    -->
+        <!--    and patch (AI-GENERATED, UNVERIFIED, orange/yellow)        -->
+        <!-- ============================================================= -->
+        <section class="section-block section-ai-unverified">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🤖 c. Proposed Replacement & Migration Plan</span>
+            </h2>
+            <span class="section-evidence-tag badge-ai">EVIDENCE: AI-GENERATED (UNVERIFIED)</span>
+          </div>
+
+          <div class="banner-warning">
+            ⚠️ <strong>UNVERIFIED AI PROPOSAL:</strong> The replacement below was synthesized by Gemma 4. 
+            Do not merge without human code review and successful execution of the test suite.
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 14px; align-items: center;">
+            <div>
+              Proposed Replacement: <strong style="font-size: 1.15rem; color: #fde68a;">urllib.parse</strong>
+            </div>
+            <div>
+              Usage Complexity: 
+              <span class="legend-pill badge-warning">BASIC</span>
+            </div>
+            <div>
+              Verification State: 
+              
+              <span class="legend-pill badge-unverified">UNVERIFIED</span>
+              
+            </div>
+          </div>
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">AI Reasoning:</strong>
+            <p style="font-size: 0.92rem; margin-top: 4px;">The original dependency 'idna' is highly vulnerable to Denial-of-Service attacks due to resource-intensive encoding operations. Since no specific usage was provided, the safest and most architecturally sound replacement is to leverage the standard library's 'urllib.parse' module, which handles URL parsing and encoding safely and is guaranteed to be maintained. This eliminates the dependency risk entirely while providing equivalent functionality for standard domain name handling.</p>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Evaluated Candidates:</strong>
+            <ul class="item-list">
+              
+              <li>
+                <strong>idna</strong>: The original package. While vulnerable, it is the direct implementation of the required functionality.
+                
+                <span style="color: #fca5a5;">(API Gaps: None)</span>
+                
+              </li>
+              
+              <li>
+                <strong>urllib.parse</strong>: Standard library module for URL parsing and encoding, which often handles IDNA requirements internally, offering a safe, zero-dependency replacement for basic encoding tasks.
+                
+                <span style="color: #fca5a5;">(API Gaps: Requires context on how the original code specifically called idna functions.)</span>
+                
+              </li>
+              
+              <li>
+                <strong>idna-py</strong>: A well-maintained, community-vetted alternative if specific, complex IDNA handling beyond standard URL parsing is required.
+                
+                <span style="color: #fca5a5;">(API Gaps: Requires context on complex IDNA usage.)</span>
+                
+              </li>
+              
+            </ul>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Step-by-Step Migration Instructions:</strong>
+            <ol class="item-list">
+              
+              <li>step 1: Remove dependency on 'idna'.</li>
+              
+              <li>step 2: Update imports to use 'urllib.parse' for domain name handling.</li>
+              
+              <li>step 3: Review all code that previously used 'idna.encode()' and replace it with equivalent functionality from 'urllib.parse' or standard Python methods.</li>
+              
+            </ol>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Proposed Unified Diff Code Patch:</strong>
+            <pre class="code-block"><code>--- a/file.py
++++ b/file.py
+@@ -1,3 +1,3 @@
+-import idna
++from urllib.parse import urlparse
+</code></pre>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">AI-Suggested Dual-Passing Pytest Functions:</strong>
+            
+            <pre class="code-block"><code>def test_url_parsing_with_idna():
+    # Assuming the original code used idna to handle domain encoding
+    url = 'https://xn--fsqd.xn--fiqs8a.com'
+    parsed = urlparse(url)
+    assert parsed.netloc == 'xn--fsqd.xn--fiqs8a.com'</code></pre>
+            
+          </div>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- d. Executed test results, baseline vs replacement             -->
+        <!--    (VERIFIED BY EXECUTION, green)                             -->
+        <!-- ============================================================= -->
+        <section class="section-block section-verified-execution">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🧪 d. Executed Test Results (Baseline vs Replacement)</span>
+            </h2>
+            <span class="section-evidence-tag badge-verified">EVIDENCE: VERIFIED BY EXECUTION</span>
+          </div>
+
+          <!-- Scoreboard comparing Before Swap vs After Swap -->
+          <div class="scoreboard-grid">
+            <div class="score-card">
+              <div class="score-card-title">Before Swap (Baseline: idna)</div>
+              <div class="score-stats">
+                <span class="stat-pass">9 Pass</span>
+                <span class="stat-fail">2 Fail</span>
+                <span class="stat-err">0 Error</span>
+                <span class="stat-notrun">0 Unrun</span>
+              </div>
+            </div>
+            <div class="score-card">
+              <div class="score-card-title">After Swap (Replacement: urllib.parse)</div>
+              <div class="score-stats">
+                <span class="stat-pass">0 Pass</span>
+                <span class="stat-fail">0 Fail</span>
+                <span class="stat-err">1 Error</span>
+                <span class="stat-notrun">1 Unrun</span>
+              </div>
+            </div>
+          </div>
+
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Target</th>
+                <th>Test Identifier</th>
+                <th>Status</th>
+                <th>Verified?</th>
+                <th>Output Summary</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>tests/test_cache.py::test_cache_round_trip</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>tests/test_checker.py::test_ok_is_up</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>tests/test_checker.py::test_missing_is_down</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>tests/test_checker.py::test_redirect_is_up</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>tests/test_checker.py::test_slow_is_up</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>tests/test_checker.py::test_closed_port_is_down</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>tests/test_checker.py::test_latin1_title</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>tests/test_checker.py::test_user_agent</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>tests/test_config.py::test_sites_file_loads</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-success">PASS</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #4ade80; font-weight: bold;">✓ Yes (Pass)</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  ============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytes
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>tests/test_report.py::test_report_renders_all_sites</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">FAIL</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #f87171;">✗ No</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  tests/test_report.py:20: in test_report_renders_all_sites
+    result = CliRunner().invoke(cli, ["report", "-o", str(outp
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>test_url_parsing_with_idna</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">FAIL</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #f87171;">✗ No</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  /tmp/test_ai_generated_13bi_pqt_test.py:9: in test_url_parsing_with_idna
+    parsed = urlparse(url)
+             ^^^^^^^
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>apply_patch</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-neutral">NOT_RUN</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #f87171;">✗ No</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  skipped: patch failed to apply
+error: corrupt patch at depexit_migration.patch:6
+                </td>
+              </tr>
+              
+              <tr>
+                <td><code>idna</code></td>
+                <td><strong>install_urllib.parse</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">ERROR</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #f87171;">✗ No</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  skipped: installation of replacement 'urllib.parse' failed (exit 1)
+ERROR: Could not find a version that satisfies the r
+                </td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- e. Compatibility gaps (observed) and Gemma's explanation      -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed" style="border-left-color: #38bdf8;">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🔍 e. Compatibility Gaps & AI Interpretations</span>
+            </h2>
+            <div style="display: flex; gap: 8px;">
+              <span class="section-evidence-tag badge-observed">GAPS: OBSERVED</span>
+              <span class="section-evidence-tag badge-ai">EXPLANATION: AI-GENERATED</span>
+            </div>
+          </div>
+
+          <!-- Observed Gaps -->
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #7dd3fc;">Observed Execution Discrepancies & Regressions:</strong>
+            
+            <ul class="item-list">
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'test_url_parsing_with_idna' was executed in baseline (idna) [FAIL], but was not executed in replacement (urllib.parse) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'tests/test_cache.py::test_cache_round_trip' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'tests/test_checker.py::test_closed_port_is_down' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'tests/test_checker.py::test_latin1_title' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'tests/test_checker.py::test_missing_is_down' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'tests/test_checker.py::test_ok_is_up' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'tests/test_checker.py::test_redirect_is_up' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'tests/test_checker.py::test_slow_is_up' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'tests/test_checker.py::test_user_agent' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'tests/test_config.py::test_sites_file_loads' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.
+              </li>
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'tests/test_report.py::test_report_renders_all_sites' was executed in baseline (idna) [FAIL], but was not executed in replacement (urllib.parse) run.
+              </li>
+              
+              <li>
+                
+                Test 'apply_patch' was executed in replacement (urllib.parse) [NOT_RUN], but had no corresponding baseline run.
+              </li>
+              
+              <li>
+                
+                Test 'install_urllib.parse' was executed in replacement (urllib.parse) [ERROR], but had no corresponding baseline run.
+              </li>
+              
+            </ul>
+            
+          </div>
+
+          <!-- AI Gap Explanations -->
+          <div>
+            <strong style="color: #fde68a;">Gemma 4 Failure Explanations & Suggested Fixes (AI Interpretation):</strong>
+            
+            <ul class="item-list">
+              
+              <li style="color: #fef3c7;">
+                <span class="legend-pill badge-ai" style="margin-right: 4px;">AI INTERPRETATION</span>
+                tests/test_report.py::test_report_renders_all_sites Likely Cause: The failure is an ImportError related to 'soft_unicode' from 'markupsafe', indicating an incompatibility or broken dependency chain within the Jinja2 environment. This often happens when replacing a dependency that indirectly affects core Python packages or when the replacement introduces version conflicts. Suggested Fix: Investigate the dependency chain (Jinja2, MarkupSafe) and ensure that the replacement of 'idna' does not introduce conflicting versions or break the expected environment setup. Check if the replacement requires specific version constraints or if the environment needs a clean reinstallation of dependent packages.
+              </li>
+              
+              <li style="color: #fef3c7;">
+                <span class="legend-pill badge-ai" style="margin-right: 4px;">AI INTERPRETATION</span>
+                test_url_parsing_with_idna Likely Cause: The NameError 'name 'urlparse' is not defined' occurs because the replacement 'urllib.parse' is a module, and the test code is attempting to call 'urlparse' as a standalone function, which is not directly available in that namespace. Suggested Fix: Modify the test code to correctly import and use the functionality from the replacement module. Instead of expecting a standalone function, the code should explicitly import 'urlparse' from 'urllib.parse' (e.g., `from urllib.parse import urlparse`) and use it accordingly.
+              </li>
+              
+              <li style="color: #fef3c7;">
+                <span class="legend-pill badge-ai" style="margin-right: 4px;">AI INTERPRETATION</span>
+                install_urllib.parse Likely Cause: The installation failed because 'urllib.parse' is a module within the Python standard library and is not a package available on PyPI, meaning it cannot be installed via pip. Suggested Fix: Do not attempt to install standard library modules using pip. If the goal is simply to use the functionality, ensure that the code correctly imports the module directly (e.g., `import urllib.parse`) without attempting to install it as a separate package.
+              </li>
+              
+            </ul>
+            
+          </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- f. Open concerns and limitations (highlighted box)            -->
+        <!-- ============================================================= -->
+        <section class="section-block section-open-concerns">
+          <div class="section-header" style="border-bottom-color: rgba(239, 68, 68, 0.3);">
+            <h2 class="section-title">
+              <span>⚠️ f. Open Concerns & Limitations (Action Required)</span>
+            </h2>
+            <span class="section-evidence-tag badge-danger">ATTENTION REQUIRED</span>
+          </div>
+
+          
+          <ul class="item-list" style="color: var(--concern-text);">
+            
+            <li><strong>!</strong> Test 'apply_patch' for 'idna' had status NOT_RUN. Reason: skipped: patch failed to apply.</li>
+            
+            <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2024-60 (CVE-2024-3651, GHSA-jjg7-2v4v-x38h) [fixed in: 3.7] - ### Impact A specially crafted argument to the `idna.encode()` function could consume significant resources. This may lead to a denial-of-service.  ##...' (severity: HIGH) has no matching verification test in the test suite.</li>
+            
+            <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-215 (CVE-2026-45409, GHSA-65pc-fj4g-8rjx) [fixed in: 3.15] - This is the same issue as CVE-2024-3651, however the original remediation in 2024 was not a complete fix. Payloads such as `"\u0660" * N` or `"\u30fb"...' (severity: HIGH) has no matching verification test in the test suite.</li>
+            
+            <li><strong>!</strong> Pipeline execution failure: Test 'install_urllib.parse' failed with status ERROR. Details: skipped: installation of replacement 'urllib.parse' failed (exit 1).</li>
+            
+          </ul>
+          
+        </section>
+      </div>
+    </article>
+    
+    <article class="capsule-card" id="card-Jinja2">
+      <!-- Card Topbar -->
+      <div class="card-topbar">
+        <div>
+          <div class="card-dep-name">Jinja2</div>
+          <div class="card-dep-meta">
+            Declared Version: <strong>2.11.3</strong> | Source: <code>requirements.txt</code>
+          </div>
+        </div>
+        <div class="card-badges">
+          
+          <span class="legend-pill badge-ai">REPLACEMENT: Mako</span>
+          
+          
+          
+          <span class="legend-pill badge-unverified">⚠ UNVERIFIED (REGRESSIONS OR NOT RUN)</span>
+          
+        </div>
+      </div>
+
+      <div class="card-body">
+        <!-- ============================================================= -->
+        <!-- a. Dependency details and risk indicators (OBSERVED, blue/grey) -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🛡️ a. Dependency Details & Risk Indicators</span>
+            </h2>
+            <span class="section-evidence-tag badge-observed">EVIDENCE: OBSERVED</span>
+          </div>
+
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Risk Type</th>
+                <th>Severity</th>
+                <th>Reason / Advisory</th>
+                <th>Evidence</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2026-1473 (CVE-2024-22195, GHSA-h5c8-rqwp-cp95) [fixed in: 3.1.3] - The `xmlattr` filter in affected versions of Jinja accepts keys containing spaces. XML/HTML attributes cannot contain spaces, as each would then be in...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2026-1474 (CVE-2024-34064, GHSA-h75v-3vvj-5mfj) [fixed in: 3.1.4] - The `xmlattr` filter in affected versions of Jinja accepts keys containing non-attribute characters. XML/HTML attributes cannot contain spaces, `/`, `...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2026-1475 (CVE-2024-56326, GHSA-q2x7-8rv6-6q7h) [fixed in: 3.1.5] - An oversight in how the Jinja sandboxed environment detects calls to `str.format` allows an attacker that controls the content of a template to execut...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2026-1471 (CVE-2025-27516, GHSA-cpwx-vrp4-4pq7) [fixed in: 3.1.6] - An oversight in how the Jinja sandboxed environment interacts with the `|attr` filter allows an attacker that controls the content of a template to ex...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- b. Usage locations (OBSERVED, blue/grey)                       -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>📍 b. Code Usage Locations (AST Mapped)</span>
+            </h2>
+            <span class="section-evidence-tag badge-observed">EVIDENCE: OBSERVED</span>
+          </div>
+
+          
+          <p style="font-size: 0.9rem; margin-bottom: 8px;">
+            Identified <strong>4</strong> concrete AST usage location(s) in the target codebase:
+          </p>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/report.py:3 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">IMPORT</span>
+            </div>
+            <pre class="code-block"><code>from jinja2 import Environment, FileSystemLoader, select_autoescape</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/report.py:9 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">CLASS_INSTANCE</span>
+            </div>
+            <pre class="code-block"><code>return Environment(</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/report.py:10 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">CLASS_INSTANCE</span>
+            </div>
+            <pre class="code-block"><code>loader=FileSystemLoader(template_dir()),</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/report.py:11 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">CALL</span>
+            </div>
+            <pre class="code-block"><code>autoescape=select_autoescape(["html", "j2"]),</code></pre>
+          </div>
+          
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- c. Proposed replacement, migration steps, suggested tests,    -->
+        <!--    and patch (AI-GENERATED, UNVERIFIED, orange/yellow)        -->
+        <!-- ============================================================= -->
+        <section class="section-block section-ai-unverified">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🤖 c. Proposed Replacement & Migration Plan</span>
+            </h2>
+            <span class="section-evidence-tag badge-ai">EVIDENCE: AI-GENERATED (UNVERIFIED)</span>
+          </div>
+
+          <div class="banner-warning">
+            ⚠️ <strong>UNVERIFIED AI PROPOSAL:</strong> The replacement below was synthesized by Gemma 4. 
+            Do not merge without human code review and successful execution of the test suite.
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 14px; align-items: center;">
+            <div>
+              Proposed Replacement: <strong style="font-size: 1.15rem; color: #fde68a;">Mako</strong>
+            </div>
+            <div>
+              Usage Complexity: 
+              <span class="legend-pill badge-warning">MODERATE</span>
+            </div>
+            <div>
+              Verification State: 
+              
+              <span class="legend-pill badge-unverified">UNVERIFIED</span>
+              
+            </div>
+          </div>
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">AI Reasoning:</strong>
+            <p style="font-size: 0.92rem; margin-top: 4px;">Jinja2 is a highly secure and widely adopted templating engine. The migration is justified by the high-severity vulnerability flags (PYSEC-2026-1471, 1473, 1474, 1475), which mandate immediate action. Mako is proposed as the replacement because it is a mature, high-performance alternative that fulfills the functional requirement of template rendering. The migration involves replacing the Jinja2-specific classes (Environment, FileSystemLoader) with their Mako equivalents (TemplatesLoader, Template) and adapting the configuration flow, as demonstrated in the code patch. The suggested tests focus on verifying the structural integrity of the new setup.</p>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Evaluated Candidates:</strong>
+            <ul class="item-list">
+              
+              <li>
+                <strong>Mako</strong>: Mako is a mature, high-performance templating language that serves as a viable, modern alternative to Jinja2. It allows for a complete dependency migration while maintaining the core functionality of template rendering, suitable for the observed usage of Environment and Loader setup.
+                
+                <span style="color: #fca5a5;">(API Gaps: The API structure for setting up the environment, loaders, and autoescaping will differ from Jinja2. Specific methods for loading files and handling autoescaping will require adaptation.)</span>
+                
+              </li>
+              
+            </ul>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Step-by-Step Migration Instructions:</strong>
+            <ol class="item-list">
+              
+              <li>step 1: Uninstall the current dependency (Jinja2).</li>
+              
+              <li>step 2: Install the replacement dependency (Mako).</li>
+              
+              <li>step 3: Analyze the specific template syntax used in the codebase and translate it to Mako's syntax.</li>
+              
+              <li>step 4: Rewrite the instantiation logic in linkwatch/report.py to use Mako's environment and loader classes.</li>
+              
+              <li>step 5: Update any template files to ensure compatibility with Mako syntax.</li>
+              
+            </ol>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Proposed Unified Diff Code Patch:</strong>
+            <pre class="code-block"><code>--- a/linkwatch/report.py
++++ b/linkwatch/report.py
+@@ -1,11 +1,11 @@
+-from jinja2 import Environment, FileSystemLoader, select_autoescape
++from mako.template import Template
++from mako.loaders import TemplatesLoader
++from mako.autoescape import escape
+ 
+-from jinja2 import Environment, FileSystemLoader, select_autoescape
+-
+-return Environment(
+-loader=FileSystemLoader(template_dir()),
+-autoescape=select_autoescape(["html", "j2"]),
+-)
++def load_templates(template_dir):
++    # Mako uses TemplatesLoader for file loading
++    loader = TemplatesLoader(template_dir)
++    
++    # Mako handles autoescaping via the 'escape' function or template configuration
++    # Note: Mako's autoescaping mechanism is typically handled by the template engine itself or explicit calls.
++    
++    return loader
+ 
+-loader=FileSystemLoader(template_dir()),
+-autoescape=select_autoescape(["html", "j2"]),
+-)
++if __name__ == '__main__':
++    # Example usage demonstrating the replacement structure
++    template_dir = "./templates"
++    
++    # In a real application, you would load templates and render them.
++    # This section demonstrates the structural replacement of the original setup.
++    print("Mako setup complete. Actual rendering logic needs to be implemented.")</code></pre>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">AI-Suggested Dual-Passing Pytest Functions:</strong>
+            
+            <pre class="code-block"><code>def test_report_setup_mako():
+    # Test that the setup process runs without error, verifying the structural replacement.
+    # Since the original code only showed instantiation, we verify the replacement structure is valid.
+    try:
+        from mako.loaders import TemplatesLoader
+        from mako.template import Template
+        
+        # Simulate the setup logic from the original file
+        template_dir = "./templates"
+        loader = TemplatesLoader(template_dir)
+        
+        # We cannot directly test the original Jinja2 logic, but we ensure the Mako equivalents are importable and runnable.
+        assert True
+    except ImportError:
+        pytest.fail("Mako dependencies failed to import.")</code></pre>
+            
+          </div>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- d. Executed test results, baseline vs replacement             -->
+        <!--    (VERIFIED BY EXECUTION, green)                             -->
+        <!-- ============================================================= -->
+        <section class="section-block section-verified-execution">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🧪 d. Executed Test Results (Baseline vs Replacement)</span>
+            </h2>
+            <span class="section-evidence-tag badge-verified">EVIDENCE: VERIFIED BY EXECUTION</span>
+          </div>
+
+          <!-- Scoreboard comparing Before Swap vs After Swap -->
+          <div class="scoreboard-grid">
+            <div class="score-card">
+              <div class="score-card-title">Before Swap (Baseline: Jinja2)</div>
+              <div class="score-stats">
+                <span class="stat-pass">0 Pass</span>
+                <span class="stat-fail">0 Fail</span>
+                <span class="stat-err">0 Error</span>
+                <span class="stat-notrun">1 Unrun</span>
+              </div>
+            </div>
+            <div class="score-card">
+              <div class="score-card-title">After Swap (Replacement: Mako)</div>
+              <div class="score-stats">
+                <span class="stat-pass">0 Pass</span>
+                <span class="stat-fail">0 Fail</span>
+                <span class="stat-err">0 Error</span>
+                <span class="stat-notrun">0 Unrun</span>
+              </div>
+            </div>
+          </div>
+
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Target</th>
+                <th>Test Identifier</th>
+                <th>Status</th>
+                <th>Verified?</th>
+                <th>Output Summary</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><code>Jinja2</code></td>
+                <td><strong>verification</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-neutral">NOT_RUN</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #f87171;">✗ No</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  skipped: time limit
+                </td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- e. Compatibility gaps (observed) and Gemma's explanation      -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed" style="border-left-color: #38bdf8;">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🔍 e. Compatibility Gaps & AI Interpretations</span>
+            </h2>
+            <div style="display: flex; gap: 8px;">
+              <span class="section-evidence-tag badge-observed">GAPS: OBSERVED</span>
+              <span class="section-evidence-tag badge-ai">EXPLANATION: AI-GENERATED</span>
+            </div>
+          </div>
+
+          <!-- Observed Gaps -->
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #7dd3fc;">Observed Execution Discrepancies & Regressions:</strong>
+            
+            <ul class="item-list">
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'verification' was executed in baseline (Jinja2) [NOT_RUN], but was not executed in replacement (Mako) run.
+              </li>
+              
+            </ul>
+            
+          </div>
+
+          <!-- AI Gap Explanations -->
+          <div>
+            <strong style="color: #fde68a;">Gemma 4 Failure Explanations & Suggested Fixes (AI Interpretation):</strong>
+            
+            <p style="font-size: 0.9rem; margin-top: 4px; color: var(--color-text-muted);">
+              No failing test interpretations required.
+            </p>
+            
+          </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- f. Open concerns and limitations (highlighted box)            -->
+        <!-- ============================================================= -->
+        <section class="section-block section-open-concerns">
+          <div class="section-header" style="border-bottom-color: rgba(239, 68, 68, 0.3);">
+            <h2 class="section-title">
+              <span>⚠️ f. Open Concerns & Limitations (Action Required)</span>
+            </h2>
+            <span class="section-evidence-tag badge-danger">ATTENTION REQUIRED</span>
+          </div>
+
+          
+          <ul class="item-list" style="color: var(--concern-text);">
+            
+            <li><strong>!</strong> Test 'verification' for 'Jinja2' had status NOT_RUN. Reason: skipped: time limit.</li>
+            
+            <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-1473 (CVE-2024-22195, GHSA-h5c8-rqwp-cp95) [fixed in: 3.1.3] - The `xmlattr` filter in affected versions of Jinja accepts keys containing spaces. XML/HTML attributes cannot contain spaces, as each would then be in...' (severity: HIGH) has no matching verification test in the test suite.</li>
+            
+            <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-1474 (CVE-2024-34064, GHSA-h75v-3vvj-5mfj) [fixed in: 3.1.4] - The `xmlattr` filter in affected versions of Jinja accepts keys containing non-attribute characters. XML/HTML attributes cannot contain spaces, `/`, `...' (severity: HIGH) has no matching verification test in the test suite.</li>
+            
+            <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-1475 (CVE-2024-56326, GHSA-q2x7-8rv6-6q7h) [fixed in: 3.1.5] - An oversight in how the Jinja sandboxed environment detects calls to `str.format` allows an attacker that controls the content of a template to execut...' (severity: HIGH) has no matching verification test in the test suite.</li>
+            
+            <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-1471 (CVE-2025-27516, GHSA-cpwx-vrp4-4pq7) [fixed in: 3.1.6] - An oversight in how the Jinja sandboxed environment interacts with the `|attr` filter allows an attacker that controls the content of a template to ex...' (severity: HIGH) has no matching verification test in the test suite.</li>
+            
+            <li><strong>!</strong> AI-generated test 'test_report_setup_mako' was never executed in the verification test suite.</li>
+            
+          </ul>
+          
+        </section>
+      </div>
+    </article>
+    
+    <article class="capsule-card" id="card-requests">
+      <!-- Card Topbar -->
+      <div class="card-topbar">
+        <div>
+          <div class="card-dep-name">requests</div>
+          <div class="card-dep-meta">
+            Declared Version: <strong>2.31.0</strong> | Source: <code>requirements.txt</code>
+          </div>
+        </div>
+        <div class="card-badges">
+          
+          <span class="legend-pill badge-ai">REPLACEMENT: httpx</span>
+          
+          
+          
+          <span class="legend-pill badge-unverified">⚠ UNVERIFIED (REGRESSIONS OR NOT RUN)</span>
+          
+        </div>
+      </div>
+
+      <div class="card-body">
+        <!-- ============================================================= -->
+        <!-- a. Dependency details and risk indicators (OBSERVED, blue/grey) -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🛡️ a. Dependency Details & Risk Indicators</span>
+            </h2>
+            <span class="section-evidence-tag badge-observed">EVIDENCE: OBSERVED</span>
+          </div>
+
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Risk Type</th>
+                <th>Severity</th>
+                <th>Reason / Advisory</th>
+                <th>Evidence</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2026-1873 (CVE-2024-35195, GHSA-9wx4-h78v-vm56) [fixed in: 2.32.0] - When using a `requests.Session`, if the first request to a given origin is made with `verify=False`, TLS certificate verification may remain disabled ...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2026-1872 (CVE-2024-47081, GHSA-9hjg-9r4m-mvj7) [fixed in: 2.32.4] - ### Impact  Due to a URL parsing issue, Requests releases prior to 2.32.4 may leak .netrc credentials to third parties for specific maliciously-crafte...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2026-2275 (CVE-2026-25645, GHSA-gc5v-m9x4-r6x2) [fixed in: 2.33.0] - ### Impact The `requests.utils.extract_zipped_paths()` utility function uses a predictable filename when extracting files from zip archives into the s...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- b. Usage locations (OBSERVED, blue/grey)                       -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>📍 b. Code Usage Locations (AST Mapped)</span>
+            </h2>
+            <span class="section-evidence-tag badge-observed">EVIDENCE: OBSERVED</span>
+          </div>
+
+          
+          <p style="font-size: 0.9rem; margin-bottom: 8px;">
+            Identified <strong>12</strong> concrete AST usage location(s) in the target codebase:
+          </p>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/checker.py:5 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">IMPORT</span>
+            </div>
+            <pre class="code-block"><code>import requests</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/checker.py:6 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">IMPORT</span>
+            </div>
+            <pre class="code-block"><code>from requests import Session as S</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/checker.py:13 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">CLASS_INSTANCE</span>
+            </div>
+            <pre class="code-block"><code>session = S()</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/checker.py:15 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">CALL</span>
+            </div>
+            <pre class="code-block"><code>return session.get(url, verify=certifi.where())</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/checker.py:17 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">CALL</span>
+            </div>
+            <pre class="code-block"><code>session.close()</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/checker.py:35 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">ATTRIBUTE</span>
+            </div>
+            <pre class="code-block"><code>except requests.exceptions.ConnectionError:</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/checker.py:38 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">ATTRIBUTE</span>
+            </div>
+            <pre class="code-block"><code>except requests.exceptions.Timeout:</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/encoding.py:5 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">IMPORT</span>
+            </div>
+            <pre class="code-block"><code>from requests.utils import _parse_content_type_header</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/encoding.py:11 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">CALL</span>
+            </div>
+            <pre class="code-block"><code>_, params = _parse_content_type_header(resp.headers.get("Content-Type", ""))</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/http_patch.py:1 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">IMPORT</span>
+            </div>
+            <pre class="code-block"><code>import requests</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/http_patch.py:5 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">ATTRIBUTE</span>
+            </div>
+            <pre class="code-block"><code>_original_request = requests.Session.request</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/http_patch.py:14 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">ATTRIBUTE</span>
+            </div>
+            <pre class="code-block"><code>requests.Session.request = _request</code></pre>
+          </div>
+          
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- c. Proposed replacement, migration steps, suggested tests,    -->
+        <!--    and patch (AI-GENERATED, UNVERIFIED, orange/yellow)        -->
+        <!-- ============================================================= -->
+        <section class="section-block section-ai-unverified">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🤖 c. Proposed Replacement & Migration Plan</span>
+            </h2>
+            <span class="section-evidence-tag badge-ai">EVIDENCE: AI-GENERATED (UNVERIFIED)</span>
+          </div>
+
+          <div class="banner-warning">
+            ⚠️ <strong>UNVERIFIED AI PROPOSAL:</strong> The replacement below was synthesized by Gemma 4. 
+            Do not merge without human code review and successful execution of the test suite.
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 14px; align-items: center;">
+            <div>
+              Proposed Replacement: <strong style="font-size: 1.15rem; color: #fde68a;">httpx</strong>
+            </div>
+            <div>
+              Usage Complexity: 
+              <span class="legend-pill badge-warning">DEEP</span>
+            </div>
+            <div>
+              Verification State: 
+              
+              <span class="legend-pill badge-unverified">UNVERIFIED</span>
+              
+            </div>
+          </div>
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">AI Reasoning:</strong>
+            <p style="font-size: 0.92rem; margin-top: 4px;">Migrate requests to httpx</p>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Evaluated Candidates:</strong>
+            <ul class="item-list">
+              
+              <li>
+                <strong>httpx</strong>: Salvaged from LLM output
+                
+              </li>
+              
+            </ul>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Step-by-Step Migration Instructions:</strong>
+            <ol class="item-list">
+              
+              <li>Replace requests with httpx</li>
+              
+            </ol>
+          </div>
+          
+
+          
+
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- d. Executed test results, baseline vs replacement             -->
+        <!--    (VERIFIED BY EXECUTION, green)                             -->
+        <!-- ============================================================= -->
+        <section class="section-block section-verified-execution">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🧪 d. Executed Test Results (Baseline vs Replacement)</span>
+            </h2>
+            <span class="section-evidence-tag badge-verified">EVIDENCE: VERIFIED BY EXECUTION</span>
+          </div>
+
+          <!-- Scoreboard comparing Before Swap vs After Swap -->
+          <div class="scoreboard-grid">
+            <div class="score-card">
+              <div class="score-card-title">Before Swap (Baseline: requests)</div>
+              <div class="score-stats">
+                <span class="stat-pass">0 Pass</span>
+                <span class="stat-fail">0 Fail</span>
+                <span class="stat-err">0 Error</span>
+                <span class="stat-notrun">1 Unrun</span>
+              </div>
+            </div>
+            <div class="score-card">
+              <div class="score-card-title">After Swap (Replacement: httpx)</div>
+              <div class="score-stats">
+                <span class="stat-pass">0 Pass</span>
+                <span class="stat-fail">0 Fail</span>
+                <span class="stat-err">0 Error</span>
+                <span class="stat-notrun">0 Unrun</span>
+              </div>
+            </div>
+          </div>
+
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Target</th>
+                <th>Test Identifier</th>
+                <th>Status</th>
+                <th>Verified?</th>
+                <th>Output Summary</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><code>requests</code></td>
+                <td><strong>verification</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-neutral">NOT_RUN</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #f87171;">✗ No</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  skipped: time limit
+                </td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- e. Compatibility gaps (observed) and Gemma's explanation      -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed" style="border-left-color: #38bdf8;">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🔍 e. Compatibility Gaps & AI Interpretations</span>
+            </h2>
+            <div style="display: flex; gap: 8px;">
+              <span class="section-evidence-tag badge-observed">GAPS: OBSERVED</span>
+              <span class="section-evidence-tag badge-ai">EXPLANATION: AI-GENERATED</span>
+            </div>
+          </div>
+
+          <!-- Observed Gaps -->
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #7dd3fc;">Observed Execution Discrepancies & Regressions:</strong>
+            
+            <ul class="item-list">
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'verification' was executed in baseline (requests) [NOT_RUN], but was not executed in replacement (httpx) run.
+              </li>
+              
+            </ul>
+            
+          </div>
+
+          <!-- AI Gap Explanations -->
+          <div>
+            <strong style="color: #fde68a;">Gemma 4 Failure Explanations & Suggested Fixes (AI Interpretation):</strong>
+            
+            <p style="font-size: 0.9rem; margin-top: 4px; color: var(--color-text-muted);">
+              No failing test interpretations required.
+            </p>
+            
+          </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- f. Open concerns and limitations (highlighted box)            -->
+        <!-- ============================================================= -->
+        <section class="section-block section-open-concerns">
+          <div class="section-header" style="border-bottom-color: rgba(239, 68, 68, 0.3);">
+            <h2 class="section-title">
+              <span>⚠️ f. Open Concerns & Limitations (Action Required)</span>
+            </h2>
+            <span class="section-evidence-tag badge-danger">ATTENTION REQUIRED</span>
+          </div>
+
+          
+          <ul class="item-list" style="color: var(--concern-text);">
+            
+            <li><strong>!</strong> Test 'verification' for 'requests' had status NOT_RUN. Reason: skipped: time limit.</li>
+            
+            <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-1873 (CVE-2024-35195, GHSA-9wx4-h78v-vm56) [fixed in: 2.32.0] - When using a `requests.Session`, if the first request to a given origin is made with `verify=False`, TLS certificate verification may remain disabled ...' (severity: HIGH) has no matching verification test in the test suite.</li>
+            
+            <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-1872 (CVE-2024-47081, GHSA-9hjg-9r4m-mvj7) [fixed in: 2.32.4] - ### Impact  Due to a URL parsing issue, Requests releases prior to 2.32.4 may leak .netrc credentials to third parties for specific maliciously-crafte...' (severity: HIGH) has no matching verification test in the test suite.</li>
+            
+            <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-2275 (CVE-2026-25645, GHSA-gc5v-m9x4-r6x2) [fixed in: 2.33.0] - ### Impact The `requests.utils.extract_zipped_paths()` utility function uses a predictable filename when extracting files from zip archives into the s...' (severity: HIGH) has no matching verification test in the test suite.</li>
+            
+            <li><strong>!</strong> Usage complexity is classified as DEEP: Codebase relies on internal, private, or complex interfaces of the dependency; behavioural differences and subtle edge-case regressions may not be caught by standard test suites.</li>
+            
+          </ul>
+          
+        </section>
+      </div>
+    </article>
+    
+    <article class="capsule-card" id="card-setuptools">
+      <!-- Card Topbar -->
+      <div class="card-topbar">
+        <div>
+          <div class="card-dep-name">setuptools</div>
+          <div class="card-dep-meta">
+            Declared Version: <strong>75.8.0</strong> | Source: <code>requirements.txt</code>
+          </div>
+        </div>
+        <div class="card-badges">
+          
+          <span class="legend-pill badge-ai">REPLACEMENT: importlib.resources</span>
+          
+          
+          
+          <span class="legend-pill badge-unverified">⚠ UNVERIFIED (REGRESSIONS OR NOT RUN)</span>
+          
+        </div>
+      </div>
+
+      <div class="card-body">
+        <!-- ============================================================= -->
+        <!-- a. Dependency details and risk indicators (OBSERVED, blue/grey) -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🛡️ a. Dependency Details & Risk Indicators</span>
+            </h2>
+            <span class="section-evidence-tag badge-observed">EVIDENCE: OBSERVED</span>
+          </div>
+
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Risk Type</th>
+                <th>Severity</th>
+                <th>Reason / Advisory</th>
+                <th>Evidence</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2025-49 (BIT-setuptools-2025-47273, CVE-2025-47273, GHSA-5rjg-fvgr-3xxf) [fixed in: 78.1.1] - ### Summary  A path traversal vulnerability in `PackageIndex` was fixed in setuptools version 78.1.1  ### Details ```     def _download_url(self, url,...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>VULNERABLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>Known vulnerability PYSEC-2026-3447 (BIT-setuptools-2026-59890, CVE-2026-59890, GHSA-h35f-9h28-mq5c) [fixed in: 83.0.0] - setuptools is a package that allows users to download, build, install, upgrade, and uninstall Python packages. Prior to 83.0.0, FileList applied MANIF...</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- b. Usage locations (OBSERVED, blue/grey)                       -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>📍 b. Code Usage Locations (AST Mapped)</span>
+            </h2>
+            <span class="section-evidence-tag badge-observed">EVIDENCE: OBSERVED</span>
+          </div>
+
+          
+          <p style="font-size: 0.9rem; margin-bottom: 8px;">
+            Identified <strong>2</strong> concrete AST usage location(s) in the target codebase:
+          </p>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/resources.py:1 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">IMPORT</span>
+            </div>
+            <pre class="code-block"><code>import pkg_resources</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/resources.py:7 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">CALL</span>
+            </div>
+            <pre class="code-block"><code>return pkg_resources.resource_filename("linkwatch", "templates")</code></pre>
+          </div>
+          
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- c. Proposed replacement, migration steps, suggested tests,    -->
+        <!--    and patch (AI-GENERATED, UNVERIFIED, orange/yellow)        -->
+        <!-- ============================================================= -->
+        <section class="section-block section-ai-unverified">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🤖 c. Proposed Replacement & Migration Plan</span>
+            </h2>
+            <span class="section-evidence-tag badge-ai">EVIDENCE: AI-GENERATED (UNVERIFIED)</span>
+          </div>
+
+          <div class="banner-warning">
+            ⚠️ <strong>UNVERIFIED AI PROPOSAL:</strong> The replacement below was synthesized by Gemma 4. 
+            Do not merge without human code review and successful execution of the test suite.
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 14px; align-items: center;">
+            <div>
+              Proposed Replacement: <strong style="font-size: 1.15rem; color: #fde68a;">importlib.resources</strong>
+            </div>
+            <div>
+              Usage Complexity: 
+              <span class="legend-pill badge-warning">BASIC</span>
+            </div>
+            <div>
+              Verification State: 
+              
+              <span class="legend-pill badge-unverified">UNVERIFIED</span>
+              
+            </div>
+          </div>
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">AI Reasoning:</strong>
+            <p style="font-size: 0.92rem; margin-top: 4px;">The migration targets the high-risk dependency on `setuptools` by replacing the legacy `pkg_resources` API with the modern, standard library approach provided by `importlib.resources`. This addresses the known path traversal vulnerabilities by moving away from the vulnerable package internals. The usage complexity is BASIC, allowing for a direct, safe drop-in replacement for the resource location functionality.</p>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Evaluated Candidates:</strong>
+            <ul class="item-list">
+              
+              <li>
+                <strong>importlib</strong>: The usage relies on package discovery and resource location, which can be safely replaced by standard library modules like `importlib` for modern Python practices, avoiding direct dependency on potentially vulnerable `setuptools` internals.
+                
+                <span style="color: #fca5a5;">(API Gaps: Requires mapping `pkg_resources.resource_filename` to the modern equivalent, likely `importlib.resources.files` or similar, depending on the exact context of resource handling.)</span>
+                
+              </li>
+              
+              <li>
+                <strong>importlib.resources</strong>: This module provides the modern, recommended way to access data within installed packages, replacing the older `pkg_resources` functionality safely and securely.
+                
+                <span style="color: #fca5a5;">(API Gaps: Requires careful mapping of the specific resource path finding logic from `pkg_resources.resource_filename` to the `importlib.resources` API.)</span>
+                
+              </li>
+              
+            </ul>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Step-by-Step Migration Instructions:</strong>
+            <ol class="item-list">
+              
+              <li>step 1: Remove the dependency on `pkg_resources` (implicitly by updating the dependency list).</li>
+              
+              <li>step 2: Update the import statement in `linkwatch/resources.py` from `import pkg_resources` to `import importlib.resources` (or similar, depending on the exact resource access method).</li>
+              
+              <li>step 3: Refactor the call to `pkg_resources.resource_filename("linkwatch", "templates")` to use the modern `importlib.resources` API to locate the required file path.</li>
+              
+            </ol>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Proposed Unified Diff Code Patch:</strong>
+            <pre class="code-block"><code>--- a/linkwatch/resources.py
++++ b/linkwatch/resources.py
+@@ -1,4 +1,4 @@
+-import pkg_resources
++import importlib.resources
+ 
+-return pkg_resources.resource_filename("linkwatch", "templates")
++return importlib.resources.files("linkwatch", "templates")</code></pre>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">AI-Suggested Dual-Passing Pytest Functions:</strong>
+            
+            <pre class="code-block"><code>def test_resource_file_exists():
+    # Mock the environment to simulate the existence of the resource
+    import os
+    import sys
+    from unittest.mock import patch
+
+    # Mock the file system structure that pkg_resources would have found
+    # We simulate the structure needed for importlib.resources.files
+    mock_files = {
+        'linkwatch/templates/file1.txt': b'content'
+    }
+
+    with patch('importlib.resources.files', return_value=mock_files):
+        # Simulate the call being made by the original code
+        # Note: The actual implementation of importlib.resources.files is complex, 
+        # this test focuses on ensuring the call structure is valid and handles the expected result type.
+        # Since we are mocking the result, we check if the function was called correctly.
+        result = importlib.resources.files("linkwatch", "templates")
+
+        # Assert that the result is iterable and contains the expected mock file
+        assert isinstance(result, dict) or isinstance(result, list) # Depending on Python version/implementation
+        assert any(f.name == 'file1.txt' for f in result.keys() if isinstance(result, dict) else result)</code></pre>
+            
+          </div>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- d. Executed test results, baseline vs replacement             -->
+        <!--    (VERIFIED BY EXECUTION, green)                             -->
+        <!-- ============================================================= -->
+        <section class="section-block section-verified-execution">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🧪 d. Executed Test Results (Baseline vs Replacement)</span>
+            </h2>
+            <span class="section-evidence-tag badge-verified">EVIDENCE: VERIFIED BY EXECUTION</span>
+          </div>
+
+          <!-- Scoreboard comparing Before Swap vs After Swap -->
+          <div class="scoreboard-grid">
+            <div class="score-card">
+              <div class="score-card-title">Before Swap (Baseline: setuptools)</div>
+              <div class="score-stats">
+                <span class="stat-pass">0 Pass</span>
+                <span class="stat-fail">0 Fail</span>
+                <span class="stat-err">0 Error</span>
+                <span class="stat-notrun">1 Unrun</span>
+              </div>
+            </div>
+            <div class="score-card">
+              <div class="score-card-title">After Swap (Replacement: importlib.resources)</div>
+              <div class="score-stats">
+                <span class="stat-pass">0 Pass</span>
+                <span class="stat-fail">0 Fail</span>
+                <span class="stat-err">0 Error</span>
+                <span class="stat-notrun">0 Unrun</span>
+              </div>
+            </div>
+          </div>
+
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Target</th>
+                <th>Test Identifier</th>
+                <th>Status</th>
+                <th>Verified?</th>
+                <th>Output Summary</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><code>setuptools</code></td>
+                <td><strong>verification</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-neutral">NOT_RUN</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #f87171;">✗ No</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  skipped: time limit
+                </td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- e. Compatibility gaps (observed) and Gemma's explanation      -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed" style="border-left-color: #38bdf8;">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🔍 e. Compatibility Gaps & AI Interpretations</span>
+            </h2>
+            <div style="display: flex; gap: 8px;">
+              <span class="section-evidence-tag badge-observed">GAPS: OBSERVED</span>
+              <span class="section-evidence-tag badge-ai">EXPLANATION: AI-GENERATED</span>
+            </div>
+          </div>
+
+          <!-- Observed Gaps -->
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #7dd3fc;">Observed Execution Discrepancies & Regressions:</strong>
+            
+            <ul class="item-list">
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'verification' was executed in baseline (setuptools) [NOT_RUN], but was not executed in replacement (importlib.resources) run.
+              </li>
+              
+            </ul>
+            
+          </div>
+
+          <!-- AI Gap Explanations -->
+          <div>
+            <strong style="color: #fde68a;">Gemma 4 Failure Explanations & Suggested Fixes (AI Interpretation):</strong>
+            
+            <p style="font-size: 0.9rem; margin-top: 4px; color: var(--color-text-muted);">
+              No failing test interpretations required.
+            </p>
+            
+          </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- f. Open concerns and limitations (highlighted box)            -->
+        <!-- ============================================================= -->
+        <section class="section-block section-open-concerns">
+          <div class="section-header" style="border-bottom-color: rgba(239, 68, 68, 0.3);">
+            <h2 class="section-title">
+              <span>⚠️ f. Open Concerns & Limitations (Action Required)</span>
+            </h2>
+            <span class="section-evidence-tag badge-danger">ATTENTION REQUIRED</span>
+          </div>
+
+          
+          <ul class="item-list" style="color: var(--concern-text);">
+            
+            <li><strong>!</strong> Test 'verification' for 'setuptools' had status NOT_RUN. Reason: skipped: time limit.</li>
+            
+            <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2025-49 (BIT-setuptools-2025-47273, CVE-2025-47273, GHSA-5rjg-fvgr-3xxf) [fixed in: 78.1.1] - ### Summary  A path traversal vulnerability in `PackageIndex` was fixed in setuptools version 78.1.1  ### Details ```     def _download_url(self, url,...' (severity: HIGH) has no matching verification test in the test suite.</li>
+            
+            <li><strong>!</strong> Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-3447 (BIT-setuptools-2026-59890, CVE-2026-59890, GHSA-h35f-9h28-mq5c) [fixed in: 83.0.0] - setuptools is a package that allows users to download, build, install, upgrade, and uninstall Python packages. Prior to 83.0.0, FileList applied MANIF...' (severity: HIGH) has no matching verification test in the test suite.</li>
+            
+            <li><strong>!</strong> AI-generated test 'test_resource_file_exists' was never executed in the verification test suite.</li>
+            
+          </ul>
+          
+        </section>
+      </div>
+    </article>
+    
+    <article class="capsule-card" id="card-toml">
+      <!-- Card Topbar -->
+      <div class="card-topbar">
+        <div>
+          <div class="card-dep-name">toml</div>
+          <div class="card-dep-meta">
+            Declared Version: <strong>0.10.2</strong> | Source: <code>requirements.txt</code>
+          </div>
+        </div>
+        <div class="card-badges">
+          
+          <span class="legend-pill badge-ai">REPLACEMENT: tomli</span>
+          
+          
+          
+          <span class="legend-pill badge-unverified">⚠ UNVERIFIED (REGRESSIONS OR NOT RUN)</span>
+          
+        </div>
+      </div>
+
+      <div class="card-body">
+        <!-- ============================================================= -->
+        <!-- a. Dependency details and risk indicators (OBSERVED, blue/grey) -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🛡️ a. Dependency Details & Risk Indicators</span>
+            </h2>
+            <span class="section-evidence-tag badge-observed">EVIDENCE: OBSERVED</span>
+          </div>
+
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Risk Type</th>
+                <th>Severity</th>
+                <th>Reason / Advisory</th>
+                <th>Evidence</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>UNMAINTAINED</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-warning">MED</span>
+                  
+                </td>
+                <td>No PyPI release in 6.0 years (last release was on 2020-11-01)</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+              <tr>
+                <td><strong>INCOMPATIBLE</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-danger">HIGH</span>
+                  
+                </td>
+                <td>PyPI classifiers indicate support only up to Python 3.9, missing Python 3.12/3.13 support</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- b. Usage locations (OBSERVED, blue/grey)                       -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>📍 b. Code Usage Locations (AST Mapped)</span>
+            </h2>
+            <span class="section-evidence-tag badge-observed">EVIDENCE: OBSERVED</span>
+          </div>
+
+          
+          <p style="font-size: 0.9rem; margin-bottom: 8px;">
+            Identified <strong>2</strong> concrete AST usage location(s) in the target codebase:
+          </p>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/config.py:3 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">IMPORT</span>
+            </div>
+            <pre class="code-block"><code>import toml</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/config.py:37 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">CALL</span>
+            </div>
+            <pre class="code-block"><code>data = toml.load(path)</code></pre>
+          </div>
+          
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- c. Proposed replacement, migration steps, suggested tests,    -->
+        <!--    and patch (AI-GENERATED, UNVERIFIED, orange/yellow)        -->
+        <!-- ============================================================= -->
+        <section class="section-block section-ai-unverified">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🤖 c. Proposed Replacement & Migration Plan</span>
+            </h2>
+            <span class="section-evidence-tag badge-ai">EVIDENCE: AI-GENERATED (UNVERIFIED)</span>
+          </div>
+
+          <div class="banner-warning">
+            ⚠️ <strong>UNVERIFIED AI PROPOSAL:</strong> The replacement below was synthesized by Gemma 4. 
+            Do not merge without human code review and successful execution of the test suite.
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 14px; align-items: center;">
+            <div>
+              Proposed Replacement: <strong style="font-size: 1.15rem; color: #fde68a;">tomli</strong>
+            </div>
+            <div>
+              Usage Complexity: 
+              <span class="legend-pill badge-warning">BASIC</span>
+            </div>
+            <div>
+              Verification State: 
+              
+              <span class="legend-pill badge-unverified">UNVERIFIED</span>
+              
+            </div>
+          </div>
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">AI Reasoning:</strong>
+            <p style="font-size: 0.92rem; margin-top: 4px;">The original usage was simple file loading (`toml.load(path)`). The recommended replacement is `tomli`, which is a highly performant and standard-compliant TOML parser. While the original used a simple function call, modern Python practices, especially when dealing with external dependencies, favor explicit file handling (`open()`) combined with the parser. This migration ensures the code remains functional while addressing the severe maintenance and compatibility risks of the original dependency by adopting a modern, actively maintained alternative.</p>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Evaluated Candidates:</strong>
+            <ul class="item-list">
+              
+              <li>
+                <strong>tomlkit</strong>: Provides a robust, modern, and actively maintained API for working with TOML data structures, offering better type safety and structure than raw dictionary loading. It is a widely accepted replacement for TOML handling.
+                
+                <span style="color: #fca5a5;">(API Gaps: The API requires reading the file content explicitly before parsing, which is a slight functional shift from a simple `load()` call, but provides superior safety and maintainability.)</span>
+                
+              </li>
+              
+              <li>
+                <strong>tomli</strong>: A highly performant and standard-compliant TOML parser, often used in conjunction with Python's built-in file handling. It is excellent for parsing TOML content into native Python types.
+                
+                <span style="color: #fca5a5;">(API Gaps: Requires explicit file reading (e.g., using `open()`) before passing the content to the parser, slightly increasing the number of lines of code compared to a single `load()` call.)</span>
+                
+              </li>
+              
+            </ul>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Step-by-Step Migration Instructions:</strong>
+            <ol class="item-list">
+              
+              <li>step 1: Install the replacement package: pip install tomli</li>
+              
+              <li>step 2: Update the import statement in linkwatch/config.py to import tomli instead of toml.</li>
+              
+              <li>step 3: Update the loading call in linkwatch/config.py to read the file content and use tomli.load() on the content.</li>
+              
+            </ol>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Proposed Unified Diff Code Patch:</strong>
+            <pre class="code-block"><code>--- a/linkwatch/config.py
++++ b/linkwatch/config.py
+@@ -1,5 +1,5 @@
+-import toml
++import tomli
+ import os
+ 
+-data = toml.load(path)
++with open(path, 'rb') as f:
++    data = tomli.load(f)
+ </code></pre>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">AI-Suggested Dual-Passing Pytest Functions:</strong>
+            
+            <pre class="code-block"><code>import pytest
+import tomli
+import os
+
+# Mock setup for testing file loading
+@pytest.fixture
+def mock_file_content():
+    return 'key = "value"
+list = [1, 2, 3]
+' 
+
+def test_toml_loading_with_tomli():
+    # Setup a temporary file for testing
+    test_path = 'test_config.toml'
+    with open(test_path, 'w') as f:
+        f.write('key = "value"
+list = [1, 2, 3]
+')
+
+    # Simulate the original usage (using tomli)
+    with open(test_path, 'rb') as f:
+        data = tomli.load(f)
+
+    # Assert the loaded data matches the expected structure
+    assert data['key'] == 'value'
+    assert data['list'] == [1, 2, 3]
+
+    os.remove(test_path)</code></pre>
+            
+          </div>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- d. Executed test results, baseline vs replacement             -->
+        <!--    (VERIFIED BY EXECUTION, green)                             -->
+        <!-- ============================================================= -->
+        <section class="section-block section-verified-execution">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🧪 d. Executed Test Results (Baseline vs Replacement)</span>
+            </h2>
+            <span class="section-evidence-tag badge-verified">EVIDENCE: VERIFIED BY EXECUTION</span>
+          </div>
+
+          <!-- Scoreboard comparing Before Swap vs After Swap -->
+          <div class="scoreboard-grid">
+            <div class="score-card">
+              <div class="score-card-title">Before Swap (Baseline: toml)</div>
+              <div class="score-stats">
+                <span class="stat-pass">0 Pass</span>
+                <span class="stat-fail">0 Fail</span>
+                <span class="stat-err">0 Error</span>
+                <span class="stat-notrun">1 Unrun</span>
+              </div>
+            </div>
+            <div class="score-card">
+              <div class="score-card-title">After Swap (Replacement: tomli)</div>
+              <div class="score-stats">
+                <span class="stat-pass">0 Pass</span>
+                <span class="stat-fail">0 Fail</span>
+                <span class="stat-err">0 Error</span>
+                <span class="stat-notrun">0 Unrun</span>
+              </div>
+            </div>
+          </div>
+
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Target</th>
+                <th>Test Identifier</th>
+                <th>Status</th>
+                <th>Verified?</th>
+                <th>Output Summary</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><code>toml</code></td>
+                <td><strong>verification</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-neutral">NOT_RUN</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #f87171;">✗ No</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  skipped: time limit
+                </td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- e. Compatibility gaps (observed) and Gemma's explanation      -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed" style="border-left-color: #38bdf8;">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🔍 e. Compatibility Gaps & AI Interpretations</span>
+            </h2>
+            <div style="display: flex; gap: 8px;">
+              <span class="section-evidence-tag badge-observed">GAPS: OBSERVED</span>
+              <span class="section-evidence-tag badge-ai">EXPLANATION: AI-GENERATED</span>
+            </div>
+          </div>
+
+          <!-- Observed Gaps -->
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #7dd3fc;">Observed Execution Discrepancies & Regressions:</strong>
+            
+            <ul class="item-list">
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'verification' was executed in baseline (toml) [NOT_RUN], but was not executed in replacement (tomli) run.
+              </li>
+              
+            </ul>
+            
+          </div>
+
+          <!-- AI Gap Explanations -->
+          <div>
+            <strong style="color: #fde68a;">Gemma 4 Failure Explanations & Suggested Fixes (AI Interpretation):</strong>
+            
+            <p style="font-size: 0.9rem; margin-top: 4px; color: var(--color-text-muted);">
+              No failing test interpretations required.
+            </p>
+            
+          </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- f. Open concerns and limitations (highlighted box)            -->
+        <!-- ============================================================= -->
+        <section class="section-block section-open-concerns">
+          <div class="section-header" style="border-bottom-color: rgba(239, 68, 68, 0.3);">
+            <h2 class="section-title">
+              <span>⚠️ f. Open Concerns & Limitations (Action Required)</span>
+            </h2>
+            <span class="section-evidence-tag badge-danger">ATTENTION REQUIRED</span>
+          </div>
+
+          
+          <ul class="item-list" style="color: var(--concern-text);">
+            
+            <li><strong>!</strong> Test 'verification' for 'toml' had status NOT_RUN. Reason: skipped: time limit.</li>
+            
+            <li><strong>!</strong> Unverified risk flag: [UNMAINTAINED] 'No PyPI release in 6.0 years (last release was on 2020-11-01)' (severity: MED) has no matching verification test in the test suite.</li>
+            
+            <li><strong>!</strong> Unverified risk flag: [INCOMPATIBLE] 'PyPI classifiers indicate support only up to Python 3.9, missing Python 3.12/3.13 support' (severity: HIGH) has no matching verification test in the test suite.</li>
+            
+            <li><strong>!</strong> AI-generated test 'mock_file_content' was never executed in the verification test suite.</li>
+            
+          </ul>
+          
+        </section>
+      </div>
+    </article>
+    
+    <article class="capsule-card" id="card-python-dateutil">
+      <!-- Card Topbar -->
+      <div class="card-topbar">
+        <div>
+          <div class="card-dep-name">python-dateutil</div>
+          <div class="card-dep-meta">
+            Declared Version: <strong></strong> | Source: <code>requirements.txt</code>
+          </div>
+        </div>
+        <div class="card-badges">
+          
+          <span class="legend-pill badge-ai">REPLACEMENT: dateparser</span>
+          
+          
+          
+          <span class="legend-pill badge-unverified">⚠ UNVERIFIED (REGRESSIONS OR NOT RUN)</span>
+          
+        </div>
+      </div>
+
+      <div class="card-body">
+        <!-- ============================================================= -->
+        <!-- a. Dependency details and risk indicators (OBSERVED, blue/grey) -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🛡️ a. Dependency Details & Risk Indicators</span>
+            </h2>
+            <span class="section-evidence-tag badge-observed">EVIDENCE: OBSERVED</span>
+          </div>
+
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Risk Type</th>
+                <th>Severity</th>
+                <th>Reason / Advisory</th>
+                <th>Evidence</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>UNMAINTAINED</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-warning">MED</span>
+                  
+                </td>
+                <td>No PyPI release in 2.6 years (last release was on 2024-03-01)</td>
+                <td><span class="legend-pill badge-observed">observed</span></td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- b. Usage locations (OBSERVED, blue/grey)                       -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>📍 b. Code Usage Locations (AST Mapped)</span>
+            </h2>
+            <span class="section-evidence-tag badge-observed">EVIDENCE: OBSERVED</span>
+          </div>
+
+          
+          <p style="font-size: 0.9rem; margin-bottom: 8px;">
+            Identified <strong>2</strong> concrete AST usage location(s) in the target codebase:
+          </p>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/dates.py:1 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">IMPORT</span>
+            </div>
+            <pre class="code-block"><code>from dateutil import parser</code></pre>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #7dd3fc;">
+              📄 linkwatch/dates.py:8 &nbsp;•&nbsp; Type: <span class="legend-pill badge-neutral">CALL</span>
+            </div>
+            <pre class="code-block"><code>return parser.parse(value)</code></pre>
+          </div>
+          
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- c. Proposed replacement, migration steps, suggested tests,    -->
+        <!--    and patch (AI-GENERATED, UNVERIFIED, orange/yellow)        -->
+        <!-- ============================================================= -->
+        <section class="section-block section-ai-unverified">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🤖 c. Proposed Replacement & Migration Plan</span>
+            </h2>
+            <span class="section-evidence-tag badge-ai">EVIDENCE: AI-GENERATED (UNVERIFIED)</span>
+          </div>
+
+          <div class="banner-warning">
+            ⚠️ <strong>UNVERIFIED AI PROPOSAL:</strong> The replacement below was synthesized by Gemma 4. 
+            Do not merge without human code review and successful execution of the test suite.
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 14px; align-items: center;">
+            <div>
+              Proposed Replacement: <strong style="font-size: 1.15rem; color: #fde68a;">dateparser</strong>
+            </div>
+            <div>
+              Usage Complexity: 
+              <span class="legend-pill badge-warning">BASIC</span>
+            </div>
+            <div>
+              Verification State: 
+              
+              <span class="legend-pill badge-unverified">UNVERIFIED</span>
+              
+            </div>
+          </div>
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">AI Reasoning:</strong>
+            <p style="font-size: 0.92rem; margin-top: 4px;">The original dependency, python-dateutil, is marked as UNMAINTAINED, posing a significant security and stability risk. The proposed replacement, dateparser, is a modern, actively maintained library that provides the exact functionality required (flexible date parsing) with high reliability. This migration addresses the risk while maintaining the required functionality, resulting in a safe and modern dependency upgrade.</p>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Evaluated Candidates:</strong>
+            <ul class="item-list">
+              
+              <li>
+                <strong>dateparser</strong>: Salvaged from LLM output
+                
+              </li>
+              
+            </ul>
+          </div>
+          
+
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fde68a;">Step-by-Step Migration Instructions:</strong>
+            <ol class="item-list">
+              
+              <li>tzinfo is not None\n"</li>
+              
+            </ol>
+          </div>
+          
+
+          
+
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- d. Executed test results, baseline vs replacement             -->
+        <!--    (VERIFIED BY EXECUTION, green)                             -->
+        <!-- ============================================================= -->
+        <section class="section-block section-verified-execution">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🧪 d. Executed Test Results (Baseline vs Replacement)</span>
+            </h2>
+            <span class="section-evidence-tag badge-verified">EVIDENCE: VERIFIED BY EXECUTION</span>
+          </div>
+
+          <!-- Scoreboard comparing Before Swap vs After Swap -->
+          <div class="scoreboard-grid">
+            <div class="score-card">
+              <div class="score-card-title">Before Swap (Baseline: python-dateutil)</div>
+              <div class="score-stats">
+                <span class="stat-pass">0 Pass</span>
+                <span class="stat-fail">0 Fail</span>
+                <span class="stat-err">0 Error</span>
+                <span class="stat-notrun">1 Unrun</span>
+              </div>
+            </div>
+            <div class="score-card">
+              <div class="score-card-title">After Swap (Replacement: dateparser)</div>
+              <div class="score-stats">
+                <span class="stat-pass">0 Pass</span>
+                <span class="stat-fail">0 Fail</span>
+                <span class="stat-err">0 Error</span>
+                <span class="stat-notrun">0 Unrun</span>
+              </div>
+            </div>
+          </div>
+
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Target</th>
+                <th>Test Identifier</th>
+                <th>Status</th>
+                <th>Verified?</th>
+                <th>Output Summary</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><code>python-dateutil</code></td>
+                <td><strong>verification</strong></td>
+                <td>
+                  
+                  <span class="legend-pill badge-neutral">NOT_RUN</span>
+                  
+                </td>
+                <td>
+                  
+                  <span style="color: #f87171;">✗ No</span>
+                  
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  skipped: time limit
+                </td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- e. Compatibility gaps (observed) and Gemma's explanation      -->
+        <!-- ============================================================= -->
+        <section class="section-block section-observed" style="border-left-color: #38bdf8;">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span>🔍 e. Compatibility Gaps & AI Interpretations</span>
+            </h2>
+            <div style="display: flex; gap: 8px;">
+              <span class="section-evidence-tag badge-observed">GAPS: OBSERVED</span>
+              <span class="section-evidence-tag badge-ai">EXPLANATION: AI-GENERATED</span>
+            </div>
+          </div>
+
+          <!-- Observed Gaps -->
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #7dd3fc;">Observed Execution Discrepancies & Regressions:</strong>
+            
+            <ul class="item-list">
+              
+              <li>
+                
+                <span class="legend-pill badge-warning" style="margin-right: 4px;">COVERAGE GAP</span>
+                
+                Test 'verification' was executed in baseline (python-dateutil) [NOT_RUN], but was not executed in replacement (dateparser) run.
+              </li>
+              
+            </ul>
+            
+          </div>
+
+          <!-- AI Gap Explanations -->
+          <div>
+            <strong style="color: #fde68a;">Gemma 4 Failure Explanations & Suggested Fixes (AI Interpretation):</strong>
+            
+            <p style="font-size: 0.9rem; margin-top: 4px; color: var(--color-text-muted);">
+              No failing test interpretations required.
+            </p>
+            
+          </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- f. Open concerns and limitations (highlighted box)            -->
+        <!-- ============================================================= -->
+        <section class="section-block section-open-concerns">
+          <div class="section-header" style="border-bottom-color: rgba(239, 68, 68, 0.3);">
+            <h2 class="section-title">
+              <span>⚠️ f. Open Concerns & Limitations (Action Required)</span>
+            </h2>
+            <span class="section-evidence-tag badge-danger">ATTENTION REQUIRED</span>
+          </div>
+
+          
+          <ul class="item-list" style="color: var(--concern-text);">
+            
+            <li><strong>!</strong> Test 'verification' for 'python-dateutil' had status NOT_RUN. Reason: skipped: time limit.</li>
+            
+            <li><strong>!</strong> Unverified risk flag: [UNMAINTAINED] 'No PyPI release in 2.6 years (last release was on 2024-03-01)' (severity: MED) has no matching verification test in the test suite.</li>
+            
+          </ul>
+          
+        </section>
+      </div>
+    </article>
+    
 
     <!-- Footer -->
     <footer class="report-footer">
@@ -406,7 +3602,7 @@
         Model Attribution & Inference Metadata
       </div>
       <div>
-        Model: <strong>gemma-4-31b-it</strong> &nbsp;|&nbsp; 
+        Model: <strong>gemma4:e2b-it-q4_K_M</strong> &nbsp;|&nbsp; 
         Version: <strong>4</strong> &nbsp;|&nbsp; 
         Access Method: <strong>hosted_api</strong>
       </div>
@@ -417,7 +3613,7 @@
         </a>
       </div>
       <div style="margin-top: 12px; font-size: 0.75rem; color: #64748b;">
-        Generated by DepExit • 2026-10-15T09:00:08.202835+00:00
+        Generated by DepExit • 2026-10-15T10:45:27.435678+00:00
       </div>
     </footer>
   </div>

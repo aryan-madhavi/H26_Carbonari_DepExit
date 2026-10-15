@@ -1,18 +1,19 @@
 """Test verification module for candidate dependency replacements.
 
-Runs the target repository's test suite (e.g. pytest, unittest) against proposed
-replacements or migration shims to verify whether compatibility regressions occur.
+Executes baseline and replacement test suites (existing repo tests + AI-generated tests)
+in an isolated sandbox to detect compatibility regressions and verify proposed migrations.
 """
 
 from __future__ import annotations
 
 import argparse
+import logging
 import os
+import re
 import shutil
 import subprocess
 import sys
 import tempfile
-import venv
 from pathlib import Path
 from typing import Optional, Union
 
@@ -28,6 +29,8 @@ try:
     from schema import VerificationResult, VerificationStatus
 except ImportError:
     from depexit.schema import VerificationResult, VerificationStatus
+
+logger = logging.getLogger(__name__)
 
 EXCLUDED_DIRS = {
     ".git",
@@ -47,29 +50,38 @@ EXCLUDED_DIRS = {
     "node_modules",
 }
 
-# Known package name to top-level import root mappings
-KNOWN_IMPORT_MODULES: dict[str, str] = {
-    "python-dateutil": "dateutil",
-    "pyyaml": "yaml",
-    "beautifulsoup4": "bs4",
-    "pillow": "PIL",
-    "scikit-learn": "sklearn",
-    "opencv-python": "cv2",
-    "typing-extensions": "typing_extensions",
-    "protobuf": "google.protobuf",
-    "pydantic-core": "pydantic_core",
-    "pycrypto": "Crypto",
-    "pycryptodome": "Crypto",
-}
+# Regex to match pytest test lines with status in verbose output
+PYTEST_LINE_PATTERN = re.compile(
+    r"^([^\s:]+(?:::[\w.\[\]-]+)+)\s+(PASSED|FAILED|ERROR|SKIPPED)\b",
+    re.MULTILINE,
+)
+
+# Regex to match unittest verbose lines (e.g. test_foo (tests.test_bar.TestFoo) ... ok)
+UNITTEST_LINE_PATTERN = re.compile(
+    r"^([\w.]+)\s+\([^)]+\)\s+\.\.\.\s+(ok|FAIL|ERROR|skipped)\b",
+    re.MULTILINE,
+)
 
 
-def _get_import_module_name(package_name: str) -> str:
-    """Resolve the primary Python importable module name for a package."""
-    clean = package_name.lower().strip()
-    if clean in KNOWN_IMPORT_MODULES:
-        return KNOWN_IMPORT_MODULES[clean]
-    # Replace dashes and dots with underscores
-    return clean.replace("-", "_").split("==")[0].split(">=")[0].split("<=")[0].strip()
+def _find_repo_python(repo_path: Path) -> tuple[Path, Optional[Path]]:
+    """Discover the virtual environment Python inside the target repository if present.
+
+    Returns:
+        (python_executable, venv_dir_or_None)
+    """
+    for vname in (".venv", "venv", "env"):
+        vdir = repo_path / vname
+        if vdir.is_dir():
+            vpy = vdir / "bin" / "python"
+            if not vpy.exists():
+                vpy = vdir / "bin" / "python3"
+            if not vpy.exists():
+                vpy = vdir / "Scripts" / "python.exe"
+            if vpy.exists():
+                return vpy, vdir
+
+    # Fall back to current process Python
+    return Path(sys.executable), None
 
 
 def _is_actual_test_file(file_path: Path) -> bool:
@@ -101,9 +113,8 @@ def detect_test_suite(repo_path: Union[str, Path]) -> tuple[bool, str, list[str]
         return False, "", []
 
     test_files: list[Path] = []
-    has_test_dir = False
 
-    # Check for conventional test directories
+    # Check conventional test directories
     for t_dir_name in ("tests", "test", "testing"):
         t_dir = repo / t_dir_name
         if t_dir.is_dir():
@@ -115,10 +126,9 @@ def detect_test_suite(repo_path: Union[str, Path]) -> tuple[bool, str, list[str]
                         if _is_actual_test_file(f_path):
                             test_files.append(f_path)
             if test_files:
-                has_test_dir = True
                 break
 
-    # Scan the rest of the repository for test files if not found in test dirs
+    # Scan repository if no conventional test directory was found
     if not test_files:
         for root, dirs, files in os.walk(repo):
             dirs[:] = [d for d in dirs if d not in EXCLUDED_DIRS and d not in ("analyzer", "scanner", "ai", "report")]
@@ -128,7 +138,6 @@ def detect_test_suite(repo_path: Union[str, Path]) -> tuple[bool, str, list[str]
                     if _is_actual_test_file(f_path):
                         test_files.append(f_path)
 
-    # Check for pytest configuration files
     has_pytest_config = any(
         (repo / cfg).is_file()
         for cfg in ("pytest.ini", "setup.cfg", "pyproject.toml", "tox.ini")
@@ -137,12 +146,13 @@ def detect_test_suite(repo_path: Union[str, Path]) -> tuple[bool, str, list[str]
     if not test_files and not has_pytest_config:
         return False, "", []
 
+    python_exe, _ = _find_repo_python(repo)
 
-    # Check if pytest is available
+    # Check if pytest is importable/executable in the discovered python environment
     pytest_available = False
     try:
         check_proc = subprocess.run(
-            [sys.executable, "-m", "pytest", "--version"],
+            [str(python_exe), "-m", "pytest", "--version"],
             capture_output=True,
             text=True,
             timeout=5,
@@ -151,13 +161,560 @@ def detect_test_suite(repo_path: Union[str, Path]) -> tuple[bool, str, list[str]
     except Exception:
         pytest_available = False
 
+    target_dir = "tests" if (repo / "tests").is_dir() else ("test" if (repo / "test").is_dir() else ".")
     if pytest_available:
-        target_dir = "tests" if (repo / "tests").is_dir() else ("test" if (repo / "test").is_dir() else ".")
-        return True, "pytest", [sys.executable, "-m", "pytest", "-q", target_dir]
+        return True, "pytest", [str(python_exe), "-m", "pytest", "-v", "--tb=short", target_dir]
     else:
-        # Fall back to unittest discover
-        target_dir = "tests" if (repo / "tests").is_dir() else ("test" if (repo / "test").is_dir() else ".")
-        return True, "unittest", [sys.executable, "-m", "unittest", "discover", "-s", target_dir]
+        return True, "unittest", [str(python_exe), "-m", "unittest", "discover", "-v", "-s", target_dir]
+
+
+def _clean_code_patch(code_patch: str) -> str:
+    """Strip markdown code fences from a unified diff if present."""
+    cleaned = code_patch.strip()
+    if cleaned.startswith("```"):
+        lines = cleaned.splitlines()
+        if lines and lines[0].startswith("```"):
+            lines = lines[1:]
+        if lines and lines[-1].strip() == "```":
+            lines = lines[:-1]
+        cleaned = "\n".join(lines).strip()
+    return cleaned
+
+
+def _apply_code_patch(sandbox_repo: Path, patch_text: str) -> tuple[bool, str]:
+    """Apply a unified diff code_patch to the sandbox repository.
+
+    Returns:
+        (success: bool, message_or_error: str)
+    """
+    patch_clean = _clean_code_patch(patch_text)
+    if not patch_clean:
+        return True, "Empty code patch, skipped application."
+
+    patch_file = sandbox_repo / "depexit_migration.patch"
+    patch_file.write_text(patch_clean + "\n", encoding="utf-8")
+
+    # Initialize a temporary git repo in the sandbox to enable git apply
+    try:
+        if not (sandbox_repo / ".git").exists():
+            subprocess.run(["git", "init"], cwd=str(sandbox_repo), capture_output=True, check=False)
+            subprocess.run(["git", "config", "user.name", "DepExit"], cwd=str(sandbox_repo), capture_output=True, check=False)
+            subprocess.run(["git", "config", "user.email", "depexit@example.com"], cwd=str(sandbox_repo), capture_output=True, check=False)
+            subprocess.run(["git", "add", "-A"], cwd=str(sandbox_repo), capture_output=True, check=False)
+            subprocess.run(["git", "commit", "-m", "baseline", "--allow-empty"], cwd=str(sandbox_repo), capture_output=True, check=False)
+
+        # Try git apply with whitespace tolerance
+        apply_res = subprocess.run(
+            ["git", "apply", "--whitespace=nowarn", "-v", str(patch_file.name)],
+            cwd=str(sandbox_repo),
+            capture_output=True,
+            text=True,
+            timeout=15,
+        )
+        if apply_res.returncode == 0:
+            return True, "Patch applied successfully via git apply."
+
+        # Try git apply with 3way fallback
+        apply_3way = subprocess.run(
+            ["git", "apply", "--3way", "--whitespace=nowarn", str(patch_file.name)],
+            cwd=str(sandbox_repo),
+            capture_output=True,
+            text=True,
+            timeout=15,
+        )
+        if apply_3way.returncode == 0:
+            return True, "Patch applied successfully via git apply --3way."
+
+        # Try standard patch utility if git apply failed
+        patch_cmd = subprocess.run(
+            ["patch", "-p1", "-i", str(patch_file.name)],
+            cwd=str(sandbox_repo),
+            capture_output=True,
+            text=True,
+            timeout=15,
+        )
+        if patch_cmd.returncode == 0:
+            return True, "Patch applied successfully via patch -p1."
+
+        patch_p0 = subprocess.run(
+            ["patch", "-p0", "-i", str(patch_file.name)],
+            cwd=str(sandbox_repo),
+            capture_output=True,
+            text=True,
+            timeout=15,
+        )
+        if patch_p0.returncode == 0:
+            return True, "Patch applied successfully via patch -p0."
+
+        err_msg = apply_res.stderr or apply_res.stdout or patch_cmd.stderr or "git apply and patch failed"
+        return False, err_msg.strip()
+    except Exception as exc:
+        return False, f"Error executing patch application: {exc}"
+    finally:
+        if patch_file.exists():
+            try:
+                patch_file.unlink()
+            except Exception:
+                pass
+
+
+def _extract_failure_traceback(full_output: str, test_identifier: str) -> str:
+    """Extract relevant failure traceback or error block for a specific test from output."""
+    short_name = test_identifier.split("::")[-1]
+    # Look for pytest failure header: ________________ test_name ________________
+    pattern = re.compile(
+        rf"_{{5,}}\s+{re.escape(short_name)}\s+_{{5,}}(.*?)(?=(?:_{{5,}}|\Z|=+\s+(?:FAILURES|short test summary info)))",
+        re.DOTALL,
+    )
+    match = pattern.search(full_output)
+    if match:
+        snippet = match.group(1).strip()
+        if snippet:
+            return snippet
+
+    # Fallback to last 25 lines of output
+    lines = full_output.splitlines()
+    return "\n".join(lines[-25:]).strip() if len(lines) > 25 else full_output.strip()
+
+
+def _run_test_suite_internal(
+    repo_dir: Path,
+    python_exe: Path,
+    framework: str,
+    env: dict[str, str],
+    dependency_name: str,
+    run_type: str,     # "BASELINE" or "REPLACEMENT"
+    test_source: str,  # "REPO" or "AI_GENERATED"
+    target_test_path: Optional[str] = None,
+    timeout: int = 45,
+) -> list[VerificationResult]:
+    """Execute test command and parse per-test results into VerificationResult objects."""
+    results: list[VerificationResult] = []
+
+    if framework == "pytest":
+        cmd = [str(python_exe), "-m", "pytest", "-v", "--tb=short"]
+        if target_test_path:
+            cmd.append(target_test_path)
+        else:
+            target_dir = "tests" if (repo_dir / "tests").is_dir() else ("test" if (repo_dir / "test").is_dir() else ".")
+            cmd.append(target_dir)
+    else:
+        cmd = [str(python_exe), "-m", "unittest", "-v"]
+        if target_test_path:
+            p = Path(target_test_path)
+            cmd.extend(["discover", "-v", "-s", str(p.parent), "-p", str(p.name)])
+        else:
+            target_dir = "tests" if (repo_dir / "tests").is_dir() else ("test" if (repo_dir / "test").is_dir() else ".")
+            cmd.extend(["discover", "-v", "-s", target_dir])
+
+    try:
+        proc = subprocess.run(
+            cmd,
+            cwd=str(repo_dir),
+            env=env,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=timeout,
+        )
+        full_output = f"Command: {' '.join(cmd)}\nExit Code: {proc.returncode}\n{proc.stdout}\n{proc.stderr}".strip()
+
+        # Parse per-test outputs
+        if framework == "pytest":
+            matches = PYTEST_LINE_PATTERN.findall(proc.stdout)
+            for test_name_raw, status_str in matches:
+                status = VerificationStatus.PASS if status_str == "PASSED" else (
+                    VerificationStatus.NOT_RUN if status_str == "SKIPPED" else VerificationStatus.FAIL
+                )
+                raw_out = (
+                    proc.stdout[:400]
+                    if status == VerificationStatus.PASS
+                    else _extract_failure_traceback(proc.stdout, test_name_raw)
+                )
+                clean_test_name = test_name_raw.split("::")[-1] if "test_ai_generated_" in test_name_raw else test_name_raw
+                results.append(
+                    VerificationResult(
+                        dependency_name=dependency_name,
+                        test_name=clean_test_name,
+                        status=status,
+                        raw_output=raw_out,
+                        verified=(status == VerificationStatus.PASS),
+                        evidence="observed",
+                        run_type=run_type,
+                        test_source=test_source,
+                    )
+                )
+        else:
+            matches = UNITTEST_LINE_PATTERN.findall(proc.stderr + "\n" + proc.stdout)
+            for test_name_raw, status_str in matches:
+                status = VerificationStatus.PASS if status_str == "ok" else (
+                    VerificationStatus.NOT_RUN if status_str == "skipped" else VerificationStatus.FAIL
+                )
+                raw_out = (
+                    full_output[:400]
+                    if status == VerificationStatus.PASS
+                    else _extract_failure_traceback(full_output, test_name_raw)
+                )
+                results.append(
+                    VerificationResult(
+                        dependency_name=dependency_name,
+                        test_name=test_name_raw,
+                        status=status,
+                        raw_output=raw_out,
+                        verified=(status == VerificationStatus.PASS),
+                        evidence="observed",
+                        run_type=run_type,
+                        test_source=test_source,
+                    )
+                )
+
+        # If no individual test matched regex (e.g. fatal syntax error or collection failure), record overall result
+        if not results:
+            overall_status = VerificationStatus.PASS if proc.returncode == 0 else VerificationStatus.FAIL
+            results.append(
+                VerificationResult(
+                    dependency_name=dependency_name,
+                    test_name=f"{test_source.lower()}_test_suite",
+                    status=overall_status,
+                    raw_output=full_output,
+                    verified=(overall_status == VerificationStatus.PASS),
+                    evidence="observed",
+                    run_type=run_type,
+                    test_source=test_source,
+                )
+            )
+
+    except subprocess.TimeoutExpired as exc:
+        timeout_out = (
+            f"Command: {' '.join(cmd)}\n"
+            f"Timed out after {timeout} seconds.\n"
+            f"Partial STDOUT:\n{exc.stdout or ''}\n"
+            f"Partial STDERR:\n{exc.stderr or ''}"
+        ).strip()
+        results.append(
+            VerificationResult(
+                dependency_name=dependency_name,
+                test_name=f"{test_source.lower()}_timeout",
+                status=VerificationStatus.ERROR,
+                raw_output=timeout_out,
+                verified=False,
+                evidence="observed",
+                run_type=run_type,
+                test_source=test_source,
+            )
+        )
+    except Exception as exc:
+        results.append(
+            VerificationResult(
+                dependency_name=dependency_name,
+                test_name=f"{test_source.lower()}_error",
+                status=VerificationStatus.ERROR,
+                raw_output=f"Command: {' '.join(cmd)}\nFailed to execute: {exc}",
+                verified=False,
+                evidence="observed",
+                run_type=run_type,
+                test_source=test_source,
+            )
+        )
+
+    return results
+
+
+def _build_suggested_tests_file(suggested_tests: list[str]) -> Optional[str]:
+    """Write suggested AI test functions into a clean standalone pytest file."""
+    if not suggested_tests:
+        return None
+
+    cleaned_snippets: list[str] = []
+    for test_snippet in suggested_tests:
+        cleaned = _clean_code_patch(test_snippet)
+        if cleaned:
+            cleaned_snippets.append(cleaned)
+
+    if not cleaned_snippets:
+        return None
+
+    content = """# Auto-generated by DepExit AI verification engine
+import sys
+import os
+import pytest
+
+""" + "\n\n".join(cleaned_snippets) + "\n"
+
+    tf = tempfile.NamedTemporaryFile(suffix="_test.py", prefix="test_ai_generated_", mode="w", delete=False)
+    tf.write(content)
+    tf.flush()
+    tf.close()
+    return tf.name
+
+
+def verify_replacement(
+    repo_path: str,
+    dependency_name: str,
+    replacement_name: str,
+    code_patch: str = "",
+    suggested_tests: Optional[list[str]] = None,
+    *,
+    migration_steps: Optional[list[str]] = None,
+    is_priority: Optional[bool] = None,
+    timeout: int = 45,
+    **kwargs,
+) -> list[VerificationResult]:
+    """Execute baseline and replacement verification runs for a risky dependency.
+
+    Workflow:
+    1. BASELINE run: run repo's existing test suite (pytest/unittest) -> run_type=BASELINE, test_source=REPO.
+    2. Isolated sandbox copy: apply code_patch, install replacement library into isolated site-packages.
+    3. REPLACEMENT run: re-run the same existing test suite -> run_type=REPLACEMENT, test_source=REPO.
+    4. Suggested tests run: run AI-suggested tests against both baseline and replacement (test_source=AI_GENERATED).
+    5. If no repo test suite found, skips steps 1 and 3 entirely, relying solely on AI_GENERATED tests.
+    6. For skipped/unrun steps or errors, returns VerificationResult with status=NOT_RUN or ERROR and clear reason.
+
+    Args:
+        repo_path: Path to the target repository directory.
+        dependency_name: Original risky dependency name (e.g. 'requests').
+        replacement_name: Proposed replacement package name (e.g. 'httpx').
+        code_patch: Unified diff code patch to apply to the sandbox copy.
+        suggested_tests: Optional list of AI-generated test functions.
+        migration_steps: Optional human-readable migration guidelines.
+        is_priority: Flag indicating top priority dependency.
+        timeout: Subprocess timeout in seconds per test run.
+
+    Returns:
+        List of VerificationResult objects detailing individual test results and statuses.
+    """
+    repo = Path(repo_path).resolve()
+    results: list[VerificationResult] = []
+    suggested_tests = suggested_tests or []
+
+    if not repo.exists():
+        results.append(
+            VerificationResult(
+                dependency_name=dependency_name,
+                test_name="setup",
+                status=VerificationStatus.ERROR,
+                raw_output=f"Repository path does not exist: {repo}",
+                verified=False,
+                evidence="observed",
+                run_type="BASELINE",
+                test_source="REPO",
+            )
+        )
+        return results
+
+    # Discover target repo's Python executable and virtual environment
+    python_exe, venv_dir = _find_repo_python(repo)
+
+    # Base environment: activate venv variables and set PYTHONPATH
+    base_env = os.environ.copy()
+    base_env["PYTHONPATH"] = f"{repo}{os.pathsep}{base_env.get('PYTHONPATH', '')}"
+    if venv_dir:
+        base_env["VIRTUAL_ENV"] = str(venv_dir)
+        base_env["PATH"] = f"{venv_dir / 'bin'}{os.pathsep}{base_env.get('PATH', '')}"
+
+    has_repo_tests, framework, _ = detect_test_suite(repo)
+
+    # -------------------------------------------------------------------------
+    # 1. BASELINE run: Existing repo test suite
+    # -------------------------------------------------------------------------
+    if has_repo_tests:
+        repo_baseline = _run_test_suite_internal(
+            repo_dir=repo,
+            python_exe=python_exe,
+            framework=framework,
+            env=base_env,
+            dependency_name=dependency_name,
+            run_type="BASELINE",
+            test_source="REPO",
+            timeout=timeout,
+        )
+        results.extend(repo_baseline)
+
+    # -------------------------------------------------------------------------
+    # 2. BASELINE run: AI-generated suggested_tests
+    # -------------------------------------------------------------------------
+    ai_test_file = _build_suggested_tests_file(suggested_tests)
+    if ai_test_file:
+        try:
+            ai_baseline = _run_test_suite_internal(
+                repo_dir=repo,
+                python_exe=python_exe,
+                framework="pytest",
+                env=base_env,
+                dependency_name=dependency_name,
+                run_type="BASELINE",
+                test_source="AI_GENERATED",
+                target_test_path=ai_test_file,
+                timeout=timeout,
+            )
+            results.extend(ai_baseline)
+        finally:
+            if os.path.exists(ai_test_file):
+                try:
+                    os.unlink(ai_test_file)
+                except Exception:
+                    pass
+
+    # If neither repo test suite nor AI suggested tests exist:
+    if not has_repo_tests and not suggested_tests:
+        results.append(
+            VerificationResult(
+                dependency_name=dependency_name,
+                test_name="no_tests_discovered",
+                status=VerificationStatus.NOT_RUN,
+                raw_output="skipped: no existing test suite and no suggested tests provided",
+                verified=False,
+                evidence="observed",
+                run_type="BASELINE",
+                test_source="REPO",
+            )
+        )
+        return results
+
+    # -------------------------------------------------------------------------
+    # 3. Isolated Sandbox Setup & Patch Application
+    # -------------------------------------------------------------------------
+    with tempfile.TemporaryDirectory(prefix="depexit_verify_") as tmp_dir:
+        sandbox_root = Path(tmp_dir)
+        sandbox_repo = sandbox_root / "repo"
+        sandbox_site_packages = sandbox_root / "site-packages"
+
+        # Copy repository into sandbox, excluding virtualenvs and cache dirs
+        shutil.copytree(
+            repo,
+            sandbox_repo,
+            ignore=shutil.ignore_patterns(
+                ".git", ".venv", "venv", "env", "__pycache__", ".pytest_cache", ".tox", "build", "dist"
+            ),
+        )
+
+        # Apply code_patch if provided
+        patch_applied = True
+        if code_patch and code_patch.strip():
+            success, patch_msg = _apply_code_patch(sandbox_repo, code_patch)
+            if not success:
+                patch_applied = False
+                results.append(
+                    VerificationResult(
+                        dependency_name=dependency_name,
+                        test_name="apply_patch",
+                        status=VerificationStatus.NOT_RUN,
+                        raw_output=f"skipped: patch failed to apply\n{patch_msg}",
+                        verified=False,
+                        evidence="observed",
+                        run_type="REPLACEMENT",
+                        test_source="REPO",
+                    )
+                )
+
+        # Install replacement package into isolated site-packages folder
+        install_success = True
+        if replacement_name and replacement_name.strip().lower() not in ("none", "n/a", ""):
+            sandbox_site_packages.mkdir(parents=True, exist_ok=True)
+            install_cmd = [
+                str(python_exe),
+                "-m",
+                "pip",
+                "install",
+                "--no-input",
+                "--target",
+                str(sandbox_site_packages),
+                replacement_name,
+            ]
+            try:
+                install_proc = subprocess.run(
+                    install_cmd,
+                    cwd=str(sandbox_repo),
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                    timeout=60,
+                )
+                if install_proc.returncode != 0:
+                    install_success = False
+                    results.append(
+                        VerificationResult(
+                            dependency_name=dependency_name,
+                            test_name=f"install_{replacement_name}",
+                            status=VerificationStatus.ERROR,
+                            raw_output=f"skipped: installation of replacement '{replacement_name}' failed (exit {install_proc.returncode})\n{install_proc.stderr}",
+                            verified=False,
+                            evidence="observed",
+                            run_type="REPLACEMENT",
+                            test_source="REPO",
+                        )
+                    )
+            except subprocess.TimeoutExpired:
+                install_success = False
+                results.append(
+                    VerificationResult(
+                        dependency_name=dependency_name,
+                        test_name=f"install_{replacement_name}",
+                        status=VerificationStatus.ERROR,
+                        raw_output=f"skipped: installation of replacement '{replacement_name}' timed out after 60s",
+                        verified=False,
+                        evidence="observed",
+                        run_type="REPLACEMENT",
+                        test_source="REPO",
+                    )
+                )
+
+        # If patch failed or install failed, replacement test runs cannot proceed
+        if not patch_applied or not install_success:
+            return results
+
+        # Replacement environment: sandbox site-packages FIRST in PYTHONPATH so replacement takes precedence
+        repl_env = base_env.copy()
+        repl_env["PYTHONPATH"] = f"{sandbox_site_packages}{os.pathsep}{sandbox_repo}{os.pathsep}{repl_env.get('PYTHONPATH', '')}"
+
+        # ---------------------------------------------------------------------
+        # 4. REPLACEMENT run: Existing repo test suite on patched copy
+        # ---------------------------------------------------------------------
+        if has_repo_tests:
+            repo_replacement = _run_test_suite_internal(
+                repo_dir=sandbox_repo,
+                python_exe=python_exe,
+                framework=framework,
+                env=repl_env,
+                dependency_name=dependency_name,
+                run_type="REPLACEMENT",
+                test_source="REPO",
+                timeout=timeout,
+            )
+            results.extend(repo_replacement)
+
+        # ---------------------------------------------------------------------
+        # 5. REPLACEMENT run: AI-generated suggested_tests on patched copy
+        # ---------------------------------------------------------------------
+        ai_repl_file = _build_suggested_tests_file(suggested_tests)
+        if ai_repl_file:
+            try:
+                ai_replacement = _run_test_suite_internal(
+                    repo_dir=sandbox_repo,
+                    python_exe=python_exe,
+                    framework="pytest",
+                    env=repl_env,
+                    dependency_name=dependency_name,
+                    run_type="REPLACEMENT",
+                    test_source="AI_GENERATED",
+                    target_test_path=ai_repl_file,
+                    timeout=timeout,
+                )
+                results.extend(ai_replacement)
+            finally:
+                if os.path.exists(ai_repl_file):
+                    try:
+                        os.unlink(ai_repl_file)
+                    except Exception:
+                        pass
+
+    return results
+
+
+# Backward compatibility aliases
+run_verification_tests = verify_replacement
 
 
 def execute_test_suite(
@@ -168,52 +725,21 @@ def execute_test_suite(
     test_name: str = "test_suite",
     dependency_name: str = "",
 ) -> VerificationResult:
-    """Execute a specified test command inside the target repository.
-
-    Args:
-        repo_path: Path to the target repository.
-        test_command: Command list to run (defaults to detected test suite).
-        env: Environment variables to pass to the subprocess.
-        timeout: Subprocess execution timeout in seconds.
-        test_name: Identifier for the test run.
-        dependency_name: Name of the dependency being evaluated.
-
-    Returns:
-        VerificationResult containing test status and raw output.
-    """
+    """Execute a specified test command inside the target repository."""
     repo = Path(repo_path).resolve()
-    if not repo.exists():
-        return VerificationResult(
-            dependency_name=dependency_name,
-            test_name=test_name,
-            status=VerificationStatus.ERROR,
-            raw_output=f"Target repository path does not exist: {repo}",
-            verified=False,
-        )
-
-    if test_command is None:
-        has_tests, framework, cmd = detect_test_suite(repo)
-        if not has_tests:
-            return VerificationResult(
-                dependency_name=dependency_name,
-                test_name=test_name,
-                status=VerificationStatus.NOT_RUN,
-                raw_output="No test suite discovered in target repository.",
-                verified=False,
-            )
-        test_command = cmd
-
+    python_exe, venv_dir = _find_repo_python(repo)
     run_env = os.environ.copy()
     if env:
         run_env.update(env)
+    run_env["PYTHONPATH"] = f"{repo}{os.pathsep}{run_env.get('PYTHONPATH', '')}"
+    if venv_dir:
+        run_env["VIRTUAL_ENV"] = str(venv_dir)
+        run_env["PATH"] = f"{venv_dir / 'bin'}{os.pathsep}{run_env.get('PATH', '')}"
 
-    # Ensure repo_path is in PYTHONPATH so internal modules can be imported
-    existing_pp = run_env.get("PYTHONPATH", "")
-    run_env["PYTHONPATH"] = f"{repo}{os.pathsep}{existing_pp}" if existing_pp else str(repo)
-
+    cmd = test_command or [str(python_exe), "-m", "pytest", "-q"]
     try:
         proc = subprocess.run(
-            test_command,
+            cmd,
             cwd=str(repo),
             capture_output=True,
             text=True,
@@ -222,619 +748,95 @@ def execute_test_suite(
             timeout=timeout,
             env=run_env,
         )
-        exit_code = proc.returncode
-        status = VerificationStatus.PASS if exit_code == 0 else VerificationStatus.FAIL
-        cmd_str = " ".join(str(c) for c in test_command)
-        raw_output = (
-            f"Command: {cmd_str}\n"
-            f"Exit Code: {exit_code}\n"
-            f"--- STDOUT ---\n{proc.stdout}\n"
-            f"--- STDERR ---\n{proc.stderr}"
-        )
+        status = VerificationStatus.PASS if proc.returncode == 0 else VerificationStatus.FAIL
         return VerificationResult(
             dependency_name=dependency_name,
             test_name=test_name,
             status=status,
-            raw_output=raw_output.strip(),
+            raw_output=f"{proc.stdout}\n{proc.stderr}".strip(),
             verified=(status == VerificationStatus.PASS),
+            evidence="observed",
+            run_type="BASELINE",
+            test_source="REPO",
         )
-    except subprocess.TimeoutExpired as exc:
-        cmd_str = " ".join(str(c) for c in test_command)
+    except Exception as exc:
         return VerificationResult(
             dependency_name=dependency_name,
             test_name=test_name,
             status=VerificationStatus.ERROR,
-            raw_output=(
-                f"Command: {cmd_str}\n"
-                f"Timed out after {timeout} seconds.\n"
-                f"Partial STDOUT:\n{exc.stdout or ''}\n"
-                f"Partial STDERR:\n{exc.stderr or ''}"
-            ).strip(),
+            raw_output=str(exc),
             verified=False,
-        )
-    except Exception as exc:
-        cmd_str = " ".join(str(c) for c in test_command)
-        return VerificationResult(
-            dependency_name=dependency_name,
-            test_name=test_name,
-            status=VerificationStatus.ERROR,
-            raw_output=f"Command: {cmd_str}\nExecution failed with error: {exc}",
-            verified=False,
+            evidence="observed",
+            run_type="BASELINE",
+            test_source="REPO",
         )
 
 
-def _get_venv_python(venv_dir: Path) -> Path:
-    """Get the python executable path inside a virtual environment."""
-    bin_dir = venv_dir / "bin" if (venv_dir / "bin").exists() else venv_dir / "Scripts"
-    py_path = bin_dir / "python"
-    if not py_path.exists():
-        py_path = bin_dir / "python.exe"
-    return py_path
-
-
-def _get_top_priority_dependencies(repo_path: Path, max_count: int = 2) -> list[str]:
-    """Identify the top 1-2 highest-severity dependencies in the repository."""
-    try:
-        from scanner.discover import discover_dependencies
-        from scanner.risk_assess import assess_risk
-
-        deps = discover_dependencies(repo_path)
-        if not deps:
-            return []
-
-        flags = assess_risk(deps)
-        severity_score = {"HIGH": 3, "MED": 2, "LOW": 1}
-
-        # Calculate max severity score per dependency
-        dep_scores: dict[str, int] = {}
-        for d in deps:
-            dep_scores[d.name] = 0
-
-        for f in flags:
-            sev_str = f.severity.value if hasattr(f.severity, "value") else str(f.severity)
-            score = severity_score.get(sev_str.upper(), 0)
-            dep_name = f.dependency_name
-            if dep_name in dep_scores:
-                dep_scores[dep_name] = max(dep_scores[dep_name], score)
-            else:
-                dep_scores[dep_name] = score
-
-        # Sort dependencies by score descending, then by name
-        sorted_deps = sorted(dep_scores.items(), key=lambda item: (-item[1], item[0].lower()))
-        return [name for name, _ in sorted_deps[:max_count]]
-    except Exception:
-        # Fallback if discovery or assessment fails
-        return []
-
-
-def run_smoke_test(
-    repo_path: Path,
-    module_name: str,
-    python_executable: Union[str, Path] = sys.executable,
-    env: Optional[dict[str, str]] = None,
-    timeout: int = 15,
-) -> tuple[VerificationStatus, str]:
-    """Execute a minimal smoke test by importing the specified module in a subprocess."""
-    smoke_script = (
-        "import sys\n"
-        f"mod_name = '{module_name}'\n"
-        "try:\n"
-        "    mod = __import__(mod_name)\n"
-        "    ver = getattr(mod, '__version__', getattr(mod, 'VERSION', 'unknown'))\n"
-        "    print(f'SUCCESS: successfully imported {mod_name} (version: {ver})')\n"
-        "    sys.exit(0)\n"
-        "except Exception as e:\n"
-        "    print(f'FAILURE: could not import {mod_name}: {e}', file=sys.stderr)\n"
-        "    sys.exit(1)\n"
-    )
-
-    run_env = os.environ.copy()
-    if env:
-        run_env.update(env)
-
-    # Ensure repo_path is in PYTHONPATH
-    existing_pp = run_env.get("PYTHONPATH", "")
-    run_env["PYTHONPATH"] = f"{repo_path}{os.pathsep}{existing_pp}" if existing_pp else str(repo_path)
-
-    try:
-        proc = subprocess.run(
-            [str(python_executable), "-c", smoke_script],
-            cwd=str(repo_path),
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            timeout=timeout,
-            env=run_env,
-        )
-        status = VerificationStatus.PASS if proc.returncode == 0 else VerificationStatus.FAIL
-        output = f"Smoke Test ({module_name}): exit {proc.returncode}\n{proc.stdout}\n{proc.stderr}".strip()
-        return status, output
-    except subprocess.TimeoutExpired as exc:
-        return (
-            VerificationStatus.ERROR,
-            f"Smoke Test ({module_name}) timed out after {timeout} seconds.\n{exc.stdout or ''}\n{exc.stderr or ''}".strip(),
-        )
-    except Exception as exc:
-        return VerificationStatus.ERROR, f"Smoke Test ({module_name}) failed to execute: {exc}"
-
-
-def verify_replacement(
-    repo_path: str,
-    dependency_name: str,
-    replacement_name: str,
-    migration_steps: Optional[list[str]] = None,
-    is_priority: Optional[bool] = None,
-    code_patch: Optional[str] = None,
-    suggested_tests: Optional[list[str]] = None,
-) -> list[VerificationResult]:
-    """Verify candidate replacement package against repository test suite or minimal smoke test.
-
-    Workflow:
-    1. Checks if repo has existing test suite (pytest/unittest) and runs baseline test suite.
-    2. In an isolated sandbox/venv, installs candidate replacement package.
-    3. Re-runs test suite (or minimal smoke test importing module if no tests exist).
-    4. Compares before/after and returns structured VerificationResult list.
-
-    Args:
-        repo_path: Path to the target repository.
-        dependency_name: Target dependency being replaced.
-        replacement_name: Proposed replacement library name.
-        migration_steps: Optional list of migration guidelines/steps.
-        is_priority: Force priority smoke testing if no test suite exists. If None, checks top 1-2.
-        code_patch: Optional AI-generated code patch string.
-        suggested_tests: Optional list of AI-suggested test descriptions.
-
-    Returns:
-        List of VerificationResult objects detailing before, installation, and after results.
-    """
-    repo = Path(repo_path).resolve()
-    results: list[VerificationResult] = []
-    migration_steps = migration_steps or []
-
-    if not repo.exists():
-        results.append(
-            VerificationResult(
-                dependency_name=dependency_name,
-                test_name="setup",
-                status=VerificationStatus.ERROR,
-                raw_output=f"Repository path does not exist: {repo}",
-                verified=False,
-            )
-        )
-        return results
-
-    if not replacement_name or replacement_name.strip().lower() in ("none", "n/a", ""):
-        results.append(
-            VerificationResult(
-                dependency_name=dependency_name,
-                test_name="replacement_check",
-                status=VerificationStatus.NOT_RUN,
-                raw_output=f"No candidate replacement proposed for '{dependency_name}'.",
-                verified=False,
-            )
-        )
-        return results
-
-    # Format migration steps description for context in raw outputs
-    migration_summary = ""
-    if migration_steps:
-        migration_summary += "\nMigration Steps:\n" + "\n".join(f"  - {s}" for s in migration_steps)
-    if code_patch:
-        migration_summary += f"\nCode Patch Preview:\n{code_patch[:300]}"
-    if suggested_tests:
-        migration_summary += "\nSuggestedTests:\n" + "\n".join(f"  - {t}" for t in suggested_tests)
-
-    has_test_suite, framework, test_cmd = detect_test_suite(repo)
-
-
-    # -------------------------------------------------------------------------
-    # Scenario A: Existing Test Suite Discovered (pytest / unittest)
-    # -------------------------------------------------------------------------
-    if has_test_suite:
-        # Step 1: Run baseline test suite
-        baseline_res = execute_test_suite(
-            repo_path=repo,
-            test_command=test_cmd,
-            test_name=f"baseline_{framework}",
-            dependency_name=dependency_name,
-            timeout=60,
-        )
-        results.append(baseline_res)
-
-        # Step 2: Set up isolated environment and install replacement package
-        with tempfile.TemporaryDirectory(prefix="depexit_verify_") as tmp_dir:
-            sandbox_dir = Path(tmp_dir)
-            venv_dir = sandbox_dir / "venv"
-            venv_py: Optional[Path] = None
-            target_site_packages = sandbox_dir / "site-packages"
-
-            # Attempt virtual environment creation with system site packages
-            try:
-                venv.create(venv_dir, system_site_packages=True, with_pip=True, clear=True)
-                vpy = _get_venv_python(venv_dir)
-                if vpy.exists():
-                    venv_py = vpy
-            except Exception:
-                venv_py = None
-
-            install_success = False
-            install_cmd: list[str]
-
-            if venv_py:
-                install_cmd = [str(venv_py), "-m", "pip", "install", "--no-input", replacement_name]
-            else:
-                target_site_packages.mkdir(parents=True, exist_ok=True)
-                install_cmd = [
-                    sys.executable,
-                    "-m",
-                    "pip",
-                    "install",
-                    "--no-input",
-                    "--target",
-                    str(target_site_packages),
-                    replacement_name,
-                ]
-
-            try:
-                install_proc = subprocess.run(
-                    install_cmd,
-                    cwd=str(sandbox_dir),
-                    capture_output=True,
-                    text=True,
-                    encoding="utf-8",
-                    errors="replace",
-                    timeout=120,
-                )
-                install_exit = install_proc.returncode
-                install_status = VerificationStatus.PASS if install_exit == 0 else VerificationStatus.FAIL
-                install_success = (install_status == VerificationStatus.PASS)
-
-                results.append(
-                    VerificationResult(
-                        dependency_name=dependency_name,
-                        test_name=f"install_{replacement_name}",
-                        status=install_status,
-                        raw_output=(
-                            f"Command: {' '.join(install_cmd)}\n"
-                            f"Exit Code: {install_exit}\n"
-                            f"--- STDOUT ---\n{install_proc.stdout}\n"
-                            f"--- STDERR ---\n{install_proc.stderr}{migration_summary}"
-                        ).strip(),
-                        verified=install_success,
-                    )
-                )
-            except subprocess.TimeoutExpired as exc:
-                install_success = False
-                results.append(
-                    VerificationResult(
-                        dependency_name=dependency_name,
-                        test_name=f"install_{replacement_name}",
-                        status=VerificationStatus.ERROR,
-                        raw_output=f"Package installation of '{replacement_name}' timed out after 120s.\n{exc.stdout or ''}\n{exc.stderr or ''}",
-                        verified=False,
-                    )
-                )
-            except Exception as exc:
-                install_success = False
-                results.append(
-                    VerificationResult(
-                        dependency_name=dependency_name,
-                        test_name=f"install_{replacement_name}",
-                        status=VerificationStatus.ERROR,
-                        raw_output=f"Package installation of '{replacement_name}' failed with error: {exc}",
-                        verified=False,
-                    )
-                )
-
-            # Step 3: Re-run test suite against swapped environment
-            if install_success:
-                swapped_env = os.environ.copy()
-                if venv_py:
-                    # Run test command using venv's python
-                    swapped_cmd = [str(venv_py), "-m"] + test_cmd[2:]
-                else:
-                    swapped_cmd = list(test_cmd)
-                    existing_pp = swapped_env.get("PYTHONPATH", "")
-                    swapped_env["PYTHONPATH"] = (
-                        f"{target_site_packages}{os.pathsep}{existing_pp}"
-                        if existing_pp
-                        else str(target_site_packages)
-                    )
-
-                swapped_res = execute_test_suite(
-                    repo_path=repo,
-                    test_command=swapped_cmd,
-                    env=swapped_env,
-                    test_name=f"swapped_{framework}",
-                    dependency_name=dependency_name,
-                    timeout=60,
-                )
-                results.append(swapped_res)
-            else:
-                results.append(
-                    VerificationResult(
-                        dependency_name=dependency_name,
-                        test_name=f"swapped_{framework}",
-                        status=VerificationStatus.ERROR,
-                        raw_output=(
-                            f"Cannot run swapped test suite: installation of replacement '{replacement_name}' "
-                            f"failed during sandbox setup.{migration_summary}"
-                        ).strip(),
-                        verified=False,
-                    )
-                )
-
-        return results
-
-    # -------------------------------------------------------------------------
-    # Scenario B: No Test Suite Found — Run minimal smoke test for top 1-2
-    # -------------------------------------------------------------------------
-    # Determine priority for smoke testing
-    should_run_smoke = False
-    if is_priority is True:
-        should_run_smoke = True
-    elif is_priority is False:
-        should_run_smoke = False
-    else:
-        # Determine top 1-2 highest severity dependencies in the repo
-        top_deps = _get_top_priority_dependencies(repo, max_count=2)
-        if not top_deps or dependency_name in top_deps:
-            should_run_smoke = True
-        else:
-            should_run_smoke = False
-
-    if not should_run_smoke:
-        results.append(
-            VerificationResult(
-                dependency_name=dependency_name,
-                test_name="smoke_test",
-                status=VerificationStatus.NOT_RUN,
-                raw_output=(
-                    f"Untested: dependency '{dependency_name}' is not among top priority dependencies "
-                    f"for smoke testing (limited time budget). No test suite exists in repo."
-                ),
-                verified=False,
-            )
-        )
-        return results
-
-    # Baseline smoke test: import original dependency
-    orig_mod = _get_import_module_name(dependency_name)
-    base_smoke_status, base_smoke_out = run_smoke_test(repo, orig_mod)
-    results.append(
-        VerificationResult(
-            dependency_name=dependency_name,
-            test_name="baseline_smoke_test",
-            status=base_smoke_status,
-            raw_output=base_smoke_out,
-            verified=(base_smoke_status == VerificationStatus.PASS),
-        )
-    )
-
-    # Isolated installation and swapped smoke test
-    with tempfile.TemporaryDirectory(prefix="depexit_verify_") as tmp_dir:
-        sandbox_dir = Path(tmp_dir)
-        venv_dir = sandbox_dir / "venv"
-        venv_py: Optional[Path] = None
-        target_site_packages = sandbox_dir / "site-packages"
-
-        try:
-            venv.create(venv_dir, system_site_packages=True, with_pip=True, clear=True)
-            vpy = _get_venv_python(venv_dir)
-            if vpy.exists():
-                venv_py = vpy
-        except Exception:
-            venv_py = None
-
-        install_success = False
-        if venv_py:
-            install_cmd = [str(venv_py), "-m", "pip", "install", "--no-input", replacement_name]
-        else:
-            target_site_packages.mkdir(parents=True, exist_ok=True)
-            install_cmd = [
-                sys.executable,
-                "-m",
-                "pip",
-                "install",
-                "--no-input",
-                "--target",
-                str(target_site_packages),
-                replacement_name,
-            ]
-
-        try:
-            install_proc = subprocess.run(
-                install_cmd,
-                cwd=str(sandbox_dir),
-                capture_output=True,
-                text=True,
-                encoding="utf-8",
-                errors="replace",
-                timeout=120,
-            )
-            install_exit = install_proc.returncode
-            install_status = VerificationStatus.PASS if install_exit == 0 else VerificationStatus.FAIL
-            install_success = (install_status == VerificationStatus.PASS)
-
-            results.append(
-                VerificationResult(
-                    dependency_name=dependency_name,
-                    test_name=f"install_{replacement_name}",
-                    status=install_status,
-                    raw_output=(
-                        f"Command: {' '.join(install_cmd)}\n"
-                        f"Exit Code: {install_exit}\n"
-                        f"--- STDOUT ---\n{install_proc.stdout}\n"
-                        f"--- STDERR ---\n{install_proc.stderr}{migration_summary}"
-                    ).strip(),
-                    verified=install_success,
-                )
-            )
-        except subprocess.TimeoutExpired as exc:
-            install_success = False
-            results.append(
-                VerificationResult(
-                    dependency_name=dependency_name,
-                    test_name=f"install_{replacement_name}",
-                    status=VerificationStatus.ERROR,
-                    raw_output=f"Installation of '{replacement_name}' timed out after 120s.\n{exc.stdout or ''}\n{exc.stderr or ''}",
-                    verified=False,
-                )
-            )
-        except Exception as exc:
-            install_success = False
-            results.append(
-                VerificationResult(
-                    dependency_name=dependency_name,
-                    test_name=f"install_{replacement_name}",
-                    status=VerificationStatus.ERROR,
-                    raw_output=f"Installation of '{replacement_name}' failed with error: {exc}",
-                    verified=False,
-                )
-            )
-
-        # Swapped smoke test: import replacement package in isolated environment
-        if install_success:
-            rep_mod = _get_import_module_name(replacement_name)
-            smoke_env = os.environ.copy()
-            runner_py = venv_py or sys.executable
-
-            if not venv_py:
-                existing_pp = smoke_env.get("PYTHONPATH", "")
-                smoke_env["PYTHONPATH"] = (
-                    f"{target_site_packages}{os.pathsep}{existing_pp}"
-                    if existing_pp
-                    else str(target_site_packages)
-                )
-
-            swap_smoke_status, swap_smoke_out = run_smoke_test(
-                repo_path=repo,
-                module_name=rep_mod,
-                python_executable=runner_py,
-                env=smoke_env,
-                timeout=15,
-            )
-            results.append(
-                VerificationResult(
-                    dependency_name=dependency_name,
-                    test_name="swapped_smoke_test",
-                    status=swap_smoke_status,
-                    raw_output=swap_smoke_out,
-                    verified=(swap_smoke_status == VerificationStatus.PASS),
-                )
-            )
-        else:
-            results.append(
-                VerificationResult(
-                    dependency_name=dependency_name,
-                    test_name="swapped_smoke_test",
-                    status=VerificationStatus.ERROR,
-                    raw_output=(
-                        f"Cannot run swapped smoke test: installation of replacement '{replacement_name}' "
-                        f"failed.{migration_summary}"
-                    ).strip(),
-                    verified=False,
-                )
-            )
-
-    return results
-
-
-# Backward compatibility alias
-run_verification_tests = verify_replacement
-
+# ---------------------------------------------------------------------------
+# Standalone Execution & Verification
+# ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Verify dependency replacements against repository test suite or minimal smoke test."
+        description="Verify dependency replacements against repository test suite and AI-generated tests."
     )
-    parser.add_argument("repo_path", help="Path to target repository to verify")
-    parser.add_argument(
-        "dependency_name",
-        nargs="?",
-        default=None,
-        help="Original dependency name to replace (e.g. requests)",
-    )
-    parser.add_argument(
-        "replacement_name",
-        nargs="?",
-        default=None,
-        help="Proposed replacement package name (e.g. httpx)",
-    )
-    parser.add_argument(
-        "--steps",
-        nargs="*",
-        default=[],
-        help="Optional migration steps or notes",
-    )
-
+    parser.add_argument("repo_path", nargs="?", default="../linkwatch", help="Path to target repository")
+    parser.add_argument("dependency_name", nargs="?", default="python-dateutil", help="Dependency being replaced")
+    parser.add_argument("replacement_name", nargs="?", default="pendulum", help="Proposed replacement library")
     args = parser.parse_args()
+
     target_repo = Path(args.repo_path).resolve()
+    print("=" * 75)
+    print("DepExit Verification Test Harness: Standalone Verification")
+    print("=" * 75)
+    print(f"Target Repository : {target_repo}")
+    print(f"Dependency Target : {args.dependency_name}")
+    print(f"Replacement Target: {args.replacement_name}")
 
-    if not target_repo.exists():
-        print(f"Error: Target repository does not exist: {target_repo}", file=sys.stderr)
-        sys.exit(1)
+    # Mock code patch migrating linkwatch/dates.py to datetime
+    mock_patch = """--- a/linkwatch/dates.py
++++ b/linkwatch/dates.py
+@@ -1,3 +1,4 @@
++import datetime
+ from dateutil import parser
+ 
+ 
+"""
 
-    raw_dep = args.dependency_name
-    raw_rep = args.replacement_name
+    # Mock AI-generated pytest functions
+    mock_suggested_tests = [
+        "def test_date_parser_smoke():\n    import datetime\n    now = datetime.datetime.now()\n    assert now.year >= 2024\n",
+        "def test_ai_suggested_failing_sample():\n    # Intentionally failing test to demonstrate fail capture\n    assert 1 == 2, 'Expected failure test for Person C gap analysis'\n",
+    ]
 
-    dep_pairs: list[tuple[str, str]] = []
+    print("\n[*] Running verify_replacement()...")
+    results = verify_replacement(
+        repo_path=str(target_repo),
+        dependency_name=args.dependency_name,
+        replacement_name=args.replacement_name,
+        code_patch=mock_patch,
+        suggested_tests=mock_suggested_tests,
+    )
 
-    # If dependency and replacement are not specified, discover from repo
-    if not raw_dep:
-        print(f"No specific dependency given for '{target_repo}'. Discovering top priorities...")
-        try:
-            from scanner.discover import discover_dependencies
+    print(f"\n[+] Total Verification Results: {len(results)}")
+    print("-" * 75)
+    print(f"{'STATUS':<8} | {'RUN_TYPE':<12} | {'SOURCE':<13} | {'VERIFIED':<8} | TEST NAME")
+    print("-" * 75)
+    for r in results:
+        status_val = r.status.value if hasattr(r.status, 'value') else str(r.status)
+        v_flag = "TRUE" if r.verified else "FALSE"
+        print(f"{status_val:<8} | {r.run_type:<12} | {r.test_source:<13} | {v_flag:<8} | {r.test_name}")
 
-            discovered = discover_dependencies(target_repo)
-            if not discovered:
-                print("No dependencies discovered in repository.")
-                sys.exit(0)
+    # Display sample failure traceback if any
+    failures = [r for r in results if r.status != VerificationStatus.PASS]
+    if failures:
+        print("\n[*] Sample Failure Capture (for Person C explain_gaps):")
+        sample_fail = failures[0]
+        print(f"Test: {sample_fail.test_name} ({sample_fail.run_type}/{sample_fail.test_source})")
+        print("Traceback Preview:")
+        for line in sample_fail.raw_output.splitlines()[:10]:
+            print(f"  > {line}")
 
-            top_deps = _get_top_priority_dependencies(target_repo, max_count=2)
-            candidates = top_deps if top_deps else [d.name for d in discovered[:2]]
-            for c_dep in candidates:
-                c_rep = "httpx" if "request" in c_dep.lower() else "urllib3"
-                dep_pairs.append((c_dep, c_rep))
-            print(f"Selected priority dependencies: {', '.join(d[0] for d in dep_pairs)}")
-        except Exception as e:
-            print(f"Failed to discover dependencies automatically: {e}", file=sys.stderr)
-            sys.exit(1)
-    else:
-        # User specified dependency/dependencies
-        if "," in raw_dep:
-            dep_list = [d.strip() for d in raw_dep.split(",") if d.strip()]
-            rep_list = [r.strip() for r in (raw_rep.split(",") if raw_rep else []) if r.strip()]
-            for idx, d_item in enumerate(dep_list):
-                r_item = rep_list[idx] if idx < len(rep_list) else ("httpx" if "request" in d_item.lower() else "urllib3")
-                dep_pairs.append((d_item, r_item))
-        else:
-            rep_item = raw_rep or ("httpx" if "request" in raw_dep.lower() else "urllib3")
-            dep_pairs.append((raw_dep.strip(), rep_item.strip()))
-
-    all_results: list[VerificationResult] = []
-    for d_name, r_name in dep_pairs:
-        print(f"\n--- Running Verification for '{d_name}' -> '{r_name}' in '{target_repo}' ---")
-        v_results = verify_replacement(
-            repo_path=str(target_repo),
-            dependency_name=d_name,
-            replacement_name=r_name,
-            migration_steps=args.steps,
-            is_priority=True,
-        )
-        all_results.extend(v_results)
-
-    print(f"\nTotal Verification Results: {len(all_results)}\n" + "=" * 60)
-    for res in all_results:
-        status_val = res.status.value if hasattr(res.status, "value") else str(res.status)
-        v_flag = "PASS" if res.verified else "FAIL/UNVERIFIED"
-        print(f"[{status_val:7}] Dep: {res.dependency_name:12} | Test: {res.test_name:<22} | Verified: {v_flag}")
-        print("-" * 60)
-        # Indent raw output preview
-        for line in res.raw_output.splitlines()[:6]:
-            print(f"    {line}")
-        if len(res.raw_output.splitlines()) > 6:
-            print("    ...")
-        print("=" * 60)
-
+    print("\n" + "=" * 75)
+    print("STANDALONE VERIFICATION COMPLETED SUCCESSFULLY!")
+    print("=" * 75)

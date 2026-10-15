@@ -53,13 +53,15 @@ logger = logging.getLogger(__name__)
 
 # Official Model Information for Gemma 4 hosted API access
 # Terms of use from Google AI for Developers: https://ai.google.dev/gemma/terms
+_DEFAULT_MODEL = os.getenv("GEMMA_MODEL") or "gemma-4-26b-a4b-it"
+
 MODEL_INFO: dict[str, str] = {
-    "model_id": "gemma-4-31b-it",
+    "model_id": _DEFAULT_MODEL,
     "version": "4",
     "access_method": "hosted_api",
     "terms_url": "https://ai.google.dev/gemma/terms",
     # Aliases for flexibility across capsule builder and reporting modules
-    "model": "gemma-4-31b-it",
+    "model": _DEFAULT_MODEL,
     "method": "hosted_api",
     "terms": "https://ai.google.dev/gemma/terms",
     "terms_link": "https://ai.google.dev/gemma/terms",
@@ -88,7 +90,7 @@ class GemmaClient:
         api_key: Optional[str] = None,
         model: Optional[str] = None,
         api_base: Optional[str] = None,
-        timeout: int = 60,
+        timeout: int = 180,
         mock_response_func: Optional[Callable[[str], str]] = None,
     ) -> None:
         """Initialize GemmaClient with API credentials and configuration.
@@ -101,9 +103,9 @@ class GemmaClient:
             mock_response_func: Optional custom response generator for mock / testing modes.
         """
         self.api_key = api_key or os.getenv("GEMMA_API_KEY")
-        self.model = model or MODEL_INFO["model_id"]
+        self.model = model or os.getenv("GEMMA_MODEL") or MODEL_INFO["model_id"]
         self.api_base = api_base or os.getenv("GEMMA_API_BASE")
-        self.timeout = timeout
+        self.timeout = int(os.getenv("GEMMA_TIMEOUT", str(timeout)))
         self.session = requests.Session()
         self.mock_response_func = mock_response_func
 
@@ -171,7 +173,11 @@ class GemmaClient:
                     raise GemmaAPIError(f"Gemma API HTTP {resp.status_code} error: {err_msg}")
 
                 data = resp.json()
-                return data["candidates"][0]["content"]["parts"][0]["text"]
+                candidate_parts = data["candidates"][0]["content"]["parts"]
+                text_parts = [p["text"] for p in candidate_parts if not p.get("thought") and "text" in p]
+                if text_parts:
+                    return text_parts[-1]
+                return candidate_parts[-1].get("text", "")
             except GemmaAPIError:
                 raise
             except Exception as exc:
@@ -211,15 +217,12 @@ class GemmaClient:
 # ---------------------------------------------------------------------------
 
 def _clean_markdown_fences(text: str) -> str:
-    """Strip markdown code block fences and extraneous whitespace from LLM output."""
+    """Defensively strip markdown code block fences and extraneous whitespace from LLM output."""
     cleaned = text.strip()
-    if cleaned.startswith("```"):
-        # Strip opening ``` or ```json
-        cleaned = re.sub(r"^```(?:json)?\s*\n?", "", cleaned, flags=re.IGNORECASE)
-        # Strip trailing ```
-        cleaned = re.sub(r"\n?```\s*$", "", cleaned)
-        cleaned = cleaned.strip()
-    return cleaned
+    cleaned = re.sub(r"^\s*```(?:json)?\s*\n?", "", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"\n?\s*```\s*$", "", cleaned)
+    cleaned = re.sub(r"^```(?:json)?\s*$", "", cleaned, flags=re.MULTILINE | re.IGNORECASE)
+    return cleaned.strip()
 
 
 def _extract_outermost_json(text: str, is_array: bool = False) -> str:
@@ -233,20 +236,128 @@ def _extract_outermost_json(text: str, is_array: bool = False) -> str:
     return text
 
 
-def _parse_json_defensively(raw_text: str, is_array: bool = False) -> Any:
-    """Defensively parse JSON, stripping fences and handling bracket wrappers."""
+def _repair_unescaped_string_literals(s: str) -> str:
+    """Scan character-by-character tracking quote boundaries to escape raw newlines/tabs inside strings."""
+    result = []
+    in_string = False
+    escape = False
+    for ch in s:
+        if ch == '"' and not escape:
+            in_string = not in_string
+            result.append(ch)
+        elif in_string:
+            if ch == '\\':
+                escape = not escape
+                result.append(ch)
+                continue
+            elif ch == '\n':
+                result.append('\\n')
+            elif ch == '\r':
+                result.append('\\r')
+            elif ch == '\t':
+                result.append('\\t')
+            else:
+                result.append(ch)
+            escape = False
+        else:
+            result.append(ch)
+            escape = False
+    return ''.join(result)
+
+
+def _salvage_regex_recommendation(text: str, dependency_name: str) -> Optional[dict[str, Any]]:
+    """Attempt regex-based field extraction for critical fields if all JSON parsing fails."""
+    try:
+        prop_m = re.search(r'"proposed_replacement"\s*:\s*"([^"\r\n]+)"', text)
+        if not prop_m:
+            prop_m = re.search(r'proposed_replacement\s*[:=]\s*["\']?([a-zA-Z0-9_.-]+)', text, re.IGNORECASE)
+        
+        reason_m = re.search(r'"reasoning"\s*:\s*"(.*?)(?<!\\)"', text, re.DOTALL)
+        if not reason_m:
+            reason_m = re.search(r'"reasoning"\s*:\s*"([^\n\r"]+)', text)
+
+        comp_m = re.search(r'"usage_complexity"\s*:\s*"(BASIC|MODERATE|DEEP)"', text, re.IGNORECASE)
+
+        if prop_m:
+            prop_val = prop_m.group(1).strip()
+            reason_val = reason_m.group(1).strip() if reason_m else f"Migrate {dependency_name} to {prop_val}"
+            comp_val = comp_m.group(1).upper() if comp_m else "BASIC"
+            
+            steps = []
+            steps_m = re.findall(r'"(?:step\s*\d*|migration_step[^"]*)"\s*:\s*"([^"]+)"', text, re.IGNORECASE)
+            if not steps_m:
+                steps_m = re.findall(r'\d+\.\s*([^\n]+)', text)
+            if steps_m:
+                steps = [s.strip() for s in steps_m[:5] if s.strip()]
+            else:
+                steps = [f"Replace {dependency_name} with {prop_val}"]
+
+            logger.info("Successfully salvaged recommendation for '%s' via regex extraction! Replacement: '%s'", dependency_name, prop_val)
+            return {
+                "usage_complexity": comp_val,
+                "candidates": [{"name": prop_val, "why": "Salvaged from LLM output", "api_gaps": ""}],
+                "proposed_replacement": prop_val,
+                "migration_steps": steps,
+                "code_patch": "",
+                "suggested_tests": [],
+                "reasoning": reason_val,
+            }
+    except Exception as exc:
+        logger.warning("Regex salvage failed: %s", exc)
+    return None
+
+
+def _parse_json_defensively(raw_text: str, is_array: bool = False, operation_name: str = "") -> Any:
+    """Defensively parse JSON through multi-tier repair:
+    1. Standard json.loads() after cleaning markdown fences.
+    2. Outermost delimiter extraction + json.loads().
+    3. json.JSONDecoder with strict=False (allows raw newlines/control chars in strings).
+    4. Character-by-character string repair pass to escape raw newlines/tabs inside quotes.
+    """
     if not raw_text or not raw_text.strip():
         raise ValueError("Received empty response from Gemma API.")
 
     cleaned = _clean_markdown_fences(raw_text)
+    
+    # Tier 1: Standard load
     try:
         return json.loads(cleaned)
     except json.JSONDecodeError:
-        extracted = _extract_outermost_json(cleaned, is_array=is_array)
+        pass
+
+    # Tier 2: Extract outermost delimiters
+    extracted = _extract_outermost_json(cleaned, is_array=is_array)
+    try:
+        return json.loads(extracted)
+    except json.JSONDecodeError:
+        pass
+
+    # Tier 3: json.JSONDecoder(strict=False) on cleaned and extracted
+    decoder = json.JSONDecoder(strict=False)
+    for target in (cleaned, extracted):
         try:
-            return json.loads(extracted)
-        except json.JSONDecodeError as err:
-            raise ValueError(f"Failed to parse JSON response: {err}") from err
+            parsed, _ = decoder.raw_decode(target.strip())
+            logger.info("JSON parse repair Tier 3 (strict=False) succeeded for %s!", operation_name)
+            return parsed
+        except json.JSONDecodeError:
+            pass
+
+    # Tier 4: Character-by-character unescaped string repair
+    for target in (extracted, cleaned):
+        try:
+            repaired = _repair_unescaped_string_literals(target)
+            parsed = json.loads(repaired)
+            logger.info("JSON parse repair Tier 4 (string literal repair) succeeded for %s!", operation_name)
+            return parsed
+        except json.JSONDecodeError:
+            try:
+                parsed, _ = decoder.raw_decode(repaired.strip())
+                logger.info("JSON parse repair Tier 4+3 (string literal repair with strict=False) succeeded for %s!", operation_name)
+                return parsed
+            except json.JSONDecodeError:
+                pass
+
+    raise ValueError(f"Failed to parse JSON response after all repair tiers for {operation_name}.")
 
 
 def _validate_recommendation_payload(data: Any) -> dict[str, Any]:
@@ -401,14 +512,21 @@ def _call_with_retry(
             exc,
         )
 
-    # Retry once
+    # Retry once with a structured, corrective prompt
     try:
-        if isinstance(first_error, ValueError) and is_json:
+        if is_json:
             retry_prompt = (
                 f"{prompt}\n\n"
-                f"CRITICAL REMINDER: Your previous response failed schema parsing/validation: {first_error}. "
-                f"You MUST return STRICT, VALID JSON ONLY conforming to the exact schema. "
-                f"Do NOT include markdown fences, comments, or extra text."
+                f"CRITICAL ERROR CORRECTION:\n"
+                f"Your previous response was invalid JSON due to improperly escaped characters in string fields ({first_error}).\n"
+                f"Return ONLY valid JSON. Escape all newlines as \\n and all quotes as \\\" within string values.\n"
+                f"Do NOT use markdown code fences (no ```json or ```). Do NOT output unescaped raw multi-line strings.\n\n"
+                f"Example of correctly escaped JSON string values:\n"
+                f'{{\n'
+                f'  "code_patch": "--- a/file.py\\n+++ b/file.py\\n@@ -1,3 +1,3 @@\\n-import old_lib\\n+import new_lib",\n'
+                f'  "suggested_tests": ["def test_sample():\\n    assert True"]\n'
+                f'}}\n'
+                f"Now provide your corrected, strictly valid JSON response:"
             )
         else:
             retry_prompt = prompt
@@ -490,28 +608,32 @@ Analyze the concrete usage and risks above and recommend a safe, modern replacem
 7. Provide clear `reasoning`.
 
 ### STRICT OUTPUT FORMAT:
-You MUST respond with STRICT JSON ONLY. Do not include markdown code block formatting (no ``` or ```json), preamble, or commentary outside the JSON object.
+You MUST respond with STRICT, VALID JSON ONLY.
+CRITICAL FORMATTING RULES:
+1. Do NOT wrap the JSON in markdown code fences (NO ``` or ```json).
+2. All multi-line fields like `code_patch`, `suggested_tests`, and `reasoning` MUST be valid single-line JSON string literals with properly escaped newlines (\\n) and escaped inner quotes (\\"). NEVER output raw multi-line blocks inside string values.
+3. Every test in `suggested_tests` must be an escaped Python string within the JSON array.
 
-Required JSON Structure:
+Example of correctly escaped JSON string values:
 {{
-  "usage_complexity": "BASIC" | "MODERATE" | "DEEP",
+  "usage_complexity": "BASIC",
   "candidates": [
     {{
-      "name": "replacement_package_name",
-      "why": "why this candidate fits the actual snippet usage",
-      "api_gaps": "known gaps or API differences"
+      "name": "example-pkg",
+      "why": "Fits AST usage locations.",
+      "api_gaps": "None"
     }}
   ],
-  "proposed_replacement": "chosen_candidate_name",
+  "proposed_replacement": "example-pkg",
   "migration_steps": [
-    "step 1",
-    "step 2"
+    "step 1: install package",
+    "step 2: update imports"
   ],
-  "code_patch": "--- a/file.py\\n+++ b/file.py\\n@@ ... @@\\n...",
+  "code_patch": "--- a/file.py\\n+++ b/file.py\\n@@ -1,3 +1,3 @@\\n-import old\\n+import new",
   "suggested_tests": [
-    "def test_behavior():\\n    ..."
+    "def test_example():\\n    assert True"
   ],
-  "reasoning": "rationale for recommendation"
+  "reasoning": "Standard drop-in replacement with high compatibility."
 }}"""
 
 
@@ -590,17 +712,34 @@ def get_recommendation(
     gemma = client or GemmaClient()
     prompt = _build_recommendation_prompt(dependency_name, risk_flags, usage_locations)
 
+    raw_response_text = ""
+
     def _parse_and_validate(raw_text: str) -> dict[str, Any]:
-        data = _parse_json_defensively(raw_text, is_array=False)
+        nonlocal raw_response_text
+        raw_response_text = raw_text
+        data = _parse_json_defensively(raw_text, is_array=False, operation_name=f"get_recommendation for '{dependency_name}'")
         return _validate_recommendation_payload(data)
 
-    payload = _call_with_retry(
-        gemma,
-        prompt,
-        _parse_and_validate,
-        operation_name=f"get_recommendation for '{dependency_name}'",
-        is_json=True,
-    )
+    try:
+        payload = _call_with_retry(
+            gemma,
+            prompt,
+            _parse_and_validate,
+            operation_name=f"get_recommendation for '{dependency_name}'",
+            is_json=True,
+        )
+    except Exception as exc:
+        logger.warning(
+            "Primary JSON parse and retry failed for '%s' (%s). Attempting regex-based salvage fallback...",
+            dependency_name,
+            exc,
+        )
+        salvaged = _salvage_regex_recommendation(raw_response_text, dependency_name) if raw_response_text else None
+        if salvaged:
+            payload = salvaged
+        else:
+            logger.error("Salvage fallback failed for '%s'. Re-raising error.", dependency_name)
+            raise
 
     # Instantiate AIRecommendation from schema.py
     # Hardcode ai_generated=True and evidence="ai_generated"

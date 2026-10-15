@@ -261,16 +261,21 @@ def _audit_requirements_file(
     flags: list[RiskFlag] = []
     cmd = [sys.executable, "-m", "pip_audit", "-r", req_file_path, "--format", "json", "--no-deps"]
 
+    proc = None
     try:
-        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=45)
-    except (subprocess.SubprocessError, FileNotFoundError):
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=90)
+    except Exception as exc:
         audit_bin = shutil.which("pip-audit")
-        if not audit_bin:
+        if audit_bin:
+            cmd = [audit_bin, "-r", req_file_path, "--format", "json", "--no-deps"]
+            try:
+                proc = subprocess.run(cmd, capture_output=True, text=True, timeout=90)
+            except Exception:
+                return flags
+        else:
             return flags
-        cmd = [audit_bin, "-r", req_file_path, "--format", "json", "--no-deps"]
-        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=45)
 
-    if not proc.stdout.strip():
+    if not proc or not proc.stdout.strip():
         return flags
 
     try:

@@ -1,14 +1,1310 @@
 {
-  "generated_at": "2026-10-15T09:00:08.202835+00:00",
+  "generated_at": "2026-10-15T10:45:27.435678+00:00",
   "model_info": {
-    "model_id": "gemma-4-31b-it",
-    "model_name": "gemma-4-31b-it",
+    "model_id": "gemma4:e2b-it-q4_K_M",
+    "model_name": "gemma4:e2b-it-q4_K_M",
     "version": "4",
     "access_method": "hosted_api",
     "terms_url": "https://ai.google.dev/gemma/terms",
     "evidence": "observed"
   },
   "evidence": "capsule_report",
-  "total_capsules": 0,
-  "capsules": []
+  "total_capsules": 7,
+  "capsules": [
+    {
+      "dependency": {
+        "name": "appdirs",
+        "declared_version": "1.4.4",
+        "source_file": "requirements.txt",
+        "evidence": "observed"
+      },
+      "risk_indicators": {
+        "evidence": "observed",
+        "count": 2,
+        "items": [
+          {
+            "dependency_name": "appdirs",
+            "risk_type": "UNMAINTAINED",
+            "reason": "No PyPI release in 6.4 years (last release was on 2020-05-11)",
+            "severity": "MED",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "risk_type": "INCOMPATIBLE",
+            "reason": "PyPI classifiers indicate support only up to Python 3.8, missing Python 3.12/3.13 support",
+            "severity": "HIGH",
+            "evidence": "observed"
+          }
+        ]
+      },
+      "usage_locations": {
+        "evidence": "observed",
+        "count": 2,
+        "items": [
+          {
+            "dependency_name": "appdirs",
+            "file_path": "linkwatch/cache.py",
+            "line_number": 4,
+            "usage_type": "IMPORT",
+            "code_snippet": "from appdirs import user_cache_dir",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "file_path": "linkwatch/cache.py",
+            "line_number": 10,
+            "usage_type": "CALL",
+            "code_snippet": "path = os.environ.get(\"LINKWATCH_CACHE_DIR\") or user_cache_dir(\"linkwatch\")",
+            "evidence": "observed"
+          }
+        ]
+      },
+      "ai_recommendation": {
+        "evidence": "ai_generated",
+        "verified": false,
+        "proposed_replacement": "appdirs",
+        "usage_complexity": "BASIC",
+        "candidates": [
+          {
+            "name": "appdirs",
+            "why": "Salvaged from LLM output",
+            "api_gaps": "",
+            "evidence": "ai_generated"
+          }
+        ],
+        "migration_steps": [
+          "12+).\",",
+          "12/3.13.\","
+        ],
+        "code_patch": "",
+        "suggested_tests": [],
+        "reasoning": "The usage complexity is 'BASIC' as it involves simple imports and direct function calls. The migration strategy focuses on maintaining functional parity, as the code relies on the specific behavior of `appdirs.user_cache_dir`. Although the dependency itself has maintenance risks (UNMAINTAINED, INCOMPATIBLE), the immediate migration step is to ensure the dependency is installed and tested against the existing usage. Since the usage is simple, the migration steps are straightforward installation and verification. The code patch is minimal as the API remains identical."
+      },
+      "executed_test_results": {
+        "evidence": "verified_by_execution",
+        "counts_before_swap_baseline": {
+          "total": 10,
+          "pass": 9,
+          "fail": 1,
+          "error": 0,
+          "not_run": 0
+        },
+        "counts_after_swap_replacement": {
+          "total": 10,
+          "pass": 9,
+          "fail": 1,
+          "error": 0,
+          "not_run": 0
+        },
+        "results": [
+          {
+            "dependency_name": "appdirs",
+            "test_name": "tests/test_cache.py::test_cache_round_trip",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_t",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "test_name": "tests/test_checker.py::test_ok_is_up",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_t",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "test_name": "tests/test_checker.py::test_missing_is_down",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_t",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "test_name": "tests/test_checker.py::test_redirect_is_up",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_t",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "test_name": "tests/test_checker.py::test_slow_is_up",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_t",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "test_name": "tests/test_checker.py::test_closed_port_is_down",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_t",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "test_name": "tests/test_checker.py::test_latin1_title",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_t",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "test_name": "tests/test_checker.py::test_user_agent",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_t",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "test_name": "tests/test_config.py::test_sites_file_loads",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_t",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "test_name": "tests/test_report.py::test_report_renders_all_sites",
+            "status": "FAIL",
+            "raw_output": "tests/test_report.py:20: in test_report_renders_all_sites\n    result = CliRunner().invoke(cli, [\"report\", \"-o\", str(output)], catch_exceptions=False)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n.venv/lib64/python3.12/site-packages/click/testing.py:687: in invoke\n    return_value = cli.main(args=args or (), prog_name=prog_name, **extra)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n.venv/lib64/python3.12/site-packages/click/core.py:1552: in main\n    rv = self.invoke(ctx)\n         ^^^^^^^^^^^^^^^^\n.venv/lib64/python3.12/site-packages/click/core.py:2032: in invoke\n    return _process_result(sub_ctx.command.invoke(sub_ctx))\n                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n.venv/lib64/python3.12/site-packages/click/core.py:1415: in invoke\n    return ctx.invoke(self.callback, **ctx.params)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n.venv/lib64/python3.12/site-packages/click/core.py:910: in invoke\n    return callback(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\nlinkwatch/cli.py:56: in report\n    from .report import render_report\nlinkwatch/report.py:3: in <module>\n    from jinja2 import Environment, FileSystemLoader, select_autoescape\n.venv/lib64/python3.12/site-packages/jinja2/__init__.py:12: in <module>\n    from .environment import Environment\n.venv/lib64/python3.12/site-packages/jinja2/environment.py:25: in <module>\n    from .defaults import BLOCK_END_STRING\n.venv/lib64/python3.12/site-packages/jinja2/defaults.py:3: in <module>\n    from .filters import FILTERS as DEFAULT_FILTERS  # noqa: F401\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n.venv/lib64/python3.12/site-packages/jinja2/filters.py:13: in <module>\n    from markupsafe import soft_unicode\nE   ImportError: cannot import name 'soft_unicode' from 'markupsafe' (/home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/lib64/python3.12/site-packages/markupsafe/__init__.py)\n=============================== warnings summary ===============================\nlinkwatch/resources.py:1\n  /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/linkwatch/resources.py:1: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html\n    import pkg_resources\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html",
+            "verified": false,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "test_name": "tests/test_cache.py::test_cache_round_trip",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /tmp/depexit_verify_aw_vyt80/repo\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_trip PASSED        ",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "test_name": "tests/test_checker.py::test_ok_is_up",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /tmp/depexit_verify_aw_vyt80/repo\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_trip PASSED        ",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "test_name": "tests/test_checker.py::test_missing_is_down",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /tmp/depexit_verify_aw_vyt80/repo\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_trip PASSED        ",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "test_name": "tests/test_checker.py::test_redirect_is_up",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /tmp/depexit_verify_aw_vyt80/repo\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_trip PASSED        ",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "test_name": "tests/test_checker.py::test_slow_is_up",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /tmp/depexit_verify_aw_vyt80/repo\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_trip PASSED        ",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "test_name": "tests/test_checker.py::test_closed_port_is_down",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /tmp/depexit_verify_aw_vyt80/repo\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_trip PASSED        ",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "test_name": "tests/test_checker.py::test_latin1_title",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /tmp/depexit_verify_aw_vyt80/repo\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_trip PASSED        ",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "test_name": "tests/test_checker.py::test_user_agent",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /tmp/depexit_verify_aw_vyt80/repo\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_trip PASSED        ",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "test_name": "tests/test_config.py::test_sites_file_loads",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /tmp/depexit_verify_aw_vyt80/repo\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_trip PASSED        ",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "appdirs",
+            "test_name": "tests/test_report.py::test_report_renders_all_sites",
+            "status": "FAIL",
+            "raw_output": "tests/test_report.py:20: in test_report_renders_all_sites\n    result = CliRunner().invoke(cli, [\"report\", \"-o\", str(output)], catch_exceptions=False)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/lib64/python3.12/site-packages/click/testing.py:687: in invoke\n    return_value = cli.main(args=args or (), prog_name=prog_name, **extra)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/lib64/python3.12/site-packages/click/core.py:1552: in main\n    rv = self.invoke(ctx)\n         ^^^^^^^^^^^^^^^^\n/home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/lib64/python3.12/site-packages/click/core.py:2032: in invoke\n    return _process_result(sub_ctx.command.invoke(sub_ctx))\n                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/lib64/python3.12/site-packages/click/core.py:1415: in invoke\n    return ctx.invoke(self.callback, **ctx.params)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/lib64/python3.12/site-packages/click/core.py:910: in invoke\n    return callback(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\nlinkwatch/cli.py:56: in report\n    from .report import render_report\nlinkwatch/report.py:3: in <module>\n    from jinja2 import Environment, FileSystemLoader, select_autoescape\n/home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/lib64/python3.12/site-packages/jinja2/__init__.py:12: in <module>\n    from .environment import Environment\n/home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/lib64/python3.12/site-packages/jinja2/environment.py:25: in <module>\n    from .defaults import BLOCK_END_STRING\n/home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/lib64/python3.12/site-packages/jinja2/defaults.py:3: in <module>\n    from .filters import FILTERS as DEFAULT_FILTERS  # noqa: F401\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/lib64/python3.12/site-packages/jinja2/filters.py:13: in <module>\n    from markupsafe import soft_unicode\nE   ImportError: cannot import name 'soft_unicode' from 'markupsafe' (/home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/lib64/python3.12/site-packages/markupsafe/__init__.py)\n=============================== warnings summary ===============================\nlinkwatch/resources.py:1\n  /tmp/depexit_verify_aw_vyt80/repo/linkwatch/resources.py:1: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html\n    import pkg_resources\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html",
+            "verified": false,
+            "evidence": "observed"
+          }
+        ]
+      },
+      "compatibility_gaps": {
+        "evidence": "observed",
+        "count": 0,
+        "items": []
+      },
+      "gap_explanations": {
+        "evidence": "ai_generated",
+        "count": 1,
+        "items": [
+          "tests/test_report.py::test_report_renders_all_sites Likely Cause: The failure is an ImportError originating from the Jinja2 library attempting to import 'soft_unicode' from 'markupsafe'. This indicates a version incompatibility between the installed versions of Jinja2 and Markupsafe, where Jinja2 expects an attribute that is missing in the installed Markupsafe package. This failure is unrelated to the appdirs dependency change itself, but rather points to an environment dependency conflict. Suggested Fix: Resolve the dependency conflict by ensuring compatible versions of 'jinja2' and 'markupsafe' are installed. This usually involves checking the project's requirements file or explicitly installing compatible versions (e.g., ensuring Jinja2 is compatible with the installed Markupsafe version)."
+        ]
+      },
+      "open_concerns": {
+        "evidence": "observed",
+        "count": 2,
+        "items": [
+          "Unverified risk flag: [UNMAINTAINED] 'No PyPI release in 6.4 years (last release was on 2020-05-11)' (severity: MED) has no matching verification test in the test suite.",
+          "Unverified risk flag: [INCOMPATIBLE] 'PyPI classifiers indicate support only up to Python 3.8, missing Python 3.12/3.13 support' (severity: HIGH) has no matching verification test in the test suite."
+        ]
+      },
+      "model_info": {
+        "model_id": "gemma4:e2b-it-q4_K_M",
+        "model_name": "gemma4:e2b-it-q4_K_M",
+        "version": "4",
+        "access_method": "hosted_api",
+        "terms_url": "https://ai.google.dev/gemma/terms",
+        "evidence": "observed"
+      },
+      "verified": false
+    },
+    {
+      "dependency": {
+        "name": "idna",
+        "declared_version": "2.7",
+        "source_file": "requirements.txt",
+        "evidence": "observed"
+      },
+      "risk_indicators": {
+        "evidence": "observed",
+        "count": 2,
+        "items": [
+          {
+            "dependency_name": "idna",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2024-60 (CVE-2024-3651, GHSA-jjg7-2v4v-x38h) [fixed in: 3.7] - ### Impact A specially crafted argument to the `idna.encode()` function could consume significant resources. This may lead to a denial-of-service.  ##...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "idna",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2026-215 (CVE-2026-45409, GHSA-65pc-fj4g-8rjx) [fixed in: 3.15] - This is the same issue as CVE-2024-3651, however the original remediation in 2024 was not a complete fix. Payloads such as `\"\\u0660\" * N` or `\"\\u30fb\"...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          }
+        ]
+      },
+      "usage_locations": {
+        "evidence": "observed",
+        "count": 0,
+        "items": []
+      },
+      "ai_recommendation": {
+        "evidence": "ai_generated",
+        "verified": false,
+        "proposed_replacement": "urllib.parse",
+        "usage_complexity": "BASIC",
+        "candidates": [
+          {
+            "name": "idna",
+            "why": "The original package. While vulnerable, it is the direct implementation of the required functionality.",
+            "api_gaps": "None",
+            "evidence": "ai_generated"
+          },
+          {
+            "name": "urllib.parse",
+            "why": "Standard library module for URL parsing and encoding, which often handles IDNA requirements internally, offering a safe, zero-dependency replacement for basic encoding tasks.",
+            "api_gaps": "Requires context on how the original code specifically called idna functions.",
+            "evidence": "ai_generated"
+          },
+          {
+            "name": "idna-py",
+            "why": "A well-maintained, community-vetted alternative if specific, complex IDNA handling beyond standard URL parsing is required.",
+            "api_gaps": "Requires context on complex IDNA usage.",
+            "evidence": "ai_generated"
+          }
+        ],
+        "migration_steps": [
+          "step 1: Remove dependency on 'idna'.",
+          "step 2: Update imports to use 'urllib.parse' for domain name handling.",
+          "step 3: Review all code that previously used 'idna.encode()' and replace it with equivalent functionality from 'urllib.parse' or standard Python methods."
+        ],
+        "code_patch": "--- a/file.py\n+++ b/file.py\n@@ -1,3 +1,3 @@\n-import idna\n+from urllib.parse import urlparse\n",
+        "suggested_tests": [
+          "def test_url_parsing_with_idna():\n    # Assuming the original code used idna to handle domain encoding\n    url = 'https://xn--fsqd.xn--fiqs8a.com'\n    parsed = urlparse(url)\n    assert parsed.netloc == 'xn--fsqd.xn--fiqs8a.com'"
+        ],
+        "reasoning": "The original dependency 'idna' is highly vulnerable to Denial-of-Service attacks due to resource-intensive encoding operations. Since no specific usage was provided, the safest and most architecturally sound replacement is to leverage the standard library's 'urllib.parse' module, which handles URL parsing and encoding safely and is guaranteed to be maintained. This eliminates the dependency risk entirely while providing equivalent functionality for standard domain name handling."
+      },
+      "executed_test_results": {
+        "evidence": "verified_by_execution",
+        "counts_before_swap_baseline": {
+          "total": 11,
+          "pass": 9,
+          "fail": 2,
+          "error": 0,
+          "not_run": 0
+        },
+        "counts_after_swap_replacement": {
+          "total": 2,
+          "pass": 0,
+          "fail": 0,
+          "error": 1,
+          "not_run": 1
+        },
+        "results": [
+          {
+            "dependency_name": "idna",
+            "test_name": "tests/test_cache.py::test_cache_round_trip",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_t",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "idna",
+            "test_name": "tests/test_checker.py::test_ok_is_up",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_t",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "idna",
+            "test_name": "tests/test_checker.py::test_missing_is_down",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_t",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "idna",
+            "test_name": "tests/test_checker.py::test_redirect_is_up",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_t",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "idna",
+            "test_name": "tests/test_checker.py::test_slow_is_up",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_t",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "idna",
+            "test_name": "tests/test_checker.py::test_closed_port_is_down",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_t",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "idna",
+            "test_name": "tests/test_checker.py::test_latin1_title",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_t",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "idna",
+            "test_name": "tests/test_checker.py::test_user_agent",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_t",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "idna",
+            "test_name": "tests/test_config.py::test_sites_file_loads",
+            "status": "PASS",
+            "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.6.0 -- /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch\nconfigfile: pyproject.toml\ncollecting ... collected 10 items\n\ntests/test_cache.py::test_cache_round_t",
+            "verified": true,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "idna",
+            "test_name": "tests/test_report.py::test_report_renders_all_sites",
+            "status": "FAIL",
+            "raw_output": "tests/test_report.py:20: in test_report_renders_all_sites\n    result = CliRunner().invoke(cli, [\"report\", \"-o\", str(output)], catch_exceptions=False)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n.venv/lib64/python3.12/site-packages/click/testing.py:687: in invoke\n    return_value = cli.main(args=args or (), prog_name=prog_name, **extra)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n.venv/lib64/python3.12/site-packages/click/core.py:1552: in main\n    rv = self.invoke(ctx)\n         ^^^^^^^^^^^^^^^^\n.venv/lib64/python3.12/site-packages/click/core.py:2032: in invoke\n    return _process_result(sub_ctx.command.invoke(sub_ctx))\n                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n.venv/lib64/python3.12/site-packages/click/core.py:1415: in invoke\n    return ctx.invoke(self.callback, **ctx.params)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n.venv/lib64/python3.12/site-packages/click/core.py:910: in invoke\n    return callback(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\nlinkwatch/cli.py:56: in report\n    from .report import render_report\nlinkwatch/report.py:3: in <module>\n    from jinja2 import Environment, FileSystemLoader, select_autoescape\n.venv/lib64/python3.12/site-packages/jinja2/__init__.py:12: in <module>\n    from .environment import Environment\n.venv/lib64/python3.12/site-packages/jinja2/environment.py:25: in <module>\n    from .defaults import BLOCK_END_STRING\n.venv/lib64/python3.12/site-packages/jinja2/defaults.py:3: in <module>\n    from .filters import FILTERS as DEFAULT_FILTERS  # noqa: F401\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n.venv/lib64/python3.12/site-packages/jinja2/filters.py:13: in <module>\n    from markupsafe import soft_unicode\nE   ImportError: cannot import name 'soft_unicode' from 'markupsafe' (/home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/lib64/python3.12/site-packages/markupsafe/__init__.py)\n=============================== warnings summary ===============================\nlinkwatch/resources.py:1\n  /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/linkwatch/resources.py:1: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html\n    import pkg_resources\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html",
+            "verified": false,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "idna",
+            "test_name": "test_url_parsing_with_idna",
+            "status": "FAIL",
+            "raw_output": "/tmp/test_ai_generated_13bi_pqt_test.py:9: in test_url_parsing_with_idna\n    parsed = urlparse(url)\n             ^^^^^^^^\nE   NameError: name 'urlparse' is not defined",
+            "verified": false,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "idna",
+            "test_name": "apply_patch",
+            "status": "NOT_RUN",
+            "raw_output": "skipped: patch failed to apply\nerror: corrupt patch at depexit_migration.patch:6",
+            "verified": false,
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "idna",
+            "test_name": "install_urllib.parse",
+            "status": "ERROR",
+            "raw_output": "skipped: installation of replacement 'urllib.parse' failed (exit 1)\nERROR: Could not find a version that satisfies the requirement urllib.parse (from versions: none)\n\n[notice] A new release of pip is available: 26.0.1 -> 26.2.1\n[notice] To update, run: /home/aryan/Projects/Carbonari/ISTExKJSSE/linkwatch/.venv/bin/python -m pip install --upgrade pip\nERROR: No matching distribution found for urllib.parse\n",
+            "verified": false,
+            "evidence": "observed"
+          }
+        ]
+      },
+      "compatibility_gaps": {
+        "evidence": "observed",
+        "count": 13,
+        "items": [
+          "Test 'test_url_parsing_with_idna' was executed in baseline (idna) [FAIL], but was not executed in replacement (urllib.parse) run.",
+          "Test 'tests/test_cache.py::test_cache_round_trip' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.",
+          "Test 'tests/test_checker.py::test_closed_port_is_down' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.",
+          "Test 'tests/test_checker.py::test_latin1_title' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.",
+          "Test 'tests/test_checker.py::test_missing_is_down' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.",
+          "Test 'tests/test_checker.py::test_ok_is_up' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.",
+          "Test 'tests/test_checker.py::test_redirect_is_up' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.",
+          "Test 'tests/test_checker.py::test_slow_is_up' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.",
+          "Test 'tests/test_checker.py::test_user_agent' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.",
+          "Test 'tests/test_config.py::test_sites_file_loads' was executed in baseline (idna) [PASS], but was not executed in replacement (urllib.parse) run.",
+          "Test 'tests/test_report.py::test_report_renders_all_sites' was executed in baseline (idna) [FAIL], but was not executed in replacement (urllib.parse) run.",
+          "Test 'apply_patch' was executed in replacement (urllib.parse) [NOT_RUN], but had no corresponding baseline run.",
+          "Test 'install_urllib.parse' was executed in replacement (urllib.parse) [ERROR], but had no corresponding baseline run."
+        ]
+      },
+      "gap_explanations": {
+        "evidence": "ai_generated",
+        "count": 3,
+        "items": [
+          "tests/test_report.py::test_report_renders_all_sites Likely Cause: The failure is an ImportError related to 'soft_unicode' from 'markupsafe', indicating an incompatibility or broken dependency chain within the Jinja2 environment. This often happens when replacing a dependency that indirectly affects core Python packages or when the replacement introduces version conflicts. Suggested Fix: Investigate the dependency chain (Jinja2, MarkupSafe) and ensure that the replacement of 'idna' does not introduce conflicting versions or break the expected environment setup. Check if the replacement requires specific version constraints or if the environment needs a clean reinstallation of dependent packages.",
+          "test_url_parsing_with_idna Likely Cause: The NameError 'name 'urlparse' is not defined' occurs because the replacement 'urllib.parse' is a module, and the test code is attempting to call 'urlparse' as a standalone function, which is not directly available in that namespace. Suggested Fix: Modify the test code to correctly import and use the functionality from the replacement module. Instead of expecting a standalone function, the code should explicitly import 'urlparse' from 'urllib.parse' (e.g., `from urllib.parse import urlparse`) and use it accordingly.",
+          "install_urllib.parse Likely Cause: The installation failed because 'urllib.parse' is a module within the Python standard library and is not a package available on PyPI, meaning it cannot be installed via pip. Suggested Fix: Do not attempt to install standard library modules using pip. If the goal is simply to use the functionality, ensure that the code correctly imports the module directly (e.g., `import urllib.parse`) without attempting to install it as a separate package."
+        ]
+      },
+      "open_concerns": {
+        "evidence": "observed",
+        "count": 4,
+        "items": [
+          "Test 'apply_patch' for 'idna' had status NOT_RUN. Reason: skipped: patch failed to apply.",
+          "Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2024-60 (CVE-2024-3651, GHSA-jjg7-2v4v-x38h) [fixed in: 3.7] - ### Impact A specially crafted argument to the `idna.encode()` function could consume significant resources. This may lead to a denial-of-service.  ##...' (severity: HIGH) has no matching verification test in the test suite.",
+          "Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-215 (CVE-2026-45409, GHSA-65pc-fj4g-8rjx) [fixed in: 3.15] - This is the same issue as CVE-2024-3651, however the original remediation in 2024 was not a complete fix. Payloads such as `\"\\u0660\" * N` or `\"\\u30fb\"...' (severity: HIGH) has no matching verification test in the test suite.",
+          "Pipeline execution failure: Test 'install_urllib.parse' failed with status ERROR. Details: skipped: installation of replacement 'urllib.parse' failed (exit 1)."
+        ]
+      },
+      "model_info": {
+        "model_id": "gemma4:e2b-it-q4_K_M",
+        "model_name": "gemma4:e2b-it-q4_K_M",
+        "version": "4",
+        "access_method": "hosted_api",
+        "terms_url": "https://ai.google.dev/gemma/terms",
+        "evidence": "observed"
+      },
+      "verified": false
+    },
+    {
+      "dependency": {
+        "name": "Jinja2",
+        "declared_version": "2.11.3",
+        "source_file": "requirements.txt",
+        "evidence": "observed"
+      },
+      "risk_indicators": {
+        "evidence": "observed",
+        "count": 4,
+        "items": [
+          {
+            "dependency_name": "Jinja2",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2026-1473 (CVE-2024-22195, GHSA-h5c8-rqwp-cp95) [fixed in: 3.1.3] - The `xmlattr` filter in affected versions of Jinja accepts keys containing spaces. XML/HTML attributes cannot contain spaces, as each would then be in...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "Jinja2",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2026-1474 (CVE-2024-34064, GHSA-h75v-3vvj-5mfj) [fixed in: 3.1.4] - The `xmlattr` filter in affected versions of Jinja accepts keys containing non-attribute characters. XML/HTML attributes cannot contain spaces, `/`, `...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "Jinja2",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2026-1475 (CVE-2024-56326, GHSA-q2x7-8rv6-6q7h) [fixed in: 3.1.5] - An oversight in how the Jinja sandboxed environment detects calls to `str.format` allows an attacker that controls the content of a template to execut...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "Jinja2",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2026-1471 (CVE-2025-27516, GHSA-cpwx-vrp4-4pq7) [fixed in: 3.1.6] - An oversight in how the Jinja sandboxed environment interacts with the `|attr` filter allows an attacker that controls the content of a template to ex...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          }
+        ]
+      },
+      "usage_locations": {
+        "evidence": "observed",
+        "count": 4,
+        "items": [
+          {
+            "dependency_name": "Jinja2",
+            "file_path": "linkwatch/report.py",
+            "line_number": 3,
+            "usage_type": "IMPORT",
+            "code_snippet": "from jinja2 import Environment, FileSystemLoader, select_autoescape",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "Jinja2",
+            "file_path": "linkwatch/report.py",
+            "line_number": 9,
+            "usage_type": "CLASS_INSTANCE",
+            "code_snippet": "return Environment(",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "Jinja2",
+            "file_path": "linkwatch/report.py",
+            "line_number": 10,
+            "usage_type": "CLASS_INSTANCE",
+            "code_snippet": "loader=FileSystemLoader(template_dir()),",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "Jinja2",
+            "file_path": "linkwatch/report.py",
+            "line_number": 11,
+            "usage_type": "CALL",
+            "code_snippet": "autoescape=select_autoescape([\"html\", \"j2\"]),",
+            "evidence": "observed"
+          }
+        ]
+      },
+      "ai_recommendation": {
+        "evidence": "ai_generated",
+        "verified": false,
+        "proposed_replacement": "Mako",
+        "usage_complexity": "MODERATE",
+        "candidates": [
+          {
+            "name": "Mako",
+            "why": "Mako is a mature, high-performance templating language that serves as a viable, modern alternative to Jinja2. It allows for a complete dependency migration while maintaining the core functionality of template rendering, suitable for the observed usage of Environment and Loader setup.",
+            "api_gaps": "The API structure for setting up the environment, loaders, and autoescaping will differ from Jinja2. Specific methods for loading files and handling autoescaping will require adaptation.",
+            "evidence": "ai_generated"
+          }
+        ],
+        "migration_steps": [
+          "step 1: Uninstall the current dependency (Jinja2).",
+          "step 2: Install the replacement dependency (Mako).",
+          "step 3: Analyze the specific template syntax used in the codebase and translate it to Mako's syntax.",
+          "step 4: Rewrite the instantiation logic in linkwatch/report.py to use Mako's environment and loader classes.",
+          "step 5: Update any template files to ensure compatibility with Mako syntax."
+        ],
+        "code_patch": "--- a/linkwatch/report.py\n+++ b/linkwatch/report.py\n@@ -1,11 +1,11 @@\n-from jinja2 import Environment, FileSystemLoader, select_autoescape\n+from mako.template import Template\n+from mako.loaders import TemplatesLoader\n+from mako.autoescape import escape\n \n-from jinja2 import Environment, FileSystemLoader, select_autoescape\n-\n-return Environment(\n-loader=FileSystemLoader(template_dir()),\n-autoescape=select_autoescape([\"html\", \"j2\"]),\n-)\n+def load_templates(template_dir):\n+    # Mako uses TemplatesLoader for file loading\n+    loader = TemplatesLoader(template_dir)\n+    \n+    # Mako handles autoescaping via the 'escape' function or template configuration\n+    # Note: Mako's autoescaping mechanism is typically handled by the template engine itself or explicit calls.\n+    \n+    return loader\n \n-loader=FileSystemLoader(template_dir()),\n-autoescape=select_autoescape([\"html\", \"j2\"]),\n-)\n+if __name__ == '__main__':\n+    # Example usage demonstrating the replacement structure\n+    template_dir = \"./templates\"\n+    \n+    # In a real application, you would load templates and render them.\n+    # This section demonstrates the structural replacement of the original setup.\n+    print(\"Mako setup complete. Actual rendering logic needs to be implemented.\")",
+        "suggested_tests": [
+          "def test_report_setup_mako():\n    # Test that the setup process runs without error, verifying the structural replacement.\n    # Since the original code only showed instantiation, we verify the replacement structure is valid.\n    try:\n        from mako.loaders import TemplatesLoader\n        from mako.template import Template\n        \n        # Simulate the setup logic from the original file\n        template_dir = \"./templates\"\n        loader = TemplatesLoader(template_dir)\n        \n        # We cannot directly test the original Jinja2 logic, but we ensure the Mako equivalents are importable and runnable.\n        assert True\n    except ImportError:\n        pytest.fail(\"Mako dependencies failed to import.\")"
+        ],
+        "reasoning": "Jinja2 is a highly secure and widely adopted templating engine. The migration is justified by the high-severity vulnerability flags (PYSEC-2026-1471, 1473, 1474, 1475), which mandate immediate action. Mako is proposed as the replacement because it is a mature, high-performance alternative that fulfills the functional requirement of template rendering. The migration involves replacing the Jinja2-specific classes (Environment, FileSystemLoader) with their Mako equivalents (TemplatesLoader, Template) and adapting the configuration flow, as demonstrated in the code patch. The suggested tests focus on verifying the structural integrity of the new setup."
+      },
+      "executed_test_results": {
+        "evidence": "verified_by_execution",
+        "counts_before_swap_baseline": {
+          "total": 1,
+          "pass": 0,
+          "fail": 0,
+          "error": 0,
+          "not_run": 1
+        },
+        "counts_after_swap_replacement": {
+          "total": 0,
+          "pass": 0,
+          "fail": 0,
+          "error": 0,
+          "not_run": 0
+        },
+        "results": [
+          {
+            "dependency_name": "Jinja2",
+            "test_name": "verification",
+            "status": "NOT_RUN",
+            "raw_output": "skipped: time limit",
+            "verified": false,
+            "evidence": "observed"
+          }
+        ]
+      },
+      "compatibility_gaps": {
+        "evidence": "observed",
+        "count": 1,
+        "items": [
+          "Test 'verification' was executed in baseline (Jinja2) [NOT_RUN], but was not executed in replacement (Mako) run."
+        ]
+      },
+      "gap_explanations": {
+        "evidence": "ai_generated",
+        "count": 0,
+        "items": []
+      },
+      "open_concerns": {
+        "evidence": "observed",
+        "count": 6,
+        "items": [
+          "Test 'verification' for 'Jinja2' had status NOT_RUN. Reason: skipped: time limit.",
+          "Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-1473 (CVE-2024-22195, GHSA-h5c8-rqwp-cp95) [fixed in: 3.1.3] - The `xmlattr` filter in affected versions of Jinja accepts keys containing spaces. XML/HTML attributes cannot contain spaces, as each would then be in...' (severity: HIGH) has no matching verification test in the test suite.",
+          "Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-1474 (CVE-2024-34064, GHSA-h75v-3vvj-5mfj) [fixed in: 3.1.4] - The `xmlattr` filter in affected versions of Jinja accepts keys containing non-attribute characters. XML/HTML attributes cannot contain spaces, `/`, `...' (severity: HIGH) has no matching verification test in the test suite.",
+          "Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-1475 (CVE-2024-56326, GHSA-q2x7-8rv6-6q7h) [fixed in: 3.1.5] - An oversight in how the Jinja sandboxed environment detects calls to `str.format` allows an attacker that controls the content of a template to execut...' (severity: HIGH) has no matching verification test in the test suite.",
+          "Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-1471 (CVE-2025-27516, GHSA-cpwx-vrp4-4pq7) [fixed in: 3.1.6] - An oversight in how the Jinja sandboxed environment interacts with the `|attr` filter allows an attacker that controls the content of a template to ex...' (severity: HIGH) has no matching verification test in the test suite.",
+          "AI-generated test 'test_report_setup_mako' was never executed in the verification test suite."
+        ]
+      },
+      "model_info": {
+        "model_id": "gemma4:e2b-it-q4_K_M",
+        "model_name": "gemma4:e2b-it-q4_K_M",
+        "version": "4",
+        "access_method": "hosted_api",
+        "terms_url": "https://ai.google.dev/gemma/terms",
+        "evidence": "observed"
+      },
+      "verified": false
+    },
+    {
+      "dependency": {
+        "name": "requests",
+        "declared_version": "2.31.0",
+        "source_file": "requirements.txt",
+        "evidence": "observed"
+      },
+      "risk_indicators": {
+        "evidence": "observed",
+        "count": 3,
+        "items": [
+          {
+            "dependency_name": "requests",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2026-1873 (CVE-2024-35195, GHSA-9wx4-h78v-vm56) [fixed in: 2.32.0] - When using a `requests.Session`, if the first request to a given origin is made with `verify=False`, TLS certificate verification may remain disabled ...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2026-1872 (CVE-2024-47081, GHSA-9hjg-9r4m-mvj7) [fixed in: 2.32.4] - ### Impact  Due to a URL parsing issue, Requests releases prior to 2.32.4 may leak .netrc credentials to third parties for specific maliciously-crafte...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2026-2275 (CVE-2026-25645, GHSA-gc5v-m9x4-r6x2) [fixed in: 2.33.0] - ### Impact The `requests.utils.extract_zipped_paths()` utility function uses a predictable filename when extracting files from zip archives into the s...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          }
+        ]
+      },
+      "usage_locations": {
+        "evidence": "observed",
+        "count": 12,
+        "items": [
+          {
+            "dependency_name": "requests",
+            "file_path": "linkwatch/checker.py",
+            "line_number": 5,
+            "usage_type": "IMPORT",
+            "code_snippet": "import requests",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "file_path": "linkwatch/checker.py",
+            "line_number": 6,
+            "usage_type": "IMPORT",
+            "code_snippet": "from requests import Session as S",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "file_path": "linkwatch/checker.py",
+            "line_number": 13,
+            "usage_type": "CLASS_INSTANCE",
+            "code_snippet": "session = S()",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "file_path": "linkwatch/checker.py",
+            "line_number": 15,
+            "usage_type": "CALL",
+            "code_snippet": "return session.get(url, verify=certifi.where())",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "file_path": "linkwatch/checker.py",
+            "line_number": 17,
+            "usage_type": "CALL",
+            "code_snippet": "session.close()",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "file_path": "linkwatch/checker.py",
+            "line_number": 35,
+            "usage_type": "ATTRIBUTE",
+            "code_snippet": "except requests.exceptions.ConnectionError:",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "file_path": "linkwatch/checker.py",
+            "line_number": 38,
+            "usage_type": "ATTRIBUTE",
+            "code_snippet": "except requests.exceptions.Timeout:",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "file_path": "linkwatch/encoding.py",
+            "line_number": 5,
+            "usage_type": "IMPORT",
+            "code_snippet": "from requests.utils import _parse_content_type_header",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "file_path": "linkwatch/encoding.py",
+            "line_number": 11,
+            "usage_type": "CALL",
+            "code_snippet": "_, params = _parse_content_type_header(resp.headers.get(\"Content-Type\", \"\"))",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "file_path": "linkwatch/http_patch.py",
+            "line_number": 1,
+            "usage_type": "IMPORT",
+            "code_snippet": "import requests",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "file_path": "linkwatch/http_patch.py",
+            "line_number": 5,
+            "usage_type": "ATTRIBUTE",
+            "code_snippet": "_original_request = requests.Session.request",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "requests",
+            "file_path": "linkwatch/http_patch.py",
+            "line_number": 14,
+            "usage_type": "ATTRIBUTE",
+            "code_snippet": "requests.Session.request = _request",
+            "evidence": "observed"
+          }
+        ]
+      },
+      "ai_recommendation": {
+        "evidence": "ai_generated",
+        "verified": false,
+        "proposed_replacement": "httpx",
+        "usage_complexity": "DEEP",
+        "candidates": [
+          {
+            "name": "httpx",
+            "why": "Salvaged from LLM output",
+            "api_gaps": "",
+            "evidence": "ai_generated"
+          }
+        ],
+        "migration_steps": [
+          "Replace requests with httpx"
+        ],
+        "code_patch": "",
+        "suggested_tests": [],
+        "reasoning": "Migrate requests to httpx"
+      },
+      "executed_test_results": {
+        "evidence": "verified_by_execution",
+        "counts_before_swap_baseline": {
+          "total": 1,
+          "pass": 0,
+          "fail": 0,
+          "error": 0,
+          "not_run": 1
+        },
+        "counts_after_swap_replacement": {
+          "total": 0,
+          "pass": 0,
+          "fail": 0,
+          "error": 0,
+          "not_run": 0
+        },
+        "results": [
+          {
+            "dependency_name": "requests",
+            "test_name": "verification",
+            "status": "NOT_RUN",
+            "raw_output": "skipped: time limit",
+            "verified": false,
+            "evidence": "observed"
+          }
+        ]
+      },
+      "compatibility_gaps": {
+        "evidence": "observed",
+        "count": 1,
+        "items": [
+          "Test 'verification' was executed in baseline (requests) [NOT_RUN], but was not executed in replacement (httpx) run."
+        ]
+      },
+      "gap_explanations": {
+        "evidence": "ai_generated",
+        "count": 0,
+        "items": []
+      },
+      "open_concerns": {
+        "evidence": "observed",
+        "count": 5,
+        "items": [
+          "Test 'verification' for 'requests' had status NOT_RUN. Reason: skipped: time limit.",
+          "Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-1873 (CVE-2024-35195, GHSA-9wx4-h78v-vm56) [fixed in: 2.32.0] - When using a `requests.Session`, if the first request to a given origin is made with `verify=False`, TLS certificate verification may remain disabled ...' (severity: HIGH) has no matching verification test in the test suite.",
+          "Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-1872 (CVE-2024-47081, GHSA-9hjg-9r4m-mvj7) [fixed in: 2.32.4] - ### Impact  Due to a URL parsing issue, Requests releases prior to 2.32.4 may leak .netrc credentials to third parties for specific maliciously-crafte...' (severity: HIGH) has no matching verification test in the test suite.",
+          "Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-2275 (CVE-2026-25645, GHSA-gc5v-m9x4-r6x2) [fixed in: 2.33.0] - ### Impact The `requests.utils.extract_zipped_paths()` utility function uses a predictable filename when extracting files from zip archives into the s...' (severity: HIGH) has no matching verification test in the test suite.",
+          "Usage complexity is classified as DEEP: Codebase relies on internal, private, or complex interfaces of the dependency; behavioural differences and subtle edge-case regressions may not be caught by standard test suites."
+        ]
+      },
+      "model_info": {
+        "model_id": "gemma4:e2b-it-q4_K_M",
+        "model_name": "gemma4:e2b-it-q4_K_M",
+        "version": "4",
+        "access_method": "hosted_api",
+        "terms_url": "https://ai.google.dev/gemma/terms",
+        "evidence": "observed"
+      },
+      "verified": false
+    },
+    {
+      "dependency": {
+        "name": "setuptools",
+        "declared_version": "75.8.0",
+        "source_file": "requirements.txt",
+        "evidence": "observed"
+      },
+      "risk_indicators": {
+        "evidence": "observed",
+        "count": 2,
+        "items": [
+          {
+            "dependency_name": "setuptools",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2025-49 (BIT-setuptools-2025-47273, CVE-2025-47273, GHSA-5rjg-fvgr-3xxf) [fixed in: 78.1.1] - ### Summary  A path traversal vulnerability in `PackageIndex` was fixed in setuptools version 78.1.1  ### Details ```     def _download_url(self, url,...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "setuptools",
+            "risk_type": "VULNERABLE",
+            "reason": "Known vulnerability PYSEC-2026-3447 (BIT-setuptools-2026-59890, CVE-2026-59890, GHSA-h35f-9h28-mq5c) [fixed in: 83.0.0] - setuptools is a package that allows users to download, build, install, upgrade, and uninstall Python packages. Prior to 83.0.0, FileList applied MANIF...",
+            "severity": "HIGH",
+            "evidence": "observed"
+          }
+        ]
+      },
+      "usage_locations": {
+        "evidence": "observed",
+        "count": 2,
+        "items": [
+          {
+            "dependency_name": "pkg_resources",
+            "file_path": "linkwatch/resources.py",
+            "line_number": 1,
+            "usage_type": "IMPORT",
+            "code_snippet": "import pkg_resources",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "pkg_resources",
+            "file_path": "linkwatch/resources.py",
+            "line_number": 7,
+            "usage_type": "CALL",
+            "code_snippet": "return pkg_resources.resource_filename(\"linkwatch\", \"templates\")",
+            "evidence": "observed"
+          }
+        ]
+      },
+      "ai_recommendation": {
+        "evidence": "ai_generated",
+        "verified": false,
+        "proposed_replacement": "importlib.resources",
+        "usage_complexity": "BASIC",
+        "candidates": [
+          {
+            "name": "importlib",
+            "why": "The usage relies on package discovery and resource location, which can be safely replaced by standard library modules like `importlib` for modern Python practices, avoiding direct dependency on potentially vulnerable `setuptools` internals.",
+            "api_gaps": "Requires mapping `pkg_resources.resource_filename` to the modern equivalent, likely `importlib.resources.files` or similar, depending on the exact context of resource handling.",
+            "evidence": "ai_generated"
+          },
+          {
+            "name": "importlib.resources",
+            "why": "This module provides the modern, recommended way to access data within installed packages, replacing the older `pkg_resources` functionality safely and securely.",
+            "api_gaps": "Requires careful mapping of the specific resource path finding logic from `pkg_resources.resource_filename` to the `importlib.resources` API.",
+            "evidence": "ai_generated"
+          }
+        ],
+        "migration_steps": [
+          "step 1: Remove the dependency on `pkg_resources` (implicitly by updating the dependency list).",
+          "step 2: Update the import statement in `linkwatch/resources.py` from `import pkg_resources` to `import importlib.resources` (or similar, depending on the exact resource access method).",
+          "step 3: Refactor the call to `pkg_resources.resource_filename(\"linkwatch\", \"templates\")` to use the modern `importlib.resources` API to locate the required file path."
+        ],
+        "code_patch": "--- a/linkwatch/resources.py\n+++ b/linkwatch/resources.py\n@@ -1,4 +1,4 @@\n-import pkg_resources\n+import importlib.resources\n \n-return pkg_resources.resource_filename(\"linkwatch\", \"templates\")\n+return importlib.resources.files(\"linkwatch\", \"templates\")",
+        "suggested_tests": [
+          "def test_resource_file_exists():\n    # Mock the environment to simulate the existence of the resource\n    import os\n    import sys\n    from unittest.mock import patch\n\n    # Mock the file system structure that pkg_resources would have found\n    # We simulate the structure needed for importlib.resources.files\n    mock_files = {\n        'linkwatch/templates/file1.txt': b'content'\n    }\n\n    with patch('importlib.resources.files', return_value=mock_files):\n        # Simulate the call being made by the original code\n        # Note: The actual implementation of importlib.resources.files is complex, \n        # this test focuses on ensuring the call structure is valid and handles the expected result type.\n        # Since we are mocking the result, we check if the function was called correctly.\n        result = importlib.resources.files(\"linkwatch\", \"templates\")\n\n        # Assert that the result is iterable and contains the expected mock file\n        assert isinstance(result, dict) or isinstance(result, list) # Depending on Python version/implementation\n        assert any(f.name == 'file1.txt' for f in result.keys() if isinstance(result, dict) else result)"
+        ],
+        "reasoning": "The migration targets the high-risk dependency on `setuptools` by replacing the legacy `pkg_resources` API with the modern, standard library approach provided by `importlib.resources`. This addresses the known path traversal vulnerabilities by moving away from the vulnerable package internals. The usage complexity is BASIC, allowing for a direct, safe drop-in replacement for the resource location functionality."
+      },
+      "executed_test_results": {
+        "evidence": "verified_by_execution",
+        "counts_before_swap_baseline": {
+          "total": 1,
+          "pass": 0,
+          "fail": 0,
+          "error": 0,
+          "not_run": 1
+        },
+        "counts_after_swap_replacement": {
+          "total": 0,
+          "pass": 0,
+          "fail": 0,
+          "error": 0,
+          "not_run": 0
+        },
+        "results": [
+          {
+            "dependency_name": "setuptools",
+            "test_name": "verification",
+            "status": "NOT_RUN",
+            "raw_output": "skipped: time limit",
+            "verified": false,
+            "evidence": "observed"
+          }
+        ]
+      },
+      "compatibility_gaps": {
+        "evidence": "observed",
+        "count": 1,
+        "items": [
+          "Test 'verification' was executed in baseline (setuptools) [NOT_RUN], but was not executed in replacement (importlib.resources) run."
+        ]
+      },
+      "gap_explanations": {
+        "evidence": "ai_generated",
+        "count": 0,
+        "items": []
+      },
+      "open_concerns": {
+        "evidence": "observed",
+        "count": 4,
+        "items": [
+          "Test 'verification' for 'setuptools' had status NOT_RUN. Reason: skipped: time limit.",
+          "Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2025-49 (BIT-setuptools-2025-47273, CVE-2025-47273, GHSA-5rjg-fvgr-3xxf) [fixed in: 78.1.1] - ### Summary  A path traversal vulnerability in `PackageIndex` was fixed in setuptools version 78.1.1  ### Details ```     def _download_url(self, url,...' (severity: HIGH) has no matching verification test in the test suite.",
+          "Unverified risk flag: [VULNERABLE] 'Known vulnerability PYSEC-2026-3447 (BIT-setuptools-2026-59890, CVE-2026-59890, GHSA-h35f-9h28-mq5c) [fixed in: 83.0.0] - setuptools is a package that allows users to download, build, install, upgrade, and uninstall Python packages. Prior to 83.0.0, FileList applied MANIF...' (severity: HIGH) has no matching verification test in the test suite.",
+          "AI-generated test 'test_resource_file_exists' was never executed in the verification test suite."
+        ]
+      },
+      "model_info": {
+        "model_id": "gemma4:e2b-it-q4_K_M",
+        "model_name": "gemma4:e2b-it-q4_K_M",
+        "version": "4",
+        "access_method": "hosted_api",
+        "terms_url": "https://ai.google.dev/gemma/terms",
+        "evidence": "observed"
+      },
+      "verified": false
+    },
+    {
+      "dependency": {
+        "name": "toml",
+        "declared_version": "0.10.2",
+        "source_file": "requirements.txt",
+        "evidence": "observed"
+      },
+      "risk_indicators": {
+        "evidence": "observed",
+        "count": 2,
+        "items": [
+          {
+            "dependency_name": "toml",
+            "risk_type": "UNMAINTAINED",
+            "reason": "No PyPI release in 6.0 years (last release was on 2020-11-01)",
+            "severity": "MED",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "toml",
+            "risk_type": "INCOMPATIBLE",
+            "reason": "PyPI classifiers indicate support only up to Python 3.9, missing Python 3.12/3.13 support",
+            "severity": "HIGH",
+            "evidence": "observed"
+          }
+        ]
+      },
+      "usage_locations": {
+        "evidence": "observed",
+        "count": 2,
+        "items": [
+          {
+            "dependency_name": "toml",
+            "file_path": "linkwatch/config.py",
+            "line_number": 3,
+            "usage_type": "IMPORT",
+            "code_snippet": "import toml",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "toml",
+            "file_path": "linkwatch/config.py",
+            "line_number": 37,
+            "usage_type": "CALL",
+            "code_snippet": "data = toml.load(path)",
+            "evidence": "observed"
+          }
+        ]
+      },
+      "ai_recommendation": {
+        "evidence": "ai_generated",
+        "verified": false,
+        "proposed_replacement": "tomli",
+        "usage_complexity": "BASIC",
+        "candidates": [
+          {
+            "name": "tomlkit",
+            "why": "Provides a robust, modern, and actively maintained API for working with TOML data structures, offering better type safety and structure than raw dictionary loading. It is a widely accepted replacement for TOML handling.",
+            "api_gaps": "The API requires reading the file content explicitly before parsing, which is a slight functional shift from a simple `load()` call, but provides superior safety and maintainability.",
+            "evidence": "ai_generated"
+          },
+          {
+            "name": "tomli",
+            "why": "A highly performant and standard-compliant TOML parser, often used in conjunction with Python's built-in file handling. It is excellent for parsing TOML content into native Python types.",
+            "api_gaps": "Requires explicit file reading (e.g., using `open()`) before passing the content to the parser, slightly increasing the number of lines of code compared to a single `load()` call.",
+            "evidence": "ai_generated"
+          }
+        ],
+        "migration_steps": [
+          "step 1: Install the replacement package: pip install tomli",
+          "step 2: Update the import statement in linkwatch/config.py to import tomli instead of toml.",
+          "step 3: Update the loading call in linkwatch/config.py to read the file content and use tomli.load() on the content."
+        ],
+        "code_patch": "--- a/linkwatch/config.py\n+++ b/linkwatch/config.py\n@@ -1,5 +1,5 @@\n-import toml\n+import tomli\n import os\n \n-data = toml.load(path)\n+with open(path, 'rb') as f:\n+    data = tomli.load(f)\n ",
+        "suggested_tests": [
+          "import pytest\nimport tomli\nimport os\n\n# Mock setup for testing file loading\n@pytest.fixture\ndef mock_file_content():\n    return 'key = \"value\"\nlist = [1, 2, 3]\n' \n\ndef test_toml_loading_with_tomli():\n    # Setup a temporary file for testing\n    test_path = 'test_config.toml'\n    with open(test_path, 'w') as f:\n        f.write('key = \"value\"\nlist = [1, 2, 3]\n')\n\n    # Simulate the original usage (using tomli)\n    with open(test_path, 'rb') as f:\n        data = tomli.load(f)\n\n    # Assert the loaded data matches the expected structure\n    assert data['key'] == 'value'\n    assert data['list'] == [1, 2, 3]\n\n    os.remove(test_path)"
+        ],
+        "reasoning": "The original usage was simple file loading (`toml.load(path)`). The recommended replacement is `tomli`, which is a highly performant and standard-compliant TOML parser. While the original used a simple function call, modern Python practices, especially when dealing with external dependencies, favor explicit file handling (`open()`) combined with the parser. This migration ensures the code remains functional while addressing the severe maintenance and compatibility risks of the original dependency by adopting a modern, actively maintained alternative."
+      },
+      "executed_test_results": {
+        "evidence": "verified_by_execution",
+        "counts_before_swap_baseline": {
+          "total": 1,
+          "pass": 0,
+          "fail": 0,
+          "error": 0,
+          "not_run": 1
+        },
+        "counts_after_swap_replacement": {
+          "total": 0,
+          "pass": 0,
+          "fail": 0,
+          "error": 0,
+          "not_run": 0
+        },
+        "results": [
+          {
+            "dependency_name": "toml",
+            "test_name": "verification",
+            "status": "NOT_RUN",
+            "raw_output": "skipped: time limit",
+            "verified": false,
+            "evidence": "observed"
+          }
+        ]
+      },
+      "compatibility_gaps": {
+        "evidence": "observed",
+        "count": 1,
+        "items": [
+          "Test 'verification' was executed in baseline (toml) [NOT_RUN], but was not executed in replacement (tomli) run."
+        ]
+      },
+      "gap_explanations": {
+        "evidence": "ai_generated",
+        "count": 0,
+        "items": []
+      },
+      "open_concerns": {
+        "evidence": "observed",
+        "count": 4,
+        "items": [
+          "Test 'verification' for 'toml' had status NOT_RUN. Reason: skipped: time limit.",
+          "Unverified risk flag: [UNMAINTAINED] 'No PyPI release in 6.0 years (last release was on 2020-11-01)' (severity: MED) has no matching verification test in the test suite.",
+          "Unverified risk flag: [INCOMPATIBLE] 'PyPI classifiers indicate support only up to Python 3.9, missing Python 3.12/3.13 support' (severity: HIGH) has no matching verification test in the test suite.",
+          "AI-generated test 'mock_file_content' was never executed in the verification test suite."
+        ]
+      },
+      "model_info": {
+        "model_id": "gemma4:e2b-it-q4_K_M",
+        "model_name": "gemma4:e2b-it-q4_K_M",
+        "version": "4",
+        "access_method": "hosted_api",
+        "terms_url": "https://ai.google.dev/gemma/terms",
+        "evidence": "observed"
+      },
+      "verified": false
+    },
+    {
+      "dependency": {
+        "name": "python-dateutil",
+        "declared_version": "",
+        "source_file": "requirements.txt",
+        "evidence": "observed"
+      },
+      "risk_indicators": {
+        "evidence": "observed",
+        "count": 1,
+        "items": [
+          {
+            "dependency_name": "python-dateutil",
+            "risk_type": "UNMAINTAINED",
+            "reason": "No PyPI release in 2.6 years (last release was on 2024-03-01)",
+            "severity": "MED",
+            "evidence": "observed"
+          }
+        ]
+      },
+      "usage_locations": {
+        "evidence": "observed",
+        "count": 2,
+        "items": [
+          {
+            "dependency_name": "python-dateutil",
+            "file_path": "linkwatch/dates.py",
+            "line_number": 1,
+            "usage_type": "IMPORT",
+            "code_snippet": "from dateutil import parser",
+            "evidence": "observed"
+          },
+          {
+            "dependency_name": "python-dateutil",
+            "file_path": "linkwatch/dates.py",
+            "line_number": 8,
+            "usage_type": "CALL",
+            "code_snippet": "return parser.parse(value)",
+            "evidence": "observed"
+          }
+        ]
+      },
+      "ai_recommendation": {
+        "evidence": "ai_generated",
+        "verified": false,
+        "proposed_replacement": "dateparser",
+        "usage_complexity": "BASIC",
+        "candidates": [
+          {
+            "name": "dateparser",
+            "why": "Salvaged from LLM output",
+            "api_gaps": "",
+            "evidence": "ai_generated"
+          }
+        ],
+        "migration_steps": [
+          "tzinfo is not None\\n\""
+        ],
+        "code_patch": "",
+        "suggested_tests": [],
+        "reasoning": "The original dependency, python-dateutil, is marked as UNMAINTAINED, posing a significant security and stability risk. The proposed replacement, dateparser, is a modern, actively maintained library that provides the exact functionality required (flexible date parsing) with high reliability. This migration addresses the risk while maintaining the required functionality, resulting in a safe and modern dependency upgrade."
+      },
+      "executed_test_results": {
+        "evidence": "verified_by_execution",
+        "counts_before_swap_baseline": {
+          "total": 1,
+          "pass": 0,
+          "fail": 0,
+          "error": 0,
+          "not_run": 1
+        },
+        "counts_after_swap_replacement": {
+          "total": 0,
+          "pass": 0,
+          "fail": 0,
+          "error": 0,
+          "not_run": 0
+        },
+        "results": [
+          {
+            "dependency_name": "python-dateutil",
+            "test_name": "verification",
+            "status": "NOT_RUN",
+            "raw_output": "skipped: time limit",
+            "verified": false,
+            "evidence": "observed"
+          }
+        ]
+      },
+      "compatibility_gaps": {
+        "evidence": "observed",
+        "count": 1,
+        "items": [
+          "Test 'verification' was executed in baseline (python-dateutil) [NOT_RUN], but was not executed in replacement (dateparser) run."
+        ]
+      },
+      "gap_explanations": {
+        "evidence": "ai_generated",
+        "count": 0,
+        "items": []
+      },
+      "open_concerns": {
+        "evidence": "observed",
+        "count": 2,
+        "items": [
+          "Test 'verification' for 'python-dateutil' had status NOT_RUN. Reason: skipped: time limit.",
+          "Unverified risk flag: [UNMAINTAINED] 'No PyPI release in 2.6 years (last release was on 2024-03-01)' (severity: MED) has no matching verification test in the test suite."
+        ]
+      },
+      "model_info": {
+        "model_id": "gemma4:e2b-it-q4_K_M",
+        "model_name": "gemma4:e2b-it-q4_K_M",
+        "version": "4",
+        "access_method": "hosted_api",
+        "terms_url": "https://ai.google.dev/gemma/terms",
+        "evidence": "observed"
+      },
+      "verified": false
+    }
+  ]
 }

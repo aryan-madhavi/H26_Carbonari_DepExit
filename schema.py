@@ -104,8 +104,10 @@ class VerificationResult:
     test_name: str
     status: VerificationStatus
     raw_output: str = ""
-    verified: bool = True
+    verified: bool = False
     evidence: str = "observed"
+    run_type: str = ""
+    test_source: str = ""
 
 
 @dataclass
