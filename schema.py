@@ -94,6 +94,7 @@ class AIRecommendation:
     reasoning: str = ""
     ai_generated: bool = True
     evidence: str = "ai_generated"
+    needs_manual_patch: bool = False
 
 
 @dataclass

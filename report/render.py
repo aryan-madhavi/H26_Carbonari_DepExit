@@ -298,6 +298,7 @@ def _capsule_to_dict(capsule: ExitCapsule, model_info: dict[str, Any]) -> dict[s
             "code_patch": getattr(ai_rec, "code_patch", ""),
             "suggested_tests": list(getattr(ai_rec, "suggested_tests", []) or []),
             "reasoning": ai_rec.reasoning,
+            "needs_manual_patch": getattr(ai_rec, "needs_manual_patch", False),
         }
     else:
         ai_section = {
@@ -942,6 +943,11 @@ HTML_REPORT_TEMPLATE = """<!DOCTYPE html>
             <strong style="color: #fde68a;">Proposed Unified Diff Code Patch:</strong>
             <pre class="code-block"><code>{{ c.ai_recommendation.code_patch }}</code></pre>
           </div>
+          {% elif c.ai_recommendation.needs_manual_patch %}
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #fca5a5;">Proposed Unified Diff Code Patch:</strong>
+            <p style="color: #fca5a5; font-style: italic; margin-top: 4px;">AI patch unavailable (manual migration required).</p>
+          </div>
           {% endif %}
 
           {% if c.ai_recommendation.suggested_tests %}
@@ -1325,6 +1331,8 @@ def print_summary(capsules: Union[ExitCapsule, Sequence[ExitCapsule]]) -> str:
             if patch:
                 patch_first_lines = "\n".join(f"      {l}" for l in patch.strip().splitlines()[:4])
                 lines.append(f"  * Code Patch Preview:\n{patch_first_lines}")
+            elif getattr(rec, "needs_manual_patch", False):
+                lines.append("  * Code Patch:           AI patch unavailable (manual patch required)")
 
             tests = getattr(rec, "suggested_tests", []) or []
             if tests:

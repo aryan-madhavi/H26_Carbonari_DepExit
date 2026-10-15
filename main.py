@@ -173,6 +173,7 @@ def main(repo_path: str) -> list[ExitCapsule]:
     capsules: list[ExitCapsule] = []
     total_risky = len(risky_deps)
 
+    baseline_runs_history: list[dict[str, int]] = []
     for dep_idx, (dep, dep_risks) in enumerate(risky_deps, 1):
         dep_name = dep.name
         is_priority_verification = (dep_idx <= 2)
@@ -246,6 +247,24 @@ def main(repo_path: str) -> list[ExitCapsule]:
                     )
                     pass_count = sum(1 for r in v_results if r.status == VerificationStatus.PASS)
                     print(f"        -> Verification completed: {pass_count}/{len(v_results)} test(s) passed.")
+
+                    # Track baseline test stability across runs of unmodified repo
+                    current_baseline = [r for r in v_results if getattr(r, "run_type", "") == "BASELINE" and getattr(r, "test_source", "") == "REPO"]
+                    if current_baseline:
+                        b_total = len(current_baseline)
+                        b_pass = sum(1 for r in current_baseline if r.status == VerificationStatus.PASS)
+                        b_stats = {"total": b_total, "pass": b_pass}
+                        if baseline_runs_history:
+                            prev_stats = baseline_runs_history[-1]
+                            if prev_stats != b_stats:
+                                flakiness_msg = (
+                                    f"baseline test results were not stable across runs "
+                                    f"({b_pass}/{b_total} pass vs {prev_stats['pass']}/{prev_stats['total']} pass) — "
+                                    f"possible test flakiness in the target repo"
+                                )
+                                logger.warning(flakiness_msg)
+                                open_concerns.append(flakiness_msg)
+                        baseline_runs_history.append(b_stats)
                 except Exception as e:
                     logger.error("Verification testing failed for '%s': %s", dep_name, e)
                     open_concerns.append(f"Verification testing failed: {e}")

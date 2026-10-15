@@ -5,6 +5,7 @@ in an isolated sandbox to detect compatibility regressions and verify proposed m
 """
 
 from __future__ import annotations
+import importlib.util
 
 import argparse
 import logging
@@ -449,6 +450,25 @@ import pytest
     return tf.name
 
 
+def is_stdlib_module(module_name: str) -> bool:
+    """Check if a given module or package name belongs to the Python standard library."""
+    if not module_name or not module_name.strip():
+        return False
+    clean = module_name.strip().split('.')[0]
+    if hasattr(sys, 'stdlib_module_names') and clean in sys.stdlib_module_names:
+        return True
+    try:
+        spec = importlib.util.find_spec(clean)
+        if spec is not None:
+            if spec.origin in (None, 'built-in', 'frozen'):
+                return True
+            origin = str(spec.origin)
+            return 'site-packages' not in origin and 'dist-packages' not in origin
+    except Exception:
+        pass
+    return False
+
+
 def verify_replacement(
     repo_path: str,
     dependency_name: str,
@@ -611,55 +631,74 @@ def verify_replacement(
         # Install replacement package into isolated site-packages folder
         install_success = True
         if replacement_name and replacement_name.strip().lower() not in ("none", "n/a", ""):
-            sandbox_site_packages.mkdir(parents=True, exist_ok=True)
-            install_cmd = [
-                str(python_exe),
-                "-m",
-                "pip",
-                "install",
-                "--no-input",
-                "--target",
-                str(sandbox_site_packages),
-                replacement_name,
-            ]
-            try:
-                install_proc = subprocess.run(
-                    install_cmd,
-                    cwd=str(sandbox_repo),
-                    capture_output=True,
-                    text=True,
-                    encoding="utf-8",
-                    errors="replace",
-                    timeout=60,
+            # Check if replacement is standard library module
+            if is_stdlib_module(replacement_name):
+                logger.info(
+                    "Replacement '%s' is a Python standard-library module. Skipping pip install.",
+                    replacement_name,
                 )
-                if install_proc.returncode != 0:
-                    install_success = False
-                    results.append(
-                        VerificationResult(
-                            dependency_name=dependency_name,
-                            test_name=f"install_{replacement_name}",
-                            status=VerificationStatus.ERROR,
-                            raw_output=f"skipped: installation of replacement '{replacement_name}' failed (exit {install_proc.returncode})\n{install_proc.stderr}",
-                            verified=False,
-                            evidence="observed",
-                            run_type="REPLACEMENT",
-                            test_source="REPO",
-                        )
-                    )
-            except subprocess.TimeoutExpired:
-                install_success = False
                 results.append(
                     VerificationResult(
                         dependency_name=dependency_name,
                         test_name=f"install_{replacement_name}",
-                        status=VerificationStatus.ERROR,
-                        raw_output=f"skipped: installation of replacement '{replacement_name}' timed out after 60s",
+                        status=VerificationStatus.NOT_RUN,
+                        raw_output="stdlib module, no install needed",
                         verified=False,
                         evidence="observed",
                         run_type="REPLACEMENT",
                         test_source="REPO",
                     )
                 )
+            else:
+                sandbox_site_packages.mkdir(parents=True, exist_ok=True)
+                install_cmd = [
+                    str(python_exe),
+                    "-m",
+                    "pip",
+                    "install",
+                    "--no-input",
+                    "--target",
+                    str(sandbox_site_packages),
+                    replacement_name,
+                ]
+                try:
+                    install_proc = subprocess.run(
+                        install_cmd,
+                        cwd=str(sandbox_repo),
+                        capture_output=True,
+                        text=True,
+                        encoding="utf-8",
+                        errors="replace",
+                        timeout=60,
+                    )
+                    if install_proc.returncode != 0:
+                        install_success = False
+                        results.append(
+                            VerificationResult(
+                                dependency_name=dependency_name,
+                                test_name=f"install_{replacement_name}",
+                                status=VerificationStatus.ERROR,
+                                raw_output=f"skipped: installation of replacement '{replacement_name}' failed (exit {install_proc.returncode})\n{install_proc.stderr}",
+                                verified=False,
+                                evidence="observed",
+                                run_type="REPLACEMENT",
+                                test_source="REPO",
+                            )
+                        )
+                except subprocess.TimeoutExpired:
+                    install_success = False
+                    results.append(
+                        VerificationResult(
+                            dependency_name=dependency_name,
+                            test_name=f"install_{replacement_name}",
+                            status=VerificationStatus.ERROR,
+                            raw_output=f"skipped: installation of replacement '{replacement_name}' timed out after 60s",
+                            verified=False,
+                            evidence="observed",
+                            run_type="REPLACEMENT",
+                            test_source="REPO",
+                        )
+                    )
 
         # If patch failed or install failed, replacement test runs cannot proceed
         if not patch_applied or not install_success:

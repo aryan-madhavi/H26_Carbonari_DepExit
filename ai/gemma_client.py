@@ -284,14 +284,22 @@ def _salvage_regex_recommendation(text: str, dependency_name: str) -> Optional[d
             comp_val = comp_m.group(1).upper() if comp_m else "BASIC"
             
             steps = []
-            steps_m = re.findall(r'"(?:step\s*\d*|migration_step[^"]*)"\s*:\s*"([^"]+)"', text, re.IGNORECASE)
-            if not steps_m:
-                steps_m = re.findall(r'\d+\.\s*([^\n]+)', text)
-            if steps_m:
-                steps = [s.strip() for s in steps_m[:5] if s.strip()]
-            else:
-                steps = [f"Replace {dependency_name} with {prop_val}"]
-
+            steps_arr_m = re.search(r'"migration_steps"\s*:\s*\[([^\]]*)\]', text, re.DOTALL)
+            if steps_arr_m:
+                arr_fragment = f"[{steps_arr_m.group(1)}]"
+                try:
+                    parsed_steps = json.loads(arr_fragment)
+                    if isinstance(parsed_steps, list):
+                        steps = [str(s).strip() for s in parsed_steps if str(s).strip()]
+                except Exception:
+                    try:
+                        decoder = json.JSONDecoder(strict=False)
+                        parsed_steps, _ = decoder.raw_decode(arr_fragment.strip())
+                        if isinstance(parsed_steps, list):
+                            steps = [str(s).strip() for s in parsed_steps if str(s).strip()]
+                    except Exception:
+                        steps = []
+            
             logger.info("Successfully salvaged recommendation for '%s' via regex extraction! Replacement: '%s'", dependency_name, prop_val)
             return {
                 "usage_complexity": comp_val,
@@ -301,6 +309,7 @@ def _salvage_regex_recommendation(text: str, dependency_name: str) -> Optional[d
                 "code_patch": "",
                 "suggested_tests": [],
                 "reasoning": reason_val,
+                "needs_manual_patch": True,
             }
     except Exception as exc:
         logger.warning("Regex salvage failed: %s", exc)
@@ -357,7 +366,8 @@ def _parse_json_defensively(raw_text: str, is_array: bool = False, operation_nam
             except json.JSONDecodeError:
                 pass
 
-    raise ValueError(f"Failed to parse JSON response after all repair tiers for {operation_name}.")
+    logger.warning("JSON parse failed for %s: raw_len=%d, cleaned_len=%d", operation_name, len(raw_text), len(cleaned))
+    raise ValueError(f"Failed to parse JSON response after all repair tiers for {operation_name} (raw_len={len(raw_text)}).")
 
 
 def _validate_recommendation_payload(data: Any) -> dict[str, Any]:
@@ -563,7 +573,7 @@ def _format_usage_locations(usage_locations: list[UsageLocation]) -> str:
     lines = []
     for idx, loc in enumerate(usage_locations, 1):
         utype = loc.usage_type.value if hasattr(loc.usage_type, "value") else str(loc.usage_type)
-        snippet = loc.code_snippet.strip()
+        snippet = loc.code_snippet.strip().replace(chr(96)*3, chr(39)*3)
         lines.append(
             f"- [{idx}] File: {loc.file_path}:{loc.line_number} (Type: {utype})\n"
             f"  Code snippet:\n"
@@ -757,6 +767,7 @@ def get_recommendation(
     recommendation.code_patch = payload["code_patch"]
     recommendation.suggested_tests = payload["suggested_tests"]
     recommendation.evidence = "ai_generated"
+    recommendation.needs_manual_patch = bool(payload.get("needs_manual_patch", False))
 
     return recommendation
 

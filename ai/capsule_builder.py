@@ -378,6 +378,14 @@ def identify_open_concerns(
                 )
 
     # -----------------------------------------------------------------------
+    # 3b. AI patch could not be parsed from model response (needs_manual_patch)
+    # -----------------------------------------------------------------------
+    if ai_recommendation and getattr(ai_recommendation, "needs_manual_patch", False):
+        concerns.append(
+            "AI patch could not be parsed from the model response; manual migration required"
+        )
+
+    # -----------------------------------------------------------------------
     # 4. Usage complexity DEEP (behaviour differences tests may not catch)
     # -----------------------------------------------------------------------
     if ai_recommendation:
