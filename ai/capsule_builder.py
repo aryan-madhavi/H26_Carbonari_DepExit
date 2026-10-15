@@ -349,8 +349,14 @@ def identify_open_concerns(
                     break
 
             if not matched:
+                # Clean up reason for readable display (strip markdown headers, raw markdown links, and excessive text)
+                clean_reason = re.sub(r"\[.*?\]\(.*?\)", "", flag.reason)
+                clean_reason = re.sub(r"###?\s*[A-Za-z]+", "", clean_reason)
+                clean_reason = re.sub(r"\s+", " ", clean_reason).strip()
+                if len(clean_reason) > 120:
+                    clean_reason = clean_reason[:117] + "..."
                 concerns.append(
-                    f"Unverified risk flag: [{rtype_val}] '{flag.reason}' (severity: {rsev_val}) "
+                    f"Unverified risk flag: [{rtype_val}] '{clean_reason}' (severity: {rsev_val}) "
                     f"has no matching verification test in the test suite."
                 )
 
