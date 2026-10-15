@@ -69,6 +69,7 @@ class RiskFlag:
     risk_type: RiskType
     reason: str
     severity: RiskSeverity
+    evidence: str = "observed"
 
 
 @dataclass
@@ -80,6 +81,7 @@ class UsageLocation:
     line_number: int
     usage_type: UsageType
     code_snippet: str
+    evidence: str = "observed"
 
 
 @dataclass
@@ -91,6 +93,7 @@ class AIRecommendation:
     migration_steps: list[str] = field(default_factory=list)
     reasoning: str = ""
     ai_generated: bool = True
+    evidence: str = "ai_generated"
 
 
 @dataclass
@@ -102,6 +105,7 @@ class VerificationResult:
     status: VerificationStatus
     raw_output: str = ""
     verified: bool = True
+    evidence: str = "observed"
 
 
 @dataclass

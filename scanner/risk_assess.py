@@ -70,6 +70,7 @@ def check_pypi_metadata(
                 risk_type=RiskType.UNMAINTAINED,
                 reason=f"Package '{package_name}' was not found on PyPI (HTTP 404)",
                 severity=RiskSeverity.MED,
+                evidence="observed",
             )
         )
         return flags
@@ -121,6 +122,7 @@ def check_pypi_metadata(
                             f"(last release was on {rel_dt.strftime('%Y-%m-%d')})"
                         ),
                         severity=RiskSeverity.MED,
+                        evidence="observed",
                     )
                 )
         except Exception:
@@ -166,6 +168,7 @@ def check_pypi_metadata(
                 risk_type=RiskType.DEPRECATED,
                 reason=f"Package/release is yanked on PyPI: {yanked_reason or 'Marked yanked'}",
                 severity=RiskSeverity.HIGH,
+                evidence="observed",
             )
         )
     elif is_inactive:
@@ -175,6 +178,7 @@ def check_pypi_metadata(
                 risk_type=RiskType.DEPRECATED,
                 reason="Package marked as inactive on PyPI (Development Status :: 7 - Inactive)",
                 severity=RiskSeverity.HIGH,
+                evidence="observed",
             )
         )
     elif is_deprecated_text:
@@ -184,6 +188,7 @@ def check_pypi_metadata(
                 risk_type=RiskType.DEPRECATED,
                 reason=f"Package flagged as deprecated by maintainers: {info.get('summary') or 'Deprecated'}",
                 severity=RiskSeverity.HIGH,
+                evidence="observed",
             )
         )
 
@@ -208,6 +213,7 @@ def check_pypi_metadata(
                         "missing Python 3.12/3.13 support"
                     ),
                     severity=RiskSeverity.HIGH,
+                    evidence="observed",
                 )
             )
 
@@ -223,6 +229,7 @@ def check_pypi_metadata(
                         risk_type=RiskType.INCOMPATIBLE,
                         reason=f"requires_python constraint ('{requires_python}') excludes Python 3.12 and 3.13",
                         severity=RiskSeverity.HIGH,
+                        evidence="observed",
                     )
                 )
         except Exception:
@@ -238,6 +245,7 @@ def check_pypi_metadata(
                 risk_type=RiskType.INCOMPATIBLE,
                 reason="PyPI classifiers declare support only for Python 2",
                 severity=RiskSeverity.HIGH,
+                evidence="observed",
             )
         )
 
@@ -302,6 +310,7 @@ def _audit_requirements_file(
                     risk_type=RiskType.VULNERABLE,
                     reason=" ".join(reason_parts),
                     severity=RiskSeverity.HIGH,
+                    evidence="observed",
                 )
             )
 
@@ -318,7 +327,7 @@ def run_pip_audit(dependencies: list[Dependency]) -> list[RiskFlag]:
         dependencies: Discovered dependencies to audit.
 
     Returns:
-        List of RiskFlag objects with risk_type=VULNERABLE and severity=HIGH.
+        List of RiskFlag objects with risk_type=VULNERABLE, severity=HIGH, evidence="observed".
     """
     flags: list[RiskFlag] = []
     if not dependencies:
@@ -372,6 +381,8 @@ def assess_risk(dependencies: list[Dependency]) -> list[RiskFlag]:
     3. Known vulnerabilities via pip-audit subprocess (VULNERABLE, severity HIGH)
     4. Python 3.12/3.13 compatibility from PyPI classifiers/requires_python (INCOMPATIBLE, severity HIGH)
 
+    Every RiskFlag sets evidence="observed" explicitly.
+
     Args:
         dependencies: Discovered dependencies to evaluate.
 
@@ -382,12 +393,12 @@ def assess_risk(dependencies: list[Dependency]) -> list[RiskFlag]:
         return []
 
     flags: list[RiskFlag] = []
-    seen_flag_keys: set[tuple[str, RiskType, str]] = set()
+    seen_flag_keys: set[tuple[str, RiskType, str, str]] = set()
 
     # 1. Run pip-audit for vulnerabilities (subprocess, JSON output)
     vuln_flags = run_pip_audit(dependencies)
     for flag in vuln_flags:
-        key = (flag.dependency_name.lower(), flag.risk_type, flag.reason)
+        key = (flag.dependency_name.lower(), flag.risk_type, flag.reason, flag.evidence)
         if key not in seen_flag_keys:
             seen_flag_keys.add(key)
             flags.append(flag)
@@ -411,7 +422,7 @@ def assess_risk(dependencies: list[Dependency]) -> list[RiskFlag]:
             pypi_cache[cache_key] = pypi_flags
 
         for flag in pypi_flags:
-            key = (dep.name.lower(), flag.risk_type, flag.reason)
+            key = (dep.name.lower(), flag.risk_type, flag.reason, flag.evidence)
             if key not in seen_flag_keys:
                 seen_flag_keys.add(key)
                 flags.append(
@@ -420,6 +431,7 @@ def assess_risk(dependencies: list[Dependency]) -> list[RiskFlag]:
                         risk_type=flag.risk_type,
                         reason=flag.reason,
                         severity=flag.severity,
+                        evidence="observed",
                     )
                 )
 
@@ -446,4 +458,4 @@ if __name__ == "__main__":
     risk_results = assess_risk(deps)
     print(f"Assessed {len(deps)} dependencies. Found {len(risk_results)} risk flags:")
     for rf in risk_results:
-        print(f"  [{rf.severity.value:4}] {rf.risk_type.value:12} {rf.dependency_name:15} -> {rf.reason}")
+        print(f"  [{rf.severity.value:4}] {rf.risk_type.value:12} {rf.dependency_name:15} (evidence={rf.evidence}) -> {rf.reason}")

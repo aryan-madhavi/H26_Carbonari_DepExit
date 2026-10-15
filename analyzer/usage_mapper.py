@@ -2,6 +2,7 @@
 
 Analyzes the target repository using Python's AST module to detect imports,
 function calls, class instantiations, and attribute lookups tied to target dependencies.
+Translates PyPI package names to actual import names before resolving AST nodes.
 """
 
 from __future__ import annotations
@@ -43,26 +44,53 @@ EXCLUDED_DIRS = {
     ".mypy_cache",
 }
 
-# Known package name to top-level import root mappings
-KNOWN_IMPORT_ROOTS: dict[str, set[str]] = {
-    "python-dateutil": {"dateutil"},
-    "pyyaml": {"yaml"},
-    "beautifulsoup4": {"bs4"},
-    "pillow": {"pil", "PIL"},
-    "scikit-learn": {"sklearn"},
-    "opencv-python": {"cv2"},
-    "typing-extensions": {"typing_extensions"},
+# Known mappings from PyPI package names to their actual top-level import root names
+KNOWN_PYPI_TO_IMPORT_MAP: dict[str, list[str]] = {
+    "pyyaml": ["yaml"],
+    "beautifulsoup4": ["bs4"],
+    "python-dateutil": ["dateutil"],
+    "pillow": ["PIL", "pil"],
+    "scikit-learn": ["sklearn"],
+    "opencv-python": ["cv2"],
+    "opencv-python-headless": ["cv2"],
+    "typing-extensions": ["typing_extensions"],
+    "protobuf": ["google.protobuf", "google"],
+    "paho-mqtt": ["paho"],
+    "msgpack-python": ["msgpack"],
+    "pymongo": ["pymongo", "bson"],
+    "setuptools": ["setuptools", "pkg_resources"],
+    "attrs": ["attr", "attrs"],
+    "psycopg2-binary": ["psycopg2"],
+    "markupsafe": ["markupsafe"],
+    "jinja2": ["jinja2"],
+    "importlib-metadata": ["importlib_metadata"],
+    "pydantic-core": ["pydantic_core"],
 }
 
 
-def _get_import_roots(dep_name: str) -> set[str]:
-    """Return all known top-level import root names for a given dependency."""
-    clean = dep_name.lower().replace("-", "_")
-    roots = {dep_name.lower(), clean}
-    canonical = dep_name.lower().replace("_", "-")
-    if canonical in KNOWN_IMPORT_ROOTS:
-        roots.update(k.lower() for k in KNOWN_IMPORT_ROOTS[canonical])
-    return roots
+def resolve_import_roots(pypi_name: str) -> list[str]:
+    """Translate a PyPI package name to its actual import root name(s).
+
+    Uses a known mapping for packages where import name differs from PyPI name
+    (e.g. PyYAML -> yaml, beautifulsoup4 -> bs4, python-dateutil -> dateutil),
+    falling back to the package name itself (with hyphens replaced by underscores).
+
+    Args:
+        pypi_name: Name of the package on PyPI (e.g. from discover_dependencies).
+
+    Returns:
+        List of importable top-level module names.
+    """
+    clean_pypi = pypi_name.strip().lower().replace("_", "-")
+    if clean_pypi in KNOWN_PYPI_TO_IMPORT_MAP:
+        return KNOWN_PYPI_TO_IMPORT_MAP[clean_pypi]
+
+    clean_under = pypi_name.strip().lower().replace("-", "_")
+    if clean_under in KNOWN_PYPI_TO_IMPORT_MAP:
+        return KNOWN_PYPI_TO_IMPORT_MAP[clean_under]
+
+    # Fallback to normalized package name
+    return [clean_under]
 
 
 class _DependencyUsageVisitor(ast.NodeVisitor):
@@ -76,7 +104,7 @@ class _DependencyUsageVisitor(ast.NodeVisitor):
     ) -> None:
         self.file_path = file_path
         self.source_lines = source_lines
-        self.dep_map = dep_map  # import_root -> original_dep_name
+        self.dep_map = dep_map  # import_root -> original_pypi_dep_name
         self.symbols: dict[str, dict] = {}  # local_name -> {'dep': str, 'is_class': bool}
         self.instances: dict[str, str] = {}  # local_name -> dep_name
         self.usages: list[UsageLocation] = []
@@ -99,6 +127,7 @@ class _DependencyUsageVisitor(ast.NodeVisitor):
                     line_number=lineno,
                     usage_type=usage_type,
                     code_snippet=self._get_snippet(lineno),
+                    evidence="observed",
                 )
             )
 
@@ -200,23 +229,26 @@ def find_usages_in_file(
 ) -> list[UsageLocation]:
     """Parse a single Python file and map usages of the specified dependencies.
 
+    Translates PyPI package names to their actual import names (e.g.
+    python-dateutil -> dateutil, PyYAML -> yaml, beautifulsoup4 -> bs4).
+
     Args:
         file_path: Absolute or relative filesystem path to the Python source file.
-        dependency_names: List of dependency names to search for.
+        dependency_names: List of dependency names to search for (PyPI package names).
         display_path: Optional path string used in the resulting UsageLocation objects.
 
     Returns:
-        List of UsageLocation instances found in the file.
+        List of UsageLocation instances found in the file with evidence="observed".
     """
     path = Path(file_path)
     if not path.is_file():
         return []
 
-    # Build root import name map: import_root -> original_dep_name
+    # Build translation map: import_root -> original_pypi_dep_name
     dep_map: dict[str, str] = {}
     for dep in dependency_names:
-        for root in _get_import_roots(dep):
-            dep_map[root] = dep
+        for root in resolve_import_roots(dep):
+            dep_map[root.lower()] = dep
 
     try:
         source_code = path.read_text(encoding="utf-8", errors="replace")
@@ -247,13 +279,15 @@ def map_usage(
 
     Uses Python's ast module to detect import statements, function calls,
     class instantiations, and attribute accesses tied to the target dependencies.
+    Resolves dependencies by their actual import names (e.g. python-dateutil -> dateutil).
 
     Args:
         repo_path: Path to the target repository directory.
-        dependency_names: Collection of dependency package names to track.
+        dependency_names: Collection of PyPI dependency package names to track.
 
     Returns:
-        List of UsageLocation objects, sorted by dependency name then file path.
+        List of UsageLocation objects with evidence="observed",
+        sorted by dependency name then file path.
     """
     repo = Path(repo_path).resolve()
     if not repo.exists():
@@ -322,4 +356,4 @@ if __name__ == "__main__":
     print(f"Found {len(usages)} usages across {len(deps_to_map)} dependencies in '{target_repo}':")
     for u in usages:
         utype_str = u.usage_type.value if hasattr(u.usage_type, "value") else str(u.usage_type)
-        print(f"  {u.dependency_name:12} | {u.file_path}:{u.line_number:<3} [{utype_str:14}] -> {u.code_snippet}")
+        print(f"  {u.dependency_name:15} | {u.file_path}:{u.line_number:<3} [{utype_str:14}] (evidence={u.evidence}) -> {u.code_snippet}")
