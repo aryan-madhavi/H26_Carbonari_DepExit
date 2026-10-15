@@ -65,6 +65,8 @@ KNOWN_PYPI_TO_IMPORT_MAP: dict[str, list[str]] = {
     "jinja2": ["jinja2"],
     "importlib-metadata": ["importlib_metadata"],
     "pydantic-core": ["pydantic_core"],
+    "pycrypto": ["Crypto", "crypto"],
+    "pycryptodome": ["Crypto", "crypto"],
 }
 
 
